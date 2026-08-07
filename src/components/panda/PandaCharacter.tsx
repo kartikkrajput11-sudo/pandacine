@@ -215,6 +215,22 @@ export const PandaCharacter = memo(function PandaCharacter({
 
   const bodyAnim = useMemo(() => {
     switch (a) {
+      case "walk":
+        return {
+          x: [0, -10, 10, -10, 0],
+          y: [0, -8, 0, -8, 0],
+          rotate: [0, -3, 3, -3, 0],
+          transition: { duration: 1.2, repeat: Infinity, ease: "linear" },
+        };
+      case "run":
+        return {
+          x: [0, -15, 15, -15, 0],
+          y: [0, -14, 0, -14, 0],
+          rotate: [0, -6, 6, -6, 0],
+          transition: { duration: 0.6, repeat: Infinity, ease: "linear" },
+        };
+      case "sit":
+        return { y: 15, scaleY: 0.92, scaleX: 1.05 };
       case "headpat":
         return { scaleY: [1, 0.92, 1], y: [0, 6, 0], transition: { duration: 0.6, repeat: 2 } };
       case "tickle":
