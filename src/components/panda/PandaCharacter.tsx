@@ -348,23 +348,24 @@ export const PandaCharacter = memo(function PandaCharacter({
         </filter>
       </defs>
 
-      {/* contact shadow */}
-      <motion.ellipse
-        cx="150"
-        cy="352"
-        rx="98"
-        ry="15"
-        fill="url(#shadow)"
-        animate={lite ? undefined : { rx: [98, 90, 98], opacity: [0.9, 0.72, 0.9] }}
-        transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
-      />
+      <motion.g animate={posAnim}>
+        {/* contact shadow */}
+        <motion.ellipse
+          cx="150"
+          cy="352"
+          rx="98"
+          ry="15"
+          fill="url(#shadow)"
+          animate={lite ? undefined : { rx: [98, 90, 98], opacity: [0.9, 0.72, 0.9] }}
+          transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
+        />
 
-      <motion.g
-        animate={sleepPose}
-        transition={{ type: "spring", stiffness: 40, damping: 18 }}
-        style={{ transformOrigin: "150px 330px" }}
-      >
-        <motion.g animate={bodyAnim} style={{ transformOrigin: "150px 310px" }}>
+        <motion.g
+          animate={sleepPose}
+          transition={{ type: "spring", stiffness: 40, damping: 18 }}
+          style={{ transformOrigin: "150px 330px" }}
+        >
+          <motion.g animate={bodyAnim} style={{ transformOrigin: "150px 310px" }}>
           {/* tail */}
           <motion.g
             onPointerDown={() => onZone?.("tail")}
