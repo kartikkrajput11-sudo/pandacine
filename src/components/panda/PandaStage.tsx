@@ -151,9 +151,18 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
           feel("playful", 1400);
           pandaSfx.pop();
         }}
-        animate={state.chaos ? { x: [0, -60, 60, -30, 0] } : undefined}
-        transition={{ duration: 1.6, repeat: state.chaos ? Infinity : 0 }}
+        animate={
+          state.chaos
+            ? { x: [0, -60, 60, -30, 0] }
+            : hiding
+              ? { x: -70, y: 26, scale: 0.92 }
+              : { x: 0, y: 0, scale: 1 }
+        }
+        transition={
+          state.chaos ? { duration: 1.6, repeat: Infinity } : { type: "spring", stiffness: 90, damping: 16 }
+        }
         className={cn("relative z-10 mx-auto w-full max-w-[420px] cursor-grab active:cursor-grabbing", dragging && "z-20")}
+
       >
         <PandaCharacter state={state} onZone={onZone} lite={lite} className="w-full h-auto" />
 
