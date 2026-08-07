@@ -277,19 +277,19 @@ export const PandaCharacter = memo(function PandaCharacter({
   // Static fur geometry (memoised once).
   const fur = useMemo(
     () => ({
-      head: furRing(150, 140, 92, 80, lite ? 34 : 78, 9, 11),
-      body: furRing(150, 250, 86, 80, lite ? 26 : 60, 10, 31, Math.PI * 0.05, Math.PI * 0.95),
-      earL: furRing(86, 78, 28, 28, lite ? 10 : 22, 7, 51),
-      earR: furRing(214, 78, 28, 28, lite ? 10 : 22, 7, 71),
-      cheekL: furRing(104, 172, 26, 20, lite ? 8 : 16, 6, 91, Math.PI * 0.4, Math.PI * 1.1),
-      cheekR: furRing(196, 172, 26, 20, lite ? 8 : 16, 6, 111, Math.PI * -0.1, Math.PI * 0.6),
+      head: [],
+      body: [],
+      earL: [],
+      earR: [],
+      cheekL: [],
+      cheekR: [],
       // Outer guard-hair coats — drawn *behind* each mass for a soft silhouette.
-      headFringe: furFringe(150, 140, 91, 79, lite ? 44 : 120, 13, 211),
-      bodyFringe: furFringe(150, 252, 85, 79, lite ? 36 : 96, 14, 231, Math.PI * 0.02, Math.PI * 0.98),
-      earLFringe: furFringe(86, 78, 27, 27, lite ? 14 : 34, 9, 251),
-      earRFringe: furFringe(214, 78, 27, 27, lite ? 14 : 34, 9, 271),
+      headFringe: [],
+      bodyFringe: [],
+      earLFringe: [],
+      earRFringe: [],
       // Fine undercoat inside the head mass — depth without edge noise.
-      headUnder: furRing(150, 146, 70, 60, lite ? 20 : 54, 6, 291),
+      headUnder: [],
     }),
 
     [lite],
@@ -340,10 +340,9 @@ export const PandaCharacter = memo(function PandaCharacter({
           <stop offset="100%" stopColor="rgba(0,0,0,0)" />
         </radialGradient>
 
-        {/* fur displacement — breaks every silhouette so nothing reads as vector-flat */}
+        {/* smooth edges — no displacement for a clean look */}
         <filter id="furEdge" x="-15%" y="-15%" width="130%" height="130%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.62" numOctaves="3" seed="7" result="n" />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale={lite ? 1.6 : 3.4} xChannelSelector="R" yChannelSelector="G" />
+          <feGaussianBlur stdDeviation="0.1" />
         </filter>
         <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="2.4" />
