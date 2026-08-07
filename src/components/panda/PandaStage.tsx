@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Cookie, Popcorn, Camera, Hand, Sparkles, Leaf } from "lucide-react";
+import { Cookie, Popcorn, Camera, Hand, Sparkles, Leaf, Bell } from "lucide-react";
 import { PandaCharacter } from "./PandaCharacter";
 import { usePandaBrain, type Zone } from "./usePandaBrain";
 import { Spotlight } from "@/components/ui/spotlight";
