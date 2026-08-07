@@ -313,10 +313,22 @@ export function usePandaBrain({ containerRef, onInteract, idleStory = true }: Br
         doAction("sulk", 2000);
         pandaSfx.growl();
         say("hmph.", 2400);
-        window.setTimeout(() => {
-          setEmotionRaw("sulking");
-          setIgnoring(true);
-        }, 2400);
+        
+        // Angry pandas occasionally dash across the screen
+        const dashCount = 3;
+        for (let i = 0; i < dashCount; i++) {
+          window.setTimeout(() => {
+            const targetX = (Math.random() - 0.5) * 1.8;
+            doAction("run", 600);
+            setPosition({ x: targetX, y: 0 });
+            if (i === dashCount - 1) {
+              window.setTimeout(() => {
+                setEmotionRaw("sulking");
+                setIgnoring(true);
+              }, 800);
+            }
+          }, i * 800 + 2500);
+        }
         return;
       }
       if (ignoring) {
