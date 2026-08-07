@@ -160,7 +160,7 @@ function Landing() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(168,230,207,0.1),transparent_80%)] pointer-events-none" />
             <PandaStage playful={true} className="w-full h-[450px]" />
           </div>
-          <h3 className="font-serif text-3xl italic mb-3">the panda moscot should have human like nature and it sshould walk run and all,it is not like my talking tom,it should be like complete different world for him not photos.a well defined 3d world jungle for him</h3>
+          <h3 className="font-serif text-3xl italic mb-3">what can we enhance in him more to make it very human like panda also i have a idea that if panda is angry then it should run across the screen all over the web in little space and intrerupts the user to make him calm and have cute angry gesture like ignoring user but wants attention too</h3>
           <Link
             to="/auth"
             className="inline-block mt-4 px-7 py-4 bg-petal text-velvet font-semibold rounded-full petal-glow hover:brightness-110 transition-all"
