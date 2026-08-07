@@ -672,8 +672,38 @@ export function usePandaBrain({ containerRef, onInteract, idleStory = true }: Br
   );
 
   const state: PandaState = useMemo(
-    () => ({ emotion, action, look, tickle, interactions, chaos, costume, thought, hearts, confetti, says, ignoring, hunger }),
-    [emotion, action, look, tickle, interactions, chaos, costume, thought, hearts, confetti, says, ignoring, hunger],
+    () => ({
+      emotion,
+      action,
+      look,
+      position,
+      tickle,
+      interactions,
+      chaos,
+      costume,
+      thought,
+      hearts,
+      confetti,
+      says,
+      ignoring,
+      hunger,
+    }),
+    [
+      emotion,
+      action,
+      look,
+      position,
+      tickle,
+      interactions,
+      chaos,
+      costume,
+      thought,
+      hearts,
+      confetti,
+      says,
+      ignoring,
+      hunger,
+    ],
   );
 
   return {
