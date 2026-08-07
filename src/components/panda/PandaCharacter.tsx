@@ -224,10 +224,11 @@ export const PandaCharacter = memo(function PandaCharacter({
         };
       case "run":
         return {
-          x: [0, -15, 15, -15, 0],
-          y: [0, -14, 0, -14, 0],
-          rotate: [0, -6, 6, -6, 0],
-          transition: { duration: 0.6, repeat: Infinity, ease: "linear" as const },
+          x: [0, -18, 18, -18, 0],
+          y: [0, -16, 0, -16, 0],
+          rotate: [0, -8, 8, -8, 0],
+          scaleY: [1, 0.9, 1, 0.9, 1],
+          transition: { duration: 0.45, repeat: Infinity, ease: "linear" as const },
         };
       case "sit":
         return { y: 15, scaleY: 0.92, scaleX: 1.05 };
