@@ -56,7 +56,10 @@ export type Action =
   | "sugarRush"
   | "throwBack"
   | "stir"
-  | "sulk";
+  | "sulk"
+  | "walk"
+  | "run"
+  | "sit";
 
 export type Costume =
   | "classic"
@@ -80,6 +83,7 @@ export type PandaState = {
   emotion: Emotion;
   action: Action;
   look: { x: number; y: number };
+  position: { x: number; y: number };
   tickle: number; // 0..5
   interactions: number;
   chaos: boolean;
@@ -156,6 +160,7 @@ export function usePandaBrain({ containerRef, onInteract, idleStory = true }: Br
   const [emotion, setEmotionRaw] = useState<Emotion>(() => timeOfDayEmotion());
   const [action, setAction] = useState<Action>(null);
   const [look, setLook] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 0 }); // -1..1 relative to center
   const [tickle, setTickle] = useState(0);
   const [interactions, setInteractions] = useState(0);
   const [chaos, setChaos] = useState(false);
@@ -330,6 +335,18 @@ export function usePandaBrain({ containerRef, onInteract, idleStory = true }: Br
         if (Math.random() < 0.02) {
           doAction("earScratch", 1400);
         }
+        
+        // Human-like wandering: occasionally walk or run to a new spot
+        if (Math.random() < 0.04 && action === null) {
+          const targetX = (Math.random() - 0.5) * 1.6;
+          const isRun = Math.random() < 0.3;
+          doAction(isRun ? "run" : "walk", isRun ? 1200 : 2500);
+          
+          window.setTimeout(() => {
+            setPosition({ x: targetX, y: 0 });
+          }, 50);
+        }
+
         if (hoursHungry > 3 && Math.random() < 0.05) {
           feel("hungry", 2400);
           say("bamboo? 🎋", 2000);
