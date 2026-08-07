@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Cookie, Popcorn, Camera, Hand, Sparkles, Leaf } from "lucide-react";
 import { PandaCharacter } from "./PandaCharacter";
