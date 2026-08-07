@@ -68,8 +68,24 @@ export const getPet = createServerFn({ method: "POST" })
       }
     }
 
+    // Starvation: no food for STARVE_HOURS → the panda is gone for good.
+    const p2 = pet as any;
+    if (p2?.unlocked && p2.alive !== false && hoursSinceFed(p2.last_fed_at) >= STARVE_HOURS) {
+      const { data: dead } = await supabaseAdmin
+        .from("pet_pandas" as any)
+        .update({ alive: false, died_at: new Date().toISOString(), fullness: 0 })
+        .eq("user_id", userId)
+        .select("*")
+        .maybeSingle();
+      pet = dead ?? pet;
+    }
+    if (pet) {
+      (pet as any).fullness = (pet as any).alive === false ? 0 : fullnessNow((pet as any).fullness ?? 100, (pet as any).last_fed_at);
+    }
+
     const { data: prof } = await supabaseAdmin.from("profiles").select("coins").eq("id", userId).maybeSingle();
     return { pet: pet as unknown as Pet, coins: (prof as any)?.coins ?? 0, cost: PET_COST };
+
   });
 
 /** Spends coins to adopt the mascot. */
