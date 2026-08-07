@@ -3,6 +3,7 @@ import { PandaLogo } from "@/components/PandaLogo";
 import { Petals } from "@/components/Petals";
 import { supabase } from "@/integrations/supabase/client";
 import { PandasWatching } from "@/components/landing/PandasWatching";
+import { PandaStage } from "@/components/panda/PandaStage";
 import mascotImage from "@/assets/panda-mascot.png";
 
 
@@ -155,13 +156,11 @@ function Landing() {
 
         {/* Mascot moment */}
         <section className="px-6 py-20 text-center">
-          <img
-            src={mascotImage}
-            alt="PANDACINE panda mascot"
-            className="w-48 sm:w-64 mx-auto mb-6 drop-shadow-2xl"
-            loading="lazy"
-          />
-          <h3 className="font-serif text-3xl italic mb-3">Ready when you are.</h3>
+          <div className="max-w-xl mx-auto mb-10 p-10 rounded-[4rem] border border-border/40 bg-velvet/30 backdrop-blur-xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(168,230,207,0.1),transparent_80%)] pointer-events-none" />
+            <PandaStage playful={true} className="w-full h-[450px]" />
+          </div>
+          <h3 className="font-serif text-3xl italic mb-3">the panda moscot should have human like nature and it sshould walk run and all,it is not like my talking tom,it should be like complete different world for him not photos.a well defined 3d world jungle for him</h3>
           <Link
             to="/auth"
             className="inline-block mt-4 px-7 py-4 bg-petal text-velvet font-semibold rounded-full petal-glow hover:brightness-110 transition-all"
