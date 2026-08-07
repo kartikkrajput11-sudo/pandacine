@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Cookie, Popcorn, Camera, Hand, Sparkles, Leaf } from "lucide-react";
+import { Cookie, Popcorn, Camera, Hand, Sparkles, Leaf, Bell } from "lucide-react";
 import { PandaCharacter } from "./PandaCharacter";
 import { usePandaBrain, type Zone } from "./usePandaBrain";
 import { Spotlight } from "@/components/ui/spotlight";
@@ -30,8 +30,32 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
     onInteract,
   });
   const [dragging, setDragging] = useState(false);
+  const [hiding, setHiding] = useState(false);
+
+  // Every so often the panda slips behind the bamboo and peeks out.
+  useEffect(() => {
+    if (!playful) return;
+    const id = window.setInterval(() => {
+      setHiding((h) => (h ? false : Math.random() < 0.35));
+    }, 14_000);
+    return () => window.clearInterval(id);
+  }, [playful]);
+
+  const callWithBamboo = useCallback(() => {
+    setHiding(false);
+    doAction("run", 1200);
+    feel("excited", 2200);
+    pandaSfx.pop();
+    say("BAMBOO!! 🎋", 1600);
+    window.setTimeout(() => {
+      doAction("eat", 2600);
+      feel("happy", 3000);
+      interact("bamboo");
+    }, 1100);
+  }, [doAction, feel, say, interact]);
 
   const onZone = useCallback((zone: Zone) => interact(zone), [interact]);
+
 
   const treat = useCallback(
     (kind: "bamboo" | "popcorn" | "cookie") => {
@@ -127,9 +151,18 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
           feel("playful", 1400);
           pandaSfx.pop();
         }}
-        animate={state.chaos ? { x: [0, -60, 60, -30, 0] } : undefined}
-        transition={{ duration: 1.6, repeat: state.chaos ? Infinity : 0 }}
+        animate={
+          state.chaos
+            ? { x: [0, -60, 60, -30, 0] }
+            : hiding
+              ? { x: -70, y: 26, scale: 0.92 }
+              : { x: 0, y: 0, scale: 1 }
+        }
+        transition={
+          state.chaos ? { duration: 1.6, repeat: Infinity } : { type: "spring", stiffness: 90, damping: 16 }
+        }
         className={cn("relative z-10 mx-auto w-full max-w-[420px] cursor-grab active:cursor-grabbing", dragging && "z-20")}
+
       >
         <PandaCharacter state={state} onZone={onZone} lite={lite} className="w-full h-auto" />
 
@@ -185,7 +218,40 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
         </AnimatePresence>
       </motion.div>
 
+      {/* foreground bamboo grove — the panda can slip behind it */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-[70%] overflow-hidden rounded-b-[3rem]">
+        {[6, 16, 78, 90].map((left, i) => (
+          <motion.div
+            key={left}
+            className="absolute bottom-0 w-6 rounded-t-full"
+            style={{
+              left: `${left}%`,
+              height: `${60 + i * 8}%`,
+              background: "linear-gradient(90deg,#1d3b24,#4f7f42 42%,#8ab86a 55%,#2b4c2c)",
+              boxShadow: "0 0 24px rgba(0,0,0,.45) inset",
+            }}
+            animate={{ rotate: [0, 1.4, -1.2, 0] }}
+            transition={{ duration: 6 + i, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {[0.25, 0.5, 0.75].map((t) => (
+              <span
+                key={t}
+                className="absolute left-0 h-[3px] w-full bg-[#12240f]/70"
+                style={{ top: `${t * 100}%` }}
+              />
+            ))}
+          </motion.div>
+        ))}
+        <motion.div
+          className="absolute inset-x-0 bottom-0 h-14"
+          style={{ background: "linear-gradient(to top, rgba(6,18,10,.95), transparent)" }}
+          animate={{ opacity: [0.85, 1, 0.85] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+      </div>
+
       {/* confetti */}
+
       <AnimatePresence>
         {state.confetti > 0 && (
           <div aria-hidden className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
@@ -252,7 +318,19 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
 
           {/* treats & gestures */}
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <Chip onClick={() => treat("bamboo")} Icon={Leaf} label="Bamboo" />
+            <Chip onClick={callWithBamboo} Icon={Leaf} label="Hold bamboo" />
+            <Chip
+              onClick={() => {
+                setHiding(false);
+                pandaSfx.pop();
+                say("coming!! 🔔", 1500);
+                doAction("run", 1400);
+                feel("excited", 2000);
+              }}
+              Icon={Bell}
+              label="Ring bell"
+            />
+
             <Chip onClick={() => treat("popcorn")} Icon={Popcorn} label="Popcorn" />
             <Chip onClick={() => treat("cookie")} Icon={Cookie} label="Cookie" />
             <Chip onClick={() => interact("paw-r")} Icon={Hand} label="Paw shake" />

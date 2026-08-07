@@ -230,6 +230,29 @@ export function usePandaBrain({ containerRef, onInteract, idleStory = true }: Br
     [after],
   );
 
+  /* Baby-panda yapping — soft self-talk while nobody is doing anything. */
+  useEffect(() => {
+    const YAPS = [
+      "mwrp?",
+      "bleh bleh",
+      "nya…",
+      "hnnng",
+      "bamboo… bamboo…",
+      "*squeak*",
+      "aaah-eee",
+      "wah wah wah",
+      "mrrp mrrp",
+      "gnaw gnaw gnaw",
+      "…hello?",
+      "*tiny sneeze*",
+    ];
+    const id = window.setInterval(() => {
+      if (Math.random() < 0.35) say(pick(YAPS), 1700);
+    }, 9000);
+    return () => window.clearInterval(id);
+  }, [say]);
+
+
   /* ------------------------------------------------------------------ *
    * Life cycle — drowsiness grows with silence, sleep is gradual, and   *
    * neglect (no treats for hours) makes the panda sulk and ignore you.  *

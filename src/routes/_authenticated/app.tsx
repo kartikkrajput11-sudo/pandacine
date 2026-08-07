@@ -6,6 +6,8 @@ import { OnboardingFlow } from "@/components/OnboardingFlow";
 import { AppTour } from "@/components/AppTour";
 import { AnniversaryDayMode } from "@/components/anniversary/AnniversaryDayMode";
 import { PunishmentLockGuard } from "@/components/PunishmentLockGuard";
+import { RoamingPanda } from "@/components/panda/RoamingPanda";
+
 
 import { usePresenceHeartbeat } from "@/hooks/usePresenceHeartbeat";
 import { useGamePresence } from "@/hooks/useGamePresence";
@@ -54,6 +56,8 @@ function AppShell() {
       <IncomingCallListener />
       <AnniversaryDayMode />
       <PunishmentLockGuard />
+      <RoamingPanda />
+
 
       <div className="relative z-[2] w-full max-w-[1400px] mx-auto">
         <Outlet />
