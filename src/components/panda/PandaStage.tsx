@@ -218,7 +218,40 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
         </AnimatePresence>
       </motion.div>
 
+      {/* foreground bamboo grove — the panda can slip behind it */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-[70%] overflow-hidden rounded-b-[3rem]">
+        {[6, 16, 78, 90].map((left, i) => (
+          <motion.div
+            key={left}
+            className="absolute bottom-0 w-6 rounded-t-full"
+            style={{
+              left: `${left}%`,
+              height: `${60 + i * 8}%`,
+              background: "linear-gradient(90deg,#1d3b24,#4f7f42 42%,#8ab86a 55%,#2b4c2c)",
+              boxShadow: "0 0 24px rgba(0,0,0,.45) inset",
+            }}
+            animate={{ rotate: [0, 1.4, -1.2, 0] }}
+            transition={{ duration: 6 + i, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {[0.25, 0.5, 0.75].map((t) => (
+              <span
+                key={t}
+                className="absolute left-0 h-[3px] w-full bg-[#12240f]/70"
+                style={{ top: `${t * 100}%` }}
+              />
+            ))}
+          </motion.div>
+        ))}
+        <motion.div
+          className="absolute inset-x-0 bottom-0 h-14"
+          style={{ background: "linear-gradient(to top, rgba(6,18,10,.95), transparent)" }}
+          animate={{ opacity: [0.85, 1, 0.85] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+      </div>
+
       {/* confetti */}
+
       <AnimatePresence>
         {state.confetti > 0 && (
           <div aria-hidden className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
