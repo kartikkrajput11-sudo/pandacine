@@ -318,7 +318,19 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
 
           {/* treats & gestures */}
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <Chip onClick={() => treat("bamboo")} Icon={Leaf} label="Bamboo" />
+            <Chip onClick={callWithBamboo} Icon={Leaf} label="Hold bamboo" />
+            <Chip
+              onClick={() => {
+                setHiding(false);
+                pandaSfx.pop();
+                say("coming!! 🔔", 1500);
+                doAction("run", 1400);
+                feel("excited", 2000);
+              }}
+              Icon={Bell}
+              label="Ring bell"
+            />
+
             <Chip onClick={() => treat("popcorn")} Icon={Popcorn} label="Popcorn" />
             <Chip onClick={() => treat("cookie")} Icon={Cookie} label="Cookie" />
             <Chip onClick={() => interact("paw-r")} Icon={Hand} label="Paw shake" />
