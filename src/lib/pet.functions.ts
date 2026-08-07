@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
 
 export const PET_COST = 250;
 
@@ -12,11 +13,19 @@ export type Pet = {
   streak: number;
   last_visit: string | null;
   costume: string;
+  fullness: number;
+  last_fed_at: string | null;
+  alive: boolean;
+  died_at: string | null;
+  pantry: Record<string, number>;
+  unlocked_expressions: string[];
+  unlocked_costumes: string[];
 };
 
 function today() {
   return new Date().toISOString().slice(0, 10);
 }
+
 
 /** Reads (and lazily creates) the caller's pet row, updating the daily streak. */
 export const getPet = createServerFn({ method: "POST" })
