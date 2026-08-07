@@ -160,7 +160,7 @@ function Landing() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(168,230,207,0.1),transparent_80%)] pointer-events-none" />
             <PandaStage playful={true} className="w-full h-[450px]" />
           </div>
-          <h3 className="font-serif text-3xl italic mb-3">give me suggestion make it have real panda behaviour</h3>
+          <h3 className="font-serif text-3xl italic mb-3">could we add some things like walking animation and all</h3>
           <Link
             to="/auth"
             className="inline-block mt-4 px-7 py-4 bg-petal text-velvet font-semibold rounded-full petal-glow hover:brightness-110 transition-all"
