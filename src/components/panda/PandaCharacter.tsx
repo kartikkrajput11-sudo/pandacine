@@ -220,14 +220,14 @@ export const PandaCharacter = memo(function PandaCharacter({
           x: [0, -10, 10, -10, 0],
           y: [0, -8, 0, -8, 0],
           rotate: [0, -3, 3, -3, 0],
-          transition: { duration: 1.2, repeat: Infinity, ease: "linear" },
+          transition: { duration: 1.2, repeat: Infinity, ease: "linear" as const },
         };
       case "run":
         return {
           x: [0, -15, 15, -15, 0],
           y: [0, -14, 0, -14, 0],
           rotate: [0, -6, 6, -6, 0],
-          transition: { duration: 0.6, repeat: Infinity, ease: "linear" },
+          transition: { duration: 0.6, repeat: Infinity, ease: "linear" as const },
         };
       case "sit":
         return { y: 15, scaleY: 0.92, scaleX: 1.05 };
@@ -261,6 +261,16 @@ export const PandaCharacter = memo(function PandaCharacter({
           : { y: [0, -5, 0], transition: { duration: 3.4, repeat: Infinity, ease: "easeInOut" as const } };
     }
   }, [a, sleeping]);
+
+  const posAnim = useMemo(() => {
+    return {
+      x: state.position.x * 120,
+      transition: {
+        duration: a === "run" ? 0.6 : a === "walk" ? 2.5 : 0.8,
+        ease: "easeInOut" as const,
+      },
+    };
+  }, [state.position.x, a]);
 
   // Static fur geometry (memoised once).
   const fur = useMemo(
