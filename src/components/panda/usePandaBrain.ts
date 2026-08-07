@@ -344,6 +344,37 @@ export function usePandaBrain({ containerRef, onInteract, idleStory = true }: Br
       if (quiet < 25) {
         stage.current = "awake";
         if (Math.random() < 0.05) feel(pick(["curious", "playful", "happy", "shy"] as Emotion[]), 1500);
+        
+        // --- Real Panda Behaviors ---
+        
+        // 1. Clumsy Roll: Pandas are known for randomly rolling down hills or over themselves
+        if (Math.random() < 0.02 && action === null) {
+          feel("playful", 3000);
+          doAction("roll", 2500);
+          pandaSfx.giggle();
+          say("Wheee! 🌀", 2000);
+          return;
+        }
+
+        // 2. Bamboo Obsession: They spend 10-16 hours a day eating
+        if (Math.random() < 0.03 && action === null) {
+          doAction("pullBamboo", 4000);
+          window.setTimeout(() => {
+            feel("happy", 2000);
+            doAction("eat", 3000);
+          }, 1500);
+          return;
+        }
+
+        // 3. Tree Climbing Attempt (Vertical movement)
+        if (Math.random() < 0.015 && action === null) {
+          say("Look at me! 🧗", 2000);
+          doAction("stretch", 3000);
+          setPosition((prev) => ({ ...prev, y: -0.4 }));
+          window.setTimeout(() => setPosition((prev) => ({ ...prev, y: 0 })), 3500);
+          return;
+        }
+
         if (Math.random() < 0.02) {
           doAction("earScratch", 1400);
         }
