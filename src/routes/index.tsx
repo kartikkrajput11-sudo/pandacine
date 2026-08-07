@@ -3,6 +3,7 @@ import { PandaLogo } from "@/components/PandaLogo";
 import { Petals } from "@/components/Petals";
 import { supabase } from "@/integrations/supabase/client";
 import { PandasWatching } from "@/components/landing/PandasWatching";
+import { PandaStage } from "@/components/panda/PandaStage";
 import mascotImage from "@/assets/panda-mascot.png";
 
 
@@ -80,19 +81,23 @@ function Landing() {
           </div>
 
           {/* Hero image */}
-          <div className="mt-20 max-w-md mx-auto animate-fade-up [animation-delay:200ms]">
-            <div className="relative rounded-3xl overflow-hidden border border-border petal-glow">
-              <PandasWatching className="w-full aspect-[4/5] block" />
-
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-velvet via-velvet/60 to-transparent p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-petal mb-1">
-                      Now Playing
-                    </p>
-                    <p className="font-serif italic text-xl">Casablanca</p>
+          <div className="mt-20 max-w-lg mx-auto animate-fade-up [animation-delay:200ms]">
+            <div className="relative rounded-[2.5rem] overflow-hidden border border-border/50 bg-velvet/40 backdrop-blur-sm petal-glow p-8">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(240,166,186,0.15),transparent_70%)] pointer-events-none" />
+              <PandasWatching className="w-full aspect-video block relative z-10" />
+              
+              <div className="mt-6 flex items-center justify-between relative z-10">
+                <div className="flex -space-x-3">
+                  <div className="size-10 rounded-full border-2 border-velvet bg-surface overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="" className="size-full object-cover" />
                   </div>
-                  <span className="text-xs text-candle-muted animate-pulse-soft">● Together</span>
+                  <div className="size-10 rounded-full border-2 border-velvet bg-surface overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Luna" alt="" className="size-full object-cover" />
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-petal mb-0.5">Live Stream</p>
+                  <p className="font-serif italic text-lg text-candle">Watching together</p>
                 </div>
               </div>
             </div>
@@ -151,13 +156,11 @@ function Landing() {
 
         {/* Mascot moment */}
         <section className="px-6 py-20 text-center">
-          <img
-            src={mascotImage}
-            alt="PANDACINE panda mascot"
-            className="w-48 sm:w-64 mx-auto mb-6 drop-shadow-2xl"
-            loading="lazy"
-          />
-          <h3 className="font-serif text-3xl italic mb-3">Ready when you are.</h3>
+          <div className="max-w-xl mx-auto mb-10 p-10 rounded-[4rem] border border-border/40 bg-velvet/30 backdrop-blur-xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(168,230,207,0.1),transparent_80%)] pointer-events-none" />
+            <PandaStage playful={true} className="w-full h-[450px]" />
+          </div>
+          <h3 className="font-serif text-3xl italic mb-3">the panda moscot should have human like nature and it sshould walk run and all,it is not like my talking tom,it should be like complete different world for him not photos.a well defined 3d world jungle for him</h3>
           <Link
             to="/auth"
             className="inline-block mt-4 px-7 py-4 bg-petal text-velvet font-semibold rounded-full petal-glow hover:brightness-110 transition-all"
