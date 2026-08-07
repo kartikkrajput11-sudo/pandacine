@@ -730,6 +730,7 @@ export const PandaCharacter = memo(function PandaCharacter({
           </motion.g>
         </motion.g>
       </motion.g>
-    </svg>
+    </motion.g>
+  </svg>
   );
 });
