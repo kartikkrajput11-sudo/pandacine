@@ -56,6 +56,8 @@ function AppShell() {
       <IncomingCallListener />
       <AnniversaryDayMode />
       <PunishmentLockGuard />
+      <RoamingPanda />
+
 
       <div className="relative z-[2] w-full max-w-[1400px] mx-auto">
         <Outlet />
