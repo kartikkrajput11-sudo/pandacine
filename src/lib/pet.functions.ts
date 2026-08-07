@@ -163,3 +163,95 @@ export const savePetProgress = createServerFn({ method: "POST" })
       .eq("user_id", context.userId);
     return { interactions, affection };
   });
+
+/** Buys food from the panda supermarket and stores it in the pantry. */
+export const buyPetFood = createServerFn({ method: "POST" })
+  .inputValidator((input: { key: string; qty?: number }) => input)
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ data, context }) => {
+    const food = FOOD_BY_KEY[data.key];
+    if (!food) throw new Error("Unknown item");
+    const qty = Math.max(1, Math.min(10, Math.round(data.qty ?? 1)));
+    const cost = food.price * qty;
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: prof } = await supabaseAdmin.from("profiles").select("coins").eq("id", context.userId).maybeSingle();
+    const coins = (prof as any)?.coins ?? 0;
+    if (coins < cost) throw new Error(`You need ${cost} coins — you have ${coins}`);
+
+    const { data: pet } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .select("pantry,alive,unlocked")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (!(pet as any)?.unlocked) throw new Error("Adopt your panda first");
+
+    const pantry = { ...(((pet as any)?.pantry ?? {}) as Record<string, number>) };
+    pantry[food.key] = (pantry[food.key] ?? 0) + qty;
+
+    const { error } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .update({ pantry, updated_at: new Date().toISOString() })
+      .eq("user_id", context.userId);
+    if (error) throw error;
+
+    await supabaseAdmin.from("profiles").update({ coins: coins - cost }).eq("id", context.userId);
+    return { ok: true, coins: coins - cost, pantry };
+  });
+
+/** Feeds one pantry item to the panda — restores fullness, affection and unlocks. */
+export const feedPet = createServerFn({ method: "POST" })
+  .inputValidator((input: { key: string }) => input)
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ data, context }) => {
+    const food = FOOD_BY_KEY[data.key];
+    if (!food) throw new Error("Unknown item");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: pet } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .select("*")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    const p = pet as any;
+    if (!p?.unlocked) throw new Error("Adopt your panda first");
+    if (p.alive === false) throw new Error("Your panda is gone. Feeding can't bring them back.");
+
+    const pantry = { ...((p.pantry ?? {}) as Record<string, number>) };
+    if ((pantry[food.key] ?? 0) < 1) throw new Error("You don't have that in the pantry");
+    pantry[food.key] = pantry[food.key]! - 1;
+    if (pantry[food.key] === 0) delete pantry[food.key];
+
+    const current = fullnessNow(p.fullness ?? 100, p.last_fed_at);
+    const fullness = Math.min(100, current + food.fullness);
+    const affection = Math.min(100, (p.affection ?? 0) + food.affection);
+
+    const expressions: string[] = Array.from(new Set([...(p.unlocked_expressions ?? [])]));
+    const costumes: string[] = Array.from(new Set([...(p.unlocked_costumes ?? [])]));
+    let unlocked: string | null = null;
+    if (food.unlocksExpression && !expressions.includes(food.unlocksExpression)) {
+      expressions.push(food.unlocksExpression);
+      unlocked = `expression: ${food.unlocksExpression}`;
+    }
+    if (food.unlocksCostume && !costumes.includes(food.unlocksCostume)) {
+      costumes.push(food.unlocksCostume);
+      unlocked = `outfit: ${food.unlocksCostume}`;
+    }
+
+    const { error } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .update({
+        pantry,
+        fullness,
+        affection,
+        last_fed_at: new Date().toISOString(),
+        interactions: (p.interactions ?? 0) + 1,
+        unlocked_expressions: expressions,
+        unlocked_costumes: costumes,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", context.userId);
+    if (error) throw error;
+
+    return { ok: true, fullness, affection, pantry, unlocked };
+  });
