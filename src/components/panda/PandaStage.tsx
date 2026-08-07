@@ -30,8 +30,32 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
     onInteract,
   });
   const [dragging, setDragging] = useState(false);
+  const [hiding, setHiding] = useState(false);
+
+  // Every so often the panda slips behind the bamboo and peeks out.
+  useEffect(() => {
+    if (!playful) return;
+    const id = window.setInterval(() => {
+      setHiding((h) => (h ? false : Math.random() < 0.35));
+    }, 14_000);
+    return () => window.clearInterval(id);
+  }, [playful]);
+
+  const callWithBamboo = useCallback(() => {
+    setHiding(false);
+    doAction("run", 1200);
+    feel("excited", 2200);
+    pandaSfx.pop();
+    say("BAMBOO!! 🎋", 1600);
+    window.setTimeout(() => {
+      doAction("eat", 2600);
+      feel("happy", 3000);
+      interact("bamboo");
+    }, 1100);
+  }, [doAction, feel, say, interact]);
 
   const onZone = useCallback((zone: Zone) => interact(zone), [interact]);
+
 
   const treat = useCallback(
     (kind: "bamboo" | "popcorn" | "cookie") => {
