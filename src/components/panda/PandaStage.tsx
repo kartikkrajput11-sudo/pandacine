@@ -60,30 +60,57 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
     >
       <Spotlight size={280} className="z-0" />
 
-      {/* volumetric cinema lights */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(45% 40% at 50% 8%, color-mix(in oklab, var(--petal) 22%, transparent), transparent 70%), radial-gradient(40% 40% at 15% 90%, color-mix(in oklab, var(--lavender) 18%, transparent), transparent 70%)",
-        }}
-      />
-
-      {/* ambient particles */}
-      {!lite && (
-        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden z-0">
-          {particles.map((p) => (
-            <motion.span
-              key={p.id}
-              className="absolute size-1 rounded-full bg-petal/50"
-              style={{ left: `${p.x}%`, bottom: -8 }}
-              animate={{ y: [-0, -320], opacity: [0, 0.9, 0] }}
-              transition={{ duration: p.d, repeat: Infinity, delay: p.delay, ease: "easeOut" }}
-            />
-          ))}
+      {/* Immersive 3D World Jungle */}
+      <div className="absolute inset-0 z-0 overflow-hidden rounded-[3rem]">
+        {/* Sky/Atmosphere */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2f24] via-[#0d1611] to-[#050806]" />
+        
+        {/* Distant trees (simplified parallax) */}
+        <div className="absolute inset-0 opacity-40">
+           {Array.from({ length: 8 }).map((_, i) => (
+             <motion.div 
+               key={i}
+               className="absolute bottom-0 w-32 h-64 bg-[#0a1a12] blur-xl rounded-full"
+               style={{ left: `${i * 15}%`, scaleY: 0.8 + Math.random() * 0.4 }}
+               animate={{ x: [0, 5, 0] }}
+               transition={{ duration: 10 + i, repeat: Infinity, ease: "easeInOut" }}
+             />
+           ))}
         </div>
-      )}
+
+        {/* Midground Foliage */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0d1a12] to-transparent z-0" />
+        
+        {/* Ground with organic texture */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-[#08120c]">
+           <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#1a3324 1px, transparent 1px)', backgroundSize: '4px 4px' }} />
+        </div>
+
+        {/* Ambient jungle lights */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0 opacity-30"
+          style={{
+            background:
+              "radial-gradient(40% 40% at 20% 30%, #2e5c46, transparent), radial-gradient(35% 35% at 80% 40%, #1a3324, transparent)",
+          }}
+        />
+
+        {/* Dust motes / fireflies */}
+        {!lite && (
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+            {particles.map((p) => (
+              <motion.span
+                key={p.id}
+                className="absolute size-1 rounded-full bg-[#a8e6cf]/40 shadow-[0_0_8px_#a8e6cf]"
+                style={{ left: `${p.x}%`, bottom: -8 }}
+                animate={{ y: [-0, -400], x: [0, Math.sin(p.id) * 40, 0], opacity: [0, 0.8, 0] }}
+                transition={{ duration: p.d * 1.5, repeat: Infinity, delay: p.delay, ease: "easeOut" as const }}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* the panda */}
       <motion.div
