@@ -160,7 +160,7 @@ function Landing() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(168,230,207,0.1),transparent_80%)] pointer-events-none" />
             <PandaStage playful={true} className="w-full h-[450px]" />
           </div>
-          <h3 className="font-serif text-3xl italic mb-3">enhance this system with good layout</h3>
+          <h3 className="font-serif text-3xl italic mb-3">enhance the ui of pet section please</h3>
           <p className="text-candle-muted max-w-[42ch] mx-auto mb-8 leading-relaxed">
             Add click or tap interactions to the panda so users can prompt him for cute animations like waving, bouncing, or pointing. Implement a clear panda mood state machine so his angry/drowsy/cute behaviors trigger consistently based on user interaction.
           </p>
