@@ -80,19 +80,23 @@ function Landing() {
           </div>
 
           {/* Hero image */}
-          <div className="mt-20 max-w-md mx-auto animate-fade-up [animation-delay:200ms]">
-            <div className="relative rounded-3xl overflow-hidden border border-border petal-glow">
-              <PandasWatching className="w-full aspect-[4/5] block" />
-
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-velvet via-velvet/60 to-transparent p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-petal mb-1">
-                      Now Playing
-                    </p>
-                    <p className="font-serif italic text-xl">Casablanca</p>
+          <div className="mt-20 max-w-lg mx-auto animate-fade-up [animation-delay:200ms]">
+            <div className="relative rounded-[2.5rem] overflow-hidden border border-border/50 bg-velvet/40 backdrop-blur-sm petal-glow p-8">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(240,166,186,0.15),transparent_70%)] pointer-events-none" />
+              <PandasWatching className="w-full aspect-video block relative z-10" />
+              
+              <div className="mt-6 flex items-center justify-between relative z-10">
+                <div className="flex -space-x-3">
+                  <div className="size-10 rounded-full border-2 border-velvet bg-surface overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="" className="size-full object-cover" />
                   </div>
-                  <span className="text-xs text-candle-muted animate-pulse-soft">● Together</span>
+                  <div className="size-10 rounded-full border-2 border-velvet bg-surface overflow-hidden">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Luna" alt="" className="size-full object-cover" />
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-petal mb-0.5">Live Stream</p>
+                  <p className="font-serif italic text-lg text-candle">Watching together</p>
                 </div>
               </div>
             </div>
