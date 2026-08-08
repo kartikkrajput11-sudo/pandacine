@@ -73,6 +73,7 @@ const COSTUME_LABEL: Partial<Record<Costume, string>> = {
   ninja: "🥷",
   king: "👑",
   golden: "✨",
+  tycoon: "💼",
   santa: "🎅",
   ghost: "👻",
   valentine: "💗",
@@ -451,6 +452,9 @@ export const PandaCharacter = memo(function PandaCharacter({
             fill="none"
             strokeLinecap="round"
           />
+          {state.costume === "tycoon" && <TycoonSuit />}
+
+
 
           {/* forelegs (black, continuous with the band) */}
           <motion.g
@@ -719,13 +723,18 @@ export const PandaCharacter = memo(function PandaCharacter({
               </motion.g>
 
               {/* costume flair */}
-              {state.costume !== "classic" && (
+              {state.costume !== "classic" && state.costume !== "tycoon" && (
                 <text x="150" y="50" textAnchor="middle" fontSize="40" pointerEvents="none">
                   {COSTUME_LABEL[state.costume]}
                 </text>
               )}
               {state.costume === "golden" && (
                 <ellipse cx="150" cy="140" rx="94" ry="82" fill="none" stroke="#f0d78c" strokeWidth="3" opacity=".8" pointerEvents="none" />
+              )}
+              {state.costume === "tycoon" && (
+                <text x="150" y="52" textAnchor="middle" fontSize="26" pointerEvents="none">
+                  🎩
+                </text>
               )}
             </motion.g>
           </motion.g>
@@ -735,3 +744,63 @@ export const PandaCharacter = memo(function PandaCharacter({
   </svg>
   );
 });
+
+/** Golden tycoon outfit: gilded pinstripe jacket, silk tie, pocket square and briefcase. */
+function TycoonSuit() {
+  return (
+    <g pointerEvents="none">
+      <defs>
+        <linearGradient id="tycoonCloth" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f6dd9b" />
+          <stop offset="45%" stopColor="#d8ab4a" />
+          <stop offset="100%" stopColor="#8f6a1d" />
+        </linearGradient>
+        <linearGradient id="tycoonSheen" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#fff8e2" stopOpacity=".75" />
+          <stop offset="55%" stopColor="#fff8e2" stopOpacity="0" />
+        </linearGradient>
+        <pattern id="tycoonStripe" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+          <rect width="7" height="7" fill="none" />
+          <line x1="0" y1="0" x2="0" y2="7" stroke="#fff3cf" strokeWidth="0.9" opacity=".35" />
+        </pattern>
+      </defs>
+
+      {/* jacket body */}
+      <path
+        d="M 84 206 q 24 -22 66 -22 q 42 0 66 22 q 12 44 6 92 q -34 16 -72 16 q -38 0 -72 -16 q -6 -48 6 -92 z"
+        fill="url(#tycoonCloth)"
+        opacity=".97"
+      />
+      <path
+        d="M 84 206 q 24 -22 66 -22 q 42 0 66 22 q 12 44 6 92 q -34 16 -72 16 q -38 0 -72 -16 q -6 -48 6 -92 z"
+        fill="url(#tycoonStripe)"
+      />
+      {/* open shirt V */}
+      <path d="M 150 188 L 122 300 q 28 10 56 0 z" fill="#fffdf6" opacity=".96" />
+      {/* lapels */}
+      <path d="M 150 188 L 116 296 q -14 -6 -22 -14 q 6 -60 26 -92 z" fill="url(#tycoonCloth)" stroke="#7d5b16" strokeWidth="1.2" />
+      <path d="M 150 188 L 184 296 q 14 -6 22 -14 q -6 -60 -26 -92 z" fill="url(#tycoonCloth)" stroke="#7d5b16" strokeWidth="1.2" />
+      {/* collar + tie */}
+      <path d="M 138 190 l 12 14 l 12 -14" fill="none" stroke="#7d5b16" strokeWidth="2" strokeLinecap="round" />
+      <path d="M 150 204 l -8 8 l 8 8 l 8 -8 z" fill="#5b1220" />
+      <path d="M 150 220 l -9 10 l 9 46 l 9 -46 z" fill="#7a1a2c" />
+      <path d="M 150 220 l -9 10 l 9 46 l 9 -46 z" fill="url(#tycoonSheen)" />
+      {/* pocket square + buttons */}
+      <path d="M 186 244 l 14 -4 l -3 9 z" fill="#fff4dc" />
+      <circle cx="150" cy="286" r="3.2" fill="#fff2cd" opacity=".9" />
+      <circle cx="150" cy="302" r="3.2" fill="#fff2cd" opacity=".7" />
+      {/* sheen sweep */}
+      <path
+        d="M 84 206 q 24 -22 66 -22 q 42 0 66 22 q 12 44 6 92 q -34 16 -72 16 q -38 0 -72 -16 q -6 -48 6 -92 z"
+        fill="url(#tycoonSheen)"
+        opacity=".5"
+      />
+      {/* briefcase */}
+      <g transform="translate(214 292)">
+        <rect x="-24" y="0" width="48" height="32" rx="5" fill="#4b3316" stroke="#e6c477" strokeWidth="2" />
+        <rect x="-24" y="10" width="48" height="4" fill="#e6c477" opacity=".7" />
+        <path d="M -9 0 v -8 q 9 -6 18 0 v 8" fill="none" stroke="#e6c477" strokeWidth="2.4" strokeLinecap="round" />
+      </g>
+    </g>
+  );
+}
