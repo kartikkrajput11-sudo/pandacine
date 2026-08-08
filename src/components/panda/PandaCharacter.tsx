@@ -73,6 +73,7 @@ const COSTUME_LABEL: Partial<Record<Costume, string>> = {
   ninja: "🥷",
   king: "👑",
   golden: "✨",
+  tycoon: "💼",
   santa: "🎅",
   ghost: "👻",
   valentine: "💗",
