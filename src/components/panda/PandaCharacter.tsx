@@ -719,7 +719,7 @@ export const PandaCharacter = memo(function PandaCharacter({
               </motion.g>
 
               {/* costume flair */}
-              {state.costume !== "classic" && (
+              {state.costume !== "classic" && state.costume !== "tycoon" && (
                 <text x="150" y="50" textAnchor="middle" fontSize="40" pointerEvents="none">
                   {COSTUME_LABEL[state.costume]}
                 </text>
@@ -727,6 +727,7 @@ export const PandaCharacter = memo(function PandaCharacter({
               {state.costume === "golden" && (
                 <ellipse cx="150" cy="140" rx="94" ry="82" fill="none" stroke="#f0d78c" strokeWidth="3" opacity=".8" pointerEvents="none" />
               )}
+              {state.costume === "tycoon" && <TycoonSuit />}
             </motion.g>
           </motion.g>
         </motion.g>
