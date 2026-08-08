@@ -730,7 +730,11 @@ export const PandaCharacter = memo(function PandaCharacter({
               {state.costume === "golden" && (
                 <ellipse cx="150" cy="140" rx="94" ry="82" fill="none" stroke="#f0d78c" strokeWidth="3" opacity=".8" pointerEvents="none" />
               )}
-              {state.costume === "tycoon" && <TycoonSuit />}
+              {state.costume === "tycoon" && (
+                <text x="150" y="52" textAnchor="middle" fontSize="26" pointerEvents="none">
+                  🎩
+                </text>
+              )}
             </motion.g>
           </motion.g>
         </motion.g>
