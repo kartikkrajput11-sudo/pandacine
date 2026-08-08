@@ -256,3 +256,31 @@ export const feedPet = createServerFn({ method: "POST" })
 
     return { ok: true, fullness, affection, pantry, unlocked };
   });
+
+/** Chooses which outfit the panda wears — validated against wardrobe unlocks. */
+export const setPetCostume = createServerFn({ method: "POST" })
+  .inputValidator((input: { costume: string }) => input)
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ data, context }) => {
+    const def = COSTUME_BY_KEY[data.costume];
+    if (!def) throw new Error("Unknown outfit");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: pet } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .select("affection,streak,interactions,unlocked_costumes,unlocked,alive")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    const p = pet as any;
+    if (!p?.unlocked) throw new Error("Adopt your panda first");
+    if (p.alive === false) throw new Error("Your panda is gone.");
+    if (!costumeUnlocked(def, p)) throw new Error(`${def.name} is still locked`);
+
+    const costumes: string[] = Array.from(new Set([...(p.unlocked_costumes ?? []), def.key]));
+    const { error } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .update({ costume: def.key, unlocked_costumes: costumes, updated_at: new Date().toISOString() })
+      .eq("user_id", context.userId);
+    if (error) throw error;
+    return { ok: true, costume: def.key };
+  });
