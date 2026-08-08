@@ -451,6 +451,9 @@ export const PandaCharacter = memo(function PandaCharacter({
             fill="none"
             strokeLinecap="round"
           />
+          {state.costume === "tycoon" && <TycoonSuit />}
+
+
 
           {/* forelegs (black, continuous with the band) */}
           <motion.g
