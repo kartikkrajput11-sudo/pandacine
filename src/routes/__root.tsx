@@ -164,17 +164,18 @@ function RootComponent() {
         
         <Toaster
           theme="dark"
-          position="top-center"
+          position="bottom-right"
           expand
-          visibleToasts={4}
-          gap={12}
-          offset={20}
+          visibleToasts={3}
+          gap={10}
+          offset={24}
           toastOptions={{
             duration: 4200,
             className: "lux-toast",
             unstyled: false,
           }}
         />
+
 
       </ThemeProvider>
     </QueryClientProvider>
