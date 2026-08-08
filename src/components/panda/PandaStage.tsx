@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Cookie, Popcorn, Camera, Hand, Sparkles, Leaf, Bell } from "lucide-react";
 import { PandaCharacter } from "./PandaCharacter";
-import { usePandaBrain, type Zone } from "./usePandaBrain";
+import { usePandaBrain, type Zone, type Costume } from "./usePandaBrain";
 import { Spotlight } from "@/components/ui/spotlight";
 import { pandaSfx } from "@/lib/panda-sfx";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,8 @@ type Props = {
   onInteract?: (kind: string) => void;
   /** Simplified motion for small or low-power surfaces. */
   lite?: boolean;
+  /** Force the outfit the mascot wears (from the saved wardrobe). */
+  costume?: Costume;
 };
 
 const TICKLE_LABEL = ["", "giggle", "laughing", "rolling", "can't breathe", "cute aggression"];
@@ -23,12 +25,17 @@ const TICKLE_LABEL = ["", "giggle", "laughing", "rolling", "can't breathe", "cut
  * The stage the mascot lives on: cinematic lights, ambient particles,
  * drag physics, treats and every direct interaction.
  */
-export function PandaStage({ name = "Pan", className, playful = true, onInteract, lite = false }: Props) {
+export function PandaStage({ name = "Pan", className, playful = true, onInteract, lite = false, costume }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const { state, interact, feel, doAction, say, burstConfetti } = usePandaBrain({
+  const { state, interact, feel, doAction, say, burstConfetti, setCostume } = usePandaBrain({
     containerRef: ref,
     onInteract,
   });
+
+  // Wear the outfit chosen in the wardrobe.
+  useEffect(() => {
+    if (costume) setCostume(costume);
+  }, [costume, setCostume]);
   const [dragging, setDragging] = useState(false);
   const [hiding, setHiding] = useState(false);
 
