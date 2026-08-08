@@ -75,7 +75,8 @@ export type Costume =
   | "golden"
   | "santa"
   | "ghost"
-  | "valentine";
+  | "valentine"
+  | "tycoon";
 
 export type Zone = "head" | "ear-l" | "ear-r" | "nose" | "belly" | "paw-l" | "paw-r" | "tail" | "body";
 
