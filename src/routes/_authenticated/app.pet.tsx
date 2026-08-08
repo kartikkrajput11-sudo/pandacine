@@ -2,27 +2,58 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Coins, Pencil, Check, Sparkles, Flame, ShoppingBasket, Heart, Utensils } from "lucide-react";
+import {
+  ArrowLeft,
+  Coins,
+  Pencil,
+  Check,
+  Sparkles,
+  Flame,
+  ShoppingBasket,
+  Heart,
+  Utensils,
+  Shirt,
+  Lock,
+  Crown,
+} from "lucide-react";
 import { toast } from "sonner";
 import { PandaStage } from "@/components/panda/PandaStage";
+import type { Costume } from "@/components/panda/usePandaBrain";
 import { Button } from "@/components/ui/button";
-import { getPet, renamePet, savePetProgress, unlockPet, buyPetFood, feedPet } from "@/lib/pet.functions";
+import {
+  getPet,
+  renamePet,
+  savePetProgress,
+  unlockPet,
+  buyPetFood,
+  feedPet,
+  setPetCostume,
+} from "@/lib/pet.functions";
 import { PET_AISLES, PET_FOODS, FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
+import {
+  PET_COSTUMES,
+  COSTUME_BY_KEY,
+  costumeProgress,
+  costumeRequirementText,
+  costumeUnlocked,
+} from "@/lib/pet-wardrobe";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/app/pet")({
   head: () => ({
     meta: [
       { title: "Your Panda — PANDACINE" },
-      { name: "description", content: "Adopt, feed and play with your very own PANDACINE panda." },
+      { name: "description", content: "Adopt, feed, dress and play with your very own PANDACINE panda." },
       { property: "og:title", content: "Your Panda — PANDACINE" },
-      { property: "og:description", content: "Adopt, feed and play with your very own PANDACINE panda." },
+      { property: "og:description", content: "Adopt, feed, dress and play with your very own PANDACINE panda." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: PetRoute,
 });
+
+type Tab = "play" | "wardrobe" | "market" | "pantry";
 
 function PetRoute() {
   const qc = useQueryClient();
@@ -32,6 +63,7 @@ function PetRoute() {
   const save = useServerFn(savePetProgress);
   const buy = useServerFn(buyPetFood);
   const feed = useServerFn(feedPet);
+  const wear = useServerFn(setPetCostume);
 
   const { data, isLoading } = useQuery({ queryKey: ["pet"], queryFn: () => fetchPet({ data: undefined as never }) });
   const pet = data?.pet as any;
@@ -40,7 +72,7 @@ function PetRoute() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [adoptName, setAdoptName] = useState("Pan");
-  const [tab, setTab] = useState<"play" | "market" | "pantry">("play");
+  const [tab, setTab] = useState<Tab>("play");
   const counter = useRef({ interactions: 0, affection: 0 });
 
   const refresh = () => {
@@ -84,6 +116,15 @@ function PetRoute() {
     onError: (e: any) => toast.error(e?.message ?? "Couldn't feed"),
   });
 
+  const wearM = useMutation({
+    mutationFn: (key: string) => wear({ data: { costume: key } }),
+    onSuccess: (_r, key) => {
+      toast.success(`${COSTUME_BY_KEY[key]?.name} on — looking sharp`);
+      refresh();
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Couldn't change the outfit"),
+  });
+
   // Persist play progress every 20s while there's something new.
   useEffect(() => {
     if (!pet?.unlocked) return;
@@ -103,10 +144,20 @@ function PetRoute() {
   const hoursLeft = Math.max(0, Math.round(STARVE_HOURS - hoursSinceFed(pet?.last_fed_at)));
   const pantry = (pet?.pantry ?? {}) as Record<string, number>;
   const pantryList = Object.entries(pantry).filter(([, n]) => n > 0);
+  const costume = (pet?.costume ?? "classic") as Costume;
+  const tycoon = PET_COSTUMES.find((c) => c.key === "tycoon")!;
+  const tycoonReady = costumeUnlocked(tycoon, pet);
+
+  const mood =
+    !alive ? "Resting in the grove"
+    : fullness < 20 ? "Starving — feed now"
+    : fullness < 45 ? "Getting hungry"
+    : (pet?.affection ?? 0) > 70 ? "Devoted to you"
+    : "Content";
 
   return (
-    <div className="relative px-5 pt-8 pb-28 space-y-6">
-      <header className="flex items-center gap-3">
+    <div className="relative px-5 pt-8 pb-28">
+      <header className="mx-auto flex max-w-5xl items-center gap-3">
         <Link to="/app" aria-label="Back" className="grid size-10 place-items-center rounded-full glass">
           <ArrowLeft className="size-4" />
         </Link>
@@ -120,10 +171,10 @@ function PetRoute() {
         </span>
       </header>
 
-      {isLoading && <p className="text-sm text-candle-muted">Waking the panda…</p>}
+      {isLoading && <p className="mt-6 text-sm text-candle-muted">Waking the panda…</p>}
 
       {!isLoading && !pet?.unlocked && (
-        <section className="rounded-3xl glass-strong p-5 space-y-4">
+        <section className="mx-auto mt-6 max-w-md rounded-3xl glass-strong p-5 space-y-4">
           <div className="pointer-events-none">
             <PandaStage playful={false} lite className="mx-auto max-w-[300px]" />
           </div>
@@ -158,7 +209,7 @@ function PetRoute() {
       )}
 
       {!isLoading && pet?.unlocked && !alive && (
-        <section className="rounded-3xl glass-strong p-8 text-center space-y-3">
+        <section className="mx-auto mt-6 max-w-md rounded-3xl glass-strong p-8 text-center space-y-3">
           <p className="text-4xl">🕯️</p>
           <h2 className="font-serif text-2xl italic">{name} is gone</h2>
           <p className="text-sm text-candle-muted">
@@ -168,9 +219,10 @@ function PetRoute() {
       )}
 
       {!isLoading && pet?.unlocked && alive && (
-        <>
-          <section className="relative -mx-2 overflow-visible rounded-[2.5rem] bg-transparent p-2">
-            <div className="mb-2 flex items-center justify-center gap-2">
+        <div className="mx-auto mt-6 grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+          {/* ── Stage column ─────────────────────────────── */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-center gap-2">
               {editing ? (
                 <>
                   <input
@@ -187,6 +239,9 @@ function PetRoute() {
               ) : (
                 <>
                   <h2 className="font-serif text-3xl italic">{name}</h2>
+                  <span className="rounded-full border border-border px-2.5 py-0.5 text-[10px] uppercase tracking-widest text-candle-muted">
+                    {COSTUME_BY_KEY[costume]?.name ?? "Classic coat"}
+                  </span>
                   <button
                     onClick={() => {
                       setDraft(name);
@@ -201,137 +256,285 @@ function PetRoute() {
               )}
             </div>
 
-            {/* Fullness — the life meter */}
-            <div className="mx-auto mb-3 max-w-[340px]">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-candle-muted">
-                <span>Fullness</span>
-                <span className={fullness < 30 ? "text-coral" : "text-petal"}>
-                  {fullness}% · {hoursLeft}h left
-                </span>
-              </div>
-              <div className="mt-1 h-2 overflow-hidden rounded-full border border-border bg-surface">
-                <div
-                  className={cn("h-full transition-all", fullness < 30 ? "bg-coral" : "bg-petal petal-glow")}
-                  style={{ width: `${Math.max(3, fullness)}%` }}
-                />
-              </div>
-            </div>
-
             <PandaStage
               name={name}
+              costume={costume}
               onInteract={() => {
                 counter.current.interactions += 1;
                 counter.current.affection = Math.min(100, counter.current.affection + 1);
               }}
             />
+
+            {/* quick feed rail */}
+            {pantryList.length > 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Quick feed</span>
+                {pantryList.slice(0, 6).map(([key, n]) => (
+                  <button
+                    key={key}
+                    disabled={feedM.isPending}
+                    onClick={() => feedM.mutate(key)}
+                    className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs transition-colors hover:border-petal/60 hover:text-petal"
+                  >
+                    <span>{FOOD_BY_KEY[key]?.emoji}</span>
+                    <span className="tabular-nums text-candle-muted">×{n}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </section>
 
-          <section className="grid grid-cols-3 gap-3">
-            <Stat label="Affection" value={`${pet.affection ?? 0}%`} Icon={Heart} />
-            <Stat label="Playtime" value={String(pet.interactions ?? 0)} Icon={Sparkles} />
-            <Stat label="Streak" value={`${pet.streak ?? 0}d`} Icon={Flame} />
-          </section>
+          {/* ── Care column ──────────────────────────────── */}
+          <aside className="space-y-4 lg:sticky lg:top-6">
+            <div className="rounded-3xl glass-strong p-5 space-y-4">
+              <div className="flex items-baseline justify-between">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Vitals</p>
+                <p className="text-xs text-candle-muted">{mood}</p>
+              </div>
 
-          {/* Tabs */}
-          <div className="flex items-center justify-center gap-2">
-            {(
-              [
-                ["play", "Play", Sparkles],
-                ["market", "Supermarket", ShoppingBasket],
-                ["pantry", `Pantry${pantryList.length ? ` (${pantryList.length})` : ""}`, Utensils],
-              ] as const
-            ).map(([k, label, Icon]) => (
-              <button
-                key={k}
-                onClick={() => setTab(k)}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[11px] uppercase tracking-widest transition-all",
-                  tab === k
-                    ? "border-petal/60 bg-petal/10 text-petal"
-                    : "border-border bg-surface/70 text-candle-muted hover:text-petal",
-                )}
-              >
-                <Icon className="size-3.5" />
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {tab === "play" && (
-            <div className="space-y-3">
-              <p className="text-center text-[11px] text-candle-muted">
-                Seven days in a row unlocks the Golden Panda. Rare costumes appear on their own — keep visiting.
-              </p>
-              <Unlocks
-                expressions={pet.unlocked_expressions ?? []}
-                costumes={pet.unlocked_costumes ?? []}
+              <Meter
+                label="Fullness"
+                value={fullness}
+                hint={`${hoursLeft}h left`}
+                tone={fullness < 30 ? "alert" : "petal"}
               />
+              <Meter label="Affection" value={pet.affection ?? 0} hint={`${pet.affection ?? 0}%`} tone="rose" />
+
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                <Stat label="Playtime" value={String(pet.interactions ?? 0)} Icon={Sparkles} />
+                <Stat label="Streak" value={`${pet.streak ?? 0}d`} Icon={Flame} />
+                <Stat label="Outfits" value={String(PET_COSTUMES.filter((c) => costumeUnlocked(c, pet)).length)} Icon={Shirt} />
+              </div>
             </div>
-          )}
 
-          {tab === "market" && (
-            <section className="space-y-5">
-              {PET_AISLES.map((aisle) => (
-                <div key={aisle} className="space-y-2">
-                  <p className="text-[10px] uppercase tracking-[0.24em] text-petal">{aisle}</p>
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                    {PET_FOODS.filter((f) => f.aisle === aisle).map((f) => (
-                      <div key={f.key} className="rounded-2xl glass p-3 space-y-1.5">
-                        <div className="flex items-start justify-between">
-                          <span className="text-2xl">{f.emoji}</span>
-                          <span className="flex items-center gap-1 text-xs text-petal tabular-nums">
-                            <Coins className="size-3" />
-                            {f.price}
-                          </span>
-                        </div>
-                        <p className="font-serif italic leading-tight">{f.name}</p>
-                        <p className="text-[10px] leading-snug text-candle-muted">{f.note}</p>
-                        <p className="text-[10px] text-candle-muted">
-                          +{f.fullness} fullness · +{f.affection} affection
-                        </p>
-                        <Button
-                          variant="soft"
-                          size="block"
-                          disabled={buyM.isPending || coins < f.price}
-                          onClick={() => buyM.mutate(f.key)}
-                        >
-                          {coins < f.price ? "Not enough coins" : "Buy"}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </section>
-          )}
-
-          {tab === "pantry" && (
-            <section className="space-y-3">
-              {pantryList.length === 0 && (
-                <p className="text-center text-sm text-candle-muted">
-                  The pantry is empty. Visit the supermarket before {name} gets hungry.
-                </p>
+            {/* Golden tycoon showcase */}
+            <div
+              className={cn(
+                "relative overflow-hidden rounded-3xl border p-5",
+                tycoonReady
+                  ? "border-[#e6c477]/60 bg-[linear-gradient(135deg,rgba(230,196,119,0.18),transparent_65%)]"
+                  : "border-border bg-surface/60",
               )}
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {pantryList.map(([key, n]) => {
-                  const f = FOOD_BY_KEY[key];
-                  if (!f) return null;
+            >
+              <div className="flex items-center gap-2">
+                <Crown className={cn("size-4", tycoonReady ? "text-[#f0d78c]" : "text-candle-muted")} />
+                <p className="text-[10px] uppercase tracking-[0.24em] text-candle-muted">Legendary</p>
+              </div>
+              <h3 className="mt-1 font-serif text-xl italic">Golden tycoon 💼</h3>
+              <p className="mt-1 text-xs leading-snug text-candle-muted">{tycoon.blurb}</p>
+              <div className="mt-3">
+                {tycoonReady ? (
+                  <Button
+                    variant="petal"
+                    size="block"
+                    disabled={wearM.isPending || costume === "tycoon"}
+                    onClick={() => wearM.mutate("tycoon")}
+                  >
+                    {costume === "tycoon" ? "Currently wearing" : "Wear the gold suit"}
+                  </Button>
+                ) : (
+                  <>
+                    <Progress value={costumeProgress(tycoon, pet)} />
+                    <p className="mt-1.5 text-[10px] uppercase tracking-widest text-candle-muted">
+                      {costumeRequirementText(tycoon)}
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          </aside>
+
+          {/* ── Tabs ─────────────────────────────────────── */}
+          <div className="lg:col-span-2 space-y-4">
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {(
+                [
+                  ["play", "Play", Sparkles],
+                  ["wardrobe", "Wardrobe", Shirt],
+                  ["market", "Supermarket", ShoppingBasket],
+                  ["pantry", `Pantry${pantryList.length ? ` (${pantryList.length})` : ""}`, Utensils],
+                ] as const
+              ).map(([k, label, Icon]) => (
+                <button
+                  key={k}
+                  onClick={() => setTab(k)}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[11px] uppercase tracking-widest transition-all",
+                    tab === k
+                      ? "border-petal/60 bg-petal/10 text-petal"
+                      : "border-border bg-surface/70 text-candle-muted hover:text-petal",
+                  )}
+                >
+                  <Icon className="size-3.5" />
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {tab === "play" && (
+              <div className="space-y-3">
+                <p className="text-center text-[11px] text-candle-muted">
+                  Play, feed and visit daily — affection, streaks and playtime all unlock new outfits and expressions.
+                </p>
+                <Unlocks expressions={pet.unlocked_expressions ?? []} costumes={pet.unlocked_costumes ?? []} />
+              </div>
+            )}
+
+            {tab === "wardrobe" && (
+              <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                {PET_COSTUMES.map((c) => {
+                  const unlocked = costumeUnlocked(c, pet);
+                  const worn = costume === c.key;
                   return (
-                    <div key={key} className="rounded-2xl glass p-3 space-y-1.5 text-center">
-                      <span className="text-2xl">{f.emoji}</span>
-                      <p className="font-serif italic leading-tight">{f.name}</p>
-                      <p className="text-[10px] text-candle-muted">×{n} in pantry</p>
-                      <Button variant="petal" size="block" disabled={feedM.isPending} onClick={() => feedM.mutate(key)}>
-                        Feed
-                      </Button>
+                    <div
+                      key={c.key}
+                      className={cn(
+                        "rounded-2xl border p-3 space-y-2",
+                        worn
+                          ? "border-petal/60 bg-petal/10"
+                          : c.tier === "legendary"
+                            ? "border-[#e6c477]/40 bg-surface/70"
+                            : "border-border bg-surface/60",
+                      )}
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className="text-2xl">{c.emoji}</span>
+                        {!unlocked && <Lock className="size-3.5 text-candle-muted" />}
+                      </div>
+                      <p className="font-serif italic leading-tight">{c.name}</p>
+                      <p className="text-[10px] leading-snug text-candle-muted">{c.blurb}</p>
+                      {unlocked ? (
+                        <Button
+                          variant={worn ? "quiet" : "soft"}
+                          size="block"
+                          disabled={worn || wearM.isPending}
+                          onClick={() => wearM.mutate(c.key)}
+                        >
+                          {worn ? "Wearing" : "Wear"}
+                        </Button>
+                      ) : (
+                        <>
+                          <Progress value={costumeProgress(c, pet)} />
+                          <p className="text-[10px] uppercase tracking-widest text-candle-muted">
+                            {costumeRequirementText(c)}
+                          </p>
+                        </>
+                      )}
                     </div>
                   );
                 })}
-              </div>
-            </section>
-          )}
-        </>
+              </section>
+            )}
+
+            {tab === "market" && (
+              <section className="space-y-5">
+                {PET_AISLES.map((aisle) => (
+                  <div key={aisle} className="space-y-2">
+                    <p className="text-[10px] uppercase tracking-[0.24em] text-petal">{aisle}</p>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                      {PET_FOODS.filter((f) => f.aisle === aisle).map((f) => (
+                        <div key={f.key} className="rounded-2xl glass p-3 space-y-1.5">
+                          <div className="flex items-start justify-between">
+                            <span className="text-2xl">{f.emoji}</span>
+                            <span className="flex items-center gap-1 text-xs text-petal tabular-nums">
+                              <Coins className="size-3" />
+                              {f.price}
+                            </span>
+                          </div>
+                          <p className="font-serif italic leading-tight">{f.name}</p>
+                          <p className="text-[10px] leading-snug text-candle-muted">{f.note}</p>
+                          <p className="text-[10px] text-candle-muted">
+                            +{f.fullness} fullness · +{f.affection} affection
+                          </p>
+                          <Button
+                            variant="soft"
+                            size="block"
+                            disabled={buyM.isPending || coins < f.price}
+                            onClick={() => buyM.mutate(f.key)}
+                          >
+                            {coins < f.price ? "Not enough coins" : "Buy"}
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+
+            {tab === "pantry" && (
+              <section className="space-y-3">
+                {pantryList.length === 0 && (
+                  <p className="text-center text-sm text-candle-muted">
+                    The pantry is empty. Visit the supermarket before {name} gets hungry.
+                  </p>
+                )}
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {pantryList.map(([key, n]) => {
+                    const f = FOOD_BY_KEY[key];
+                    if (!f) return null;
+                    return (
+                      <div key={key} className="rounded-2xl glass p-3 space-y-1.5 text-center">
+                        <span className="text-2xl">{f.emoji}</span>
+                        <p className="font-serif italic leading-tight">{f.name}</p>
+                        <p className="text-[10px] text-candle-muted">×{n} in pantry</p>
+                        <Button
+                          variant="petal"
+                          size="block"
+                          disabled={feedM.isPending}
+                          onClick={() => feedM.mutate(key)}
+                        >
+                          Feed
+                        </Button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
       )}
+    </div>
+  );
+}
+
+function Progress({ value }: { value: number }) {
+  return (
+    <div className="h-1.5 overflow-hidden rounded-full border border-border bg-surface">
+      <div className="h-full bg-petal/70" style={{ width: `${Math.max(3, Math.round(value * 100))}%` }} />
+    </div>
+  );
+}
+
+function Meter({
+  label,
+  value,
+  hint,
+  tone,
+}: {
+  label: string;
+  value: number;
+  hint: string;
+  tone: "petal" | "alert" | "rose";
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-candle-muted">
+        <span>{label}</span>
+        <span className={tone === "alert" ? "text-coral" : "text-petal"}>
+          {Math.round(value)}% · {hint}
+        </span>
+      </div>
+      <div className="mt-1 h-2 overflow-hidden rounded-full border border-border bg-surface">
+        <div
+          className={cn(
+            "h-full transition-all",
+            tone === "alert" ? "bg-coral" : tone === "rose" ? "bg-petal/70" : "bg-petal petal-glow",
+          )}
+          style={{ width: `${Math.max(3, Math.min(100, value))}%` }}
+        />
+      </div>
     </div>
   );
 }
@@ -360,9 +563,9 @@ function Unlocks({ expressions, costumes }: { expressions: string[]; costumes: s
 
 function Stat({ label, value, Icon }: { label: string; value: string; Icon: typeof Flame }) {
   return (
-    <div className="rounded-2xl glass p-4 text-center">
+    <div className="rounded-2xl border border-border bg-surface/60 p-3 text-center">
       <Icon className="mx-auto size-4 text-petal" />
-      <p className="mt-1 font-serif text-xl italic">{value}</p>
+      <p className="mt-1 font-serif text-lg italic">{value}</p>
       <p className="text-[10px] uppercase tracking-widest text-candle-muted">{label}</p>
     </div>
   );
