@@ -39,7 +39,16 @@ const TICKLE_LABEL = ["", "giggle", "laughing", "rolling", "can't breathe", "cut
  * The stage the mascot lives on: cinematic lights, ambient particles,
  * drag physics, treats and every direct interaction.
  */
-export function PandaStage({ name = "Pan", className, playful = true, onInteract, lite = false, costume }: Props) {
+export function PandaStage({
+  name = "Pan",
+  className,
+  playful = true,
+  onInteract,
+  lite = false,
+  costume,
+  hideActions = false,
+  onReady,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const { state, interact, feel, doAction, say, burstConfetti, setCostume } = usePandaBrain({
     containerRef: ref,
