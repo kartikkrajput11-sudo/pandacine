@@ -32,6 +32,9 @@ export const GAME_KINDS: GameKind[] = [
   "uno",
   "hide-seek",
   "pool",
+  "puzzle-together",
+  "tic-tac-toe",
+  "rock-paper-scissors",
   "know-me",
   "couple-trivia",
   "scribble-guess",
@@ -47,6 +50,7 @@ export const GAME_KINDS: GameKind[] = [
   "this-or-that",
   "guess-me",
 ];
+
 
 export const GAMES: Record<GameKind, { name: string; emoji: string; body: string; ai?: boolean; href?: string; comingSoon?: boolean }> = {
   "paint-together": { name: "Paint Together", emoji: "🎨", body: "Live shared canvas.", href: "/app/paint" },
