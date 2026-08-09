@@ -184,14 +184,13 @@ function Home() {
         <section className="relative z-10" data-tour="home-signature">
           <EditorialSectionHeader eyebrow="✦ Chapter I" title="Signature" />
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-
             <SignatureTile to="/app/letters" Icon={Feather} label="Love Letters" caption="Seal now, open later" swatch="from-[#c9a84c]/40 to-[#f0d78c]/10" />
             <SignatureTile to="/app/timeline" Icon={Milestone} label="Timeline" caption="Highlights of us" swatch="from-[#c96b7a]/40 to-[#f0c0cc]/10" />
-            <SignatureTile to="/app/constellation" Icon={Stars} label="Constellation" caption="Your night sky" swatch="from-[#5cbdb9]/40 to-[#0d7a5f]/10" />
+            <SignatureTile to="/app/rituals" Icon={Sparkles} label="Rituals" caption="Little habits, kept" swatch="from-[#9d7bd8]/40 to-[#e2d4ff]/10" />
             <SignatureTile to="/app/watchlist" Icon={ListChecks} label="Watchlist" caption="Shared queue" swatch="from-[#f0d78c]/40 to-[#c9a84c]/10" />
+            <SignatureTile to="/app/concierge" Icon={Compass} label="Concierge" caption="Ideas for tonight" swatch="from-[#5cbdb9]/40 to-[#0d7a5f]/10" />
           </div>
         </section>
-
       )}
 
 
@@ -199,14 +198,13 @@ function Home() {
       <section className="relative z-10">
         <EditorialSectionHeader eyebrow="✦ Chapter II" title="Together" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-          <TileLink to="/app/movies" search={{ q: "" }} Icon={Clapperboard} label="Watch" caption="Tonight's pick" />
           <TileLink to="/app/memories" Icon={BookHeart} label="Memories" caption="Your archive" />
           <TileLink to="/app/anniversary" Icon={Heart} label="Anniversary" caption="Just for us" />
           <TileLink to="/app/wishlist" Icon={Gift} label="Wishlist" caption="Little dreams" />
           <TileLink to="/app/coupons" Icon={Heart} label="Coupons" caption="Sweet favors" />
           <TileLink to="/app/bucket" Icon={MapPin} label="Bucket List" caption="Dreams together" />
           <TileLink to="/app/journal" Icon={BookHeart} label="Our Journal" caption="Shared timeline" />
-          
+          <TileLink to="/app/tamanna" Icon={Stars} label="Tamanna" caption="Wishes, granted" />
         </div>
       </section>
 
@@ -215,11 +213,10 @@ function Home() {
         <EditorialSectionHeader eyebrow="✦ Chapter III" title="Your circle" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
           <TileLink to="/app/friends" Icon={Users} label="Friends" caption="Your circle" />
-          <TileLink to="/app/calendar" Icon={CalendarHeart} label="Calendar" caption="Dates that matter" />
           <TileLink to="/app/shop" Icon={Sparkles} label="Tag Shop" caption="Spend your coins" />
-          <TileLink to="/app/me" Icon={Compass} label="Profile" caption="You & settings" />
         </div>
       </section>
+
 
     </div>
   );
