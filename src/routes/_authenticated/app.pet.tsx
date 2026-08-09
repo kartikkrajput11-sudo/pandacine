@@ -264,29 +264,134 @@ function PetRoute() {
             <PandaStage
               name={name}
               costume={costume}
+              hideActions
+              onReady={setActions}
               onInteract={() => {
                 counter.current.interactions += 1;
                 counter.current.affection = Math.min(100, counter.current.affection + 1);
               }}
             />
 
-            {/* quick feed rail */}
-            {pantryList.length > 0 && (
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <span className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Quick feed</span>
-                {pantryList.slice(0, 6).map(([key, n]) => (
-                  <button
-                    key={key}
-                    disabled={feedM.isPending}
-                    onClick={() => feedM.mutate(key)}
-                    className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs transition-colors hover:border-petal/60 hover:text-petal"
-                  >
-                    <span>{FOOD_BY_KEY[key]?.emoji}</span>
-                    <span className="tabular-nums text-candle-muted">×{n}</span>
-                  </button>
-                ))}
+            {/* ── Playroom: everything you can do with the panda ── */}
+            <div className="rounded-3xl glass-strong p-5 space-y-5">
+              <div className="flex items-baseline justify-between">
+                <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Playroom</p>
+                <p className="text-[11px] text-candle-muted">Pat · boop · belly rub · tail pull</p>
               </div>
-            )}
+
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <Act onClick={() => actions?.bamboo()} Icon={Leaf} label="Hold bamboo" />
+                <Act onClick={() => actions?.bell()} Icon={Bell} label="Ring bell" />
+                <Act onClick={() => actions?.popcorn()} Icon={Popcorn} label="Popcorn" />
+                <Act onClick={() => actions?.cookie()} Icon={Cookie} label="Cookie" />
+                <Act onClick={() => actions?.paw()} Icon={Hand} label="Paw shake" />
+                <Act onClick={() => actions?.photo()} Icon={Camera} label="Photo" />
+                <Act onClick={() => actions?.dance()} Icon={Sparkles} label="Dance" />
+              </div>
+
+              {/* pantry / quick feed */}
+              <div className="space-y-2">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Pantry</p>
+                {pantryList.length === 0 ? (
+                  <p className="text-[11px] text-candle-muted">
+                    The pantry is empty — buy something from the grove market below.
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {pantryList.map(([key, n]) => (
+                      <button
+                        key={key}
+                        disabled={feedM.isPending}
+                        onClick={() => feedM.mutate(key)}
+                        className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs transition-colors hover:border-petal/60 hover:text-petal"
+                      >
+                        <span>{FOOD_BY_KEY[key]?.emoji}</span>
+                        <span>{FOOD_BY_KEY[key]?.name}</span>
+                        <span className="tabular-nums text-candle-muted">×{n}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* wardrobe */}
+              <div className="space-y-2">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Wardrobe</p>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {PET_COSTUMES.map((c) => {
+                    const unlocked = costumeUnlocked(c, pet);
+                    const worn = costume === c.key;
+                    return (
+                      <button
+                        key={c.key}
+                        disabled={!unlocked || worn || wearM.isPending}
+                        onClick={() => wearM.mutate(c.key)}
+                        className={cn(
+                          "rounded-2xl border p-3 text-left transition-all",
+                          worn
+                            ? "border-petal/60 bg-petal/10"
+                            : unlocked
+                              ? "border-border bg-surface/60 hover:border-petal/50"
+                              : "border-border bg-surface/40 opacity-70",
+                        )}
+                      >
+                        <div className="flex items-start justify-between">
+                          <span className="text-xl">{c.emoji}</span>
+                          {!unlocked && <Lock className="size-3.5 text-candle-muted" />}
+                        </div>
+                        <p className="mt-1 font-serif text-sm italic leading-tight">{c.name}</p>
+                        {unlocked ? (
+                          <p className="text-[10px] uppercase tracking-widest text-petal">
+                            {worn ? "Wearing" : "Wear"}
+                          </p>
+                        ) : (
+                          <>
+                            <Progress value={costumeProgress(c, pet)} />
+                            <p className="mt-1 text-[10px] leading-tight text-candle-muted">
+                              {costumeRequirementText(c)}
+                            </p>
+                          </>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* market */}
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Grove market</p>
+                  <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
+                    <Coins className="size-3" />
+                    {coins}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {PET_FOODS.map((f) => (
+                    <button
+                      key={f.key}
+                      disabled={buyM.isPending || coins < f.price}
+                      onClick={() => buyM.mutate(f.key)}
+                      className="rounded-2xl border border-border bg-surface/60 p-3 text-left transition-all hover:border-petal/50 disabled:opacity-50"
+                    >
+                      <div className="flex items-start justify-between">
+                        <span className="text-xl">{f.emoji}</span>
+                        <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
+                          <Coins className="size-3" />
+                          {f.price}
+                        </span>
+                      </div>
+                      <p className="mt-1 font-serif text-sm italic leading-tight">{f.name}</p>
+                      <p className="text-[10px] text-candle-muted">
+                        +{f.fullness} fullness · +{f.affection} affection
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
           </section>
 
           {/* ── Care column ──────────────────────────────── */}
