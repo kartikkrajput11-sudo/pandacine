@@ -65,6 +65,7 @@ function PetRoute() {
   const save = useServerFn(savePetProgress);
   const feed = useServerFn(feedPet);
   const wear = useServerFn(setPetCostume);
+  const buy = useServerFn(buyPetFood);
 
   const { data, isLoading } = useQuery({ queryKey: ["pet"], queryFn: () => fetchPet({ data: undefined as never }) });
   const pet = data?.pet as any;
@@ -73,7 +74,9 @@ function PetRoute() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [adoptName, setAdoptName] = useState("Pan");
+  const [actions, setActions] = useState<PandaActions | null>(null);
   const counter = useRef({ interactions: 0, affection: 0 });
+
 
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["pet"] });
