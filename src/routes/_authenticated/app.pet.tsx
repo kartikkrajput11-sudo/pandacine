@@ -9,11 +9,7 @@ import {
   Check,
   Sparkles,
   Flame,
-  ShoppingBasket,
-  Heart,
-  Utensils,
   Shirt,
-  Lock,
   Crown,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,11 +21,10 @@ import {
   renamePet,
   savePetProgress,
   unlockPet,
-  buyPetFood,
   feedPet,
   setPetCostume,
 } from "@/lib/pet.functions";
-import { PET_AISLES, PET_FOODS, FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
+import { FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
 import {
   PET_COSTUMES,
   COSTUME_BY_KEY,
@@ -53,15 +48,12 @@ export const Route = createFileRoute("/_authenticated/app/pet")({
   component: PetRoute,
 });
 
-type Tab = "play" | "wardrobe" | "market" | "pantry";
-
 function PetRoute() {
   const qc = useQueryClient();
   const fetchPet = useServerFn(getPet);
   const adopt = useServerFn(unlockPet);
   const rename = useServerFn(renamePet);
   const save = useServerFn(savePetProgress);
-  const buy = useServerFn(buyPetFood);
   const feed = useServerFn(feedPet);
   const wear = useServerFn(setPetCostume);
 
@@ -72,7 +64,6 @@ function PetRoute() {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [adoptName, setAdoptName] = useState("Pan");
-  const [tab, setTab] = useState<Tab>("play");
   const counter = useRef({ interactions: 0, affection: 0 });
 
   const refresh = () => {
@@ -96,15 +87,6 @@ function PetRoute() {
       refresh();
     },
     onError: (e: any) => toast.error(e?.message ?? "Couldn't rename"),
-  });
-
-  const buyM = useMutation({
-    mutationFn: (key: string) => buy({ data: { key, qty: 1 } }),
-    onSuccess: (_r, key) => {
-      toast.success(`${FOOD_BY_KEY[key]?.name} added to the pantry`);
-      refresh();
-    },
-    onError: (e: any) => toast.error(e?.message ?? "Couldn't buy that"),
   });
 
   const feedM = useMutation({
