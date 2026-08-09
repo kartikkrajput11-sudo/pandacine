@@ -531,3 +531,15 @@ function Stat({ label, value, Icon }: { label: string; value: string; Icon: type
     </div>
   );
 }
+
+function Act({ onClick, Icon, label }: { onClick: () => void; Icon: typeof Leaf; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-[11px] uppercase tracking-widest text-candle-muted transition-all hover:border-petal/50 hover:text-petal active:scale-95"
+    >
+      <Icon className="size-3.5" />
+      {label}
+    </button>
+  );
+}
