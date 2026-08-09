@@ -7,6 +7,16 @@ import { Spotlight } from "@/components/ui/spotlight";
 import { pandaSfx } from "@/lib/panda-sfx";
 import { cn } from "@/lib/utils";
 
+export type PandaActions = {
+  bamboo: () => void;
+  bell: () => void;
+  popcorn: () => void;
+  cookie: () => void;
+  paw: () => void;
+  photo: () => void;
+  dance: () => void;
+};
+
 type Props = {
   name?: string;
   className?: string;
@@ -17,6 +27,10 @@ type Props = {
   lite?: boolean;
   /** Force the outfit the mascot wears (from the saved wardrobe). */
   costume?: Costume;
+  /** Hide the built-in chip rail so the host page can render its own. */
+  hideActions?: boolean;
+  /** Receive the interaction handlers so they can be rendered elsewhere. */
+  onReady?: (actions: PandaActions) => void;
 };
 
 const TICKLE_LABEL = ["", "giggle", "laughing", "rolling", "can't breathe", "cute aggression"];
@@ -25,7 +39,16 @@ const TICKLE_LABEL = ["", "giggle", "laughing", "rolling", "can't breathe", "cut
  * The stage the mascot lives on: cinematic lights, ambient particles,
  * drag physics, treats and every direct interaction.
  */
-export function PandaStage({ name = "Pan", className, playful = true, onInteract, lite = false, costume }: Props) {
+export function PandaStage({
+  name = "Pan",
+  className,
+  playful = true,
+  onInteract,
+  lite = false,
+  costume,
+  hideActions = false,
+  onReady,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const { state, interact, feel, doAction, say, burstConfetti, setCostume } = usePandaBrain({
     containerRef: ref,
@@ -71,6 +94,39 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
     },
     [interact, say],
   );
+
+  const ringBell = useCallback(() => {
+    setHiding(false);
+    pandaSfx.pop();
+    say("coming!! 🔔", 1500);
+    doAction("run", 1400);
+    feel("excited", 2000);
+  }, [doAction, feel, say]);
+
+  const dance = useCallback(() => {
+    doAction("dance", 2400);
+    feel("celebrating", 2600);
+    burstConfetti(50);
+    pandaSfx.celebrate();
+  }, [doAction, feel, burstConfetti]);
+
+  const actions = useMemo<PandaActions>(
+    () => ({
+      bamboo: callWithBamboo,
+      bell: ringBell,
+      popcorn: () => treat("popcorn"),
+      cookie: () => treat("cookie"),
+      paw: () => interact("paw-r"),
+      photo: () => interact("camera"),
+      dance,
+    }),
+    [callWithBamboo, ringBell, treat, interact, dance],
+  );
+
+  useEffect(() => {
+    onReady?.(actions);
+  }, [actions, onReady]);
+
 
   const particles = useMemo(
     () => Array.from({ length: lite ? 6 : 14 }, (_, i) => ({ id: i, x: Math.random() * 100, d: 6 + Math.random() * 10, delay: Math.random() * 8 })),
@@ -322,42 +378,23 @@ export function PandaStage({ name = "Pan", className, playful = true, onInteract
             </div>
           </div>
 
-
-          {/* treats & gestures */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <Chip onClick={callWithBamboo} Icon={Leaf} label="Hold bamboo" />
-            <Chip
-              onClick={() => {
-                setHiding(false);
-                pandaSfx.pop();
-                say("coming!! 🔔", 1500);
-                doAction("run", 1400);
-                feel("excited", 2000);
-              }}
-              Icon={Bell}
-              label="Ring bell"
-            />
-
-            <Chip onClick={() => treat("popcorn")} Icon={Popcorn} label="Popcorn" />
-            <Chip onClick={() => treat("cookie")} Icon={Cookie} label="Cookie" />
-            <Chip onClick={() => interact("paw-r")} Icon={Hand} label="Paw shake" />
-            <Chip onClick={() => interact("camera")} Icon={Camera} label="Photo" />
-            <Chip
-              onClick={() => {
-                doAction("dance", 2400);
-                feel("celebrating", 2600);
-                burstConfetti(50);
-                pandaSfx.celebrate();
-              }}
-              Icon={Sparkles}
-              label="Dance"
-            />
-          </div>
+          {!hideActions && (
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Chip onClick={actions.bamboo} Icon={Leaf} label="Hold bamboo" />
+              <Chip onClick={actions.bell} Icon={Bell} label="Ring bell" />
+              <Chip onClick={actions.popcorn} Icon={Popcorn} label="Popcorn" />
+              <Chip onClick={actions.cookie} Icon={Cookie} label="Cookie" />
+              <Chip onClick={actions.paw} Icon={Hand} label="Paw shake" />
+              <Chip onClick={actions.photo} Icon={Camera} label="Photo" />
+              <Chip onClick={actions.dance} Icon={Sparkles} label="Dance" />
+            </div>
+          )}
 
           <p className="text-center text-[11px] text-candle-muted">
             Pat the head · boop the nose · rub the belly · pull the tail · drag {name} around · double-click for a photo ·
             type <span className="text-petal">PANDA</span>
           </p>
+
         </div>
       )}
     </div>
