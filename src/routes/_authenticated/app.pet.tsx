@@ -119,6 +119,17 @@ function PetRoute() {
     onError: (e: any) => toast.error(e?.message ?? "Couldn't change the outfit"),
   });
 
+  const buyM = useMutation({
+    mutationFn: (key: string) => buy({ data: { key, qty: 1 } as any }),
+    onSuccess: (_r, key) => {
+      toast.success(`${FOOD_BY_KEY[key]?.name} added to the pantry`);
+      refresh();
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Couldn't buy that"),
+  });
+
+
+
   // Persist play progress every 20s while there's something new.
   useEffect(() => {
     if (!pet?.unlocked) return;
