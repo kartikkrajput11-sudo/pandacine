@@ -7,6 +7,16 @@ import { Spotlight } from "@/components/ui/spotlight";
 import { pandaSfx } from "@/lib/panda-sfx";
 import { cn } from "@/lib/utils";
 
+export type PandaActions = {
+  bamboo: () => void;
+  bell: () => void;
+  popcorn: () => void;
+  cookie: () => void;
+  paw: () => void;
+  photo: () => void;
+  dance: () => void;
+};
+
 type Props = {
   name?: string;
   className?: string;
@@ -17,6 +27,10 @@ type Props = {
   lite?: boolean;
   /** Force the outfit the mascot wears (from the saved wardrobe). */
   costume?: Costume;
+  /** Hide the built-in chip rail so the host page can render its own. */
+  hideActions?: boolean;
+  /** Receive the interaction handlers so they can be rendered elsewhere. */
+  onReady?: (actions: PandaActions) => void;
 };
 
 const TICKLE_LABEL = ["", "giggle", "laughing", "rolling", "can't breathe", "cute aggression"];
