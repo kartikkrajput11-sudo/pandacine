@@ -50,7 +50,7 @@ const STEPS: Step[] = [
     selector: '[data-tour="home-signature"]',
     eyebrow: "Rituals",
     title: "Signature little things",
-    body: "Love letters, timeline, constellation, watchlist — small daily rituals that make it feel like home.",
+    body: "Love letters, timeline, rituals, watchlist — small daily rituals that make it feel like home.",
     placement: "top",
     mood: "wave",
   },
