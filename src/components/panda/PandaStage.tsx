@@ -378,42 +378,23 @@ export function PandaStage({
             </div>
           </div>
 
-
-          {/* treats & gestures */}
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <Chip onClick={callWithBamboo} Icon={Leaf} label="Hold bamboo" />
-            <Chip
-              onClick={() => {
-                setHiding(false);
-                pandaSfx.pop();
-                say("coming!! 🔔", 1500);
-                doAction("run", 1400);
-                feel("excited", 2000);
-              }}
-              Icon={Bell}
-              label="Ring bell"
-            />
-
-            <Chip onClick={() => treat("popcorn")} Icon={Popcorn} label="Popcorn" />
-            <Chip onClick={() => treat("cookie")} Icon={Cookie} label="Cookie" />
-            <Chip onClick={() => interact("paw-r")} Icon={Hand} label="Paw shake" />
-            <Chip onClick={() => interact("camera")} Icon={Camera} label="Photo" />
-            <Chip
-              onClick={() => {
-                doAction("dance", 2400);
-                feel("celebrating", 2600);
-                burstConfetti(50);
-                pandaSfx.celebrate();
-              }}
-              Icon={Sparkles}
-              label="Dance"
-            />
-          </div>
+          {!hideActions && (
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Chip onClick={actions.bamboo} Icon={Leaf} label="Hold bamboo" />
+              <Chip onClick={actions.bell} Icon={Bell} label="Ring bell" />
+              <Chip onClick={actions.popcorn} Icon={Popcorn} label="Popcorn" />
+              <Chip onClick={actions.cookie} Icon={Cookie} label="Cookie" />
+              <Chip onClick={actions.paw} Icon={Hand} label="Paw shake" />
+              <Chip onClick={actions.photo} Icon={Camera} label="Photo" />
+              <Chip onClick={actions.dance} Icon={Sparkles} label="Dance" />
+            </div>
+          )}
 
           <p className="text-center text-[11px] text-candle-muted">
             Pat the head · boop the nose · rub the belly · pull the tail · drag {name} around · double-click for a photo ·
             type <span className="text-petal">PANDA</span>
           </p>
+
         </div>
       )}
     </div>
