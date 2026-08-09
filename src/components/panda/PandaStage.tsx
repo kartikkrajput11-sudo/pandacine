@@ -95,6 +95,39 @@ export function PandaStage({
     [interact, say],
   );
 
+  const ringBell = useCallback(() => {
+    setHiding(false);
+    pandaSfx.pop();
+    say("coming!! 🔔", 1500);
+    doAction("run", 1400);
+    feel("excited", 2000);
+  }, [doAction, feel, say]);
+
+  const dance = useCallback(() => {
+    doAction("dance", 2400);
+    feel("celebrating", 2600);
+    burstConfetti(50);
+    pandaSfx.celebrate();
+  }, [doAction, feel, burstConfetti]);
+
+  const actions = useMemo<PandaActions>(
+    () => ({
+      bamboo: callWithBamboo,
+      bell: ringBell,
+      popcorn: () => treat("popcorn"),
+      cookie: () => treat("cookie"),
+      paw: () => interact("paw-r"),
+      photo: () => interact("camera"),
+      dance,
+    }),
+    [callWithBamboo, ringBell, treat, interact, dance],
+  );
+
+  useEffect(() => {
+    onReady?.(actions);
+  }, [actions, onReady]);
+
+
   const particles = useMemo(
     () => Array.from({ length: lite ? 6 : 14 }, (_, i) => ({ id: i, x: Math.random() * 100, d: 6 + Math.random() * 10, delay: Math.random() * 8 })),
     [lite],
