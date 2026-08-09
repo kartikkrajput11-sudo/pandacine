@@ -11,9 +11,16 @@ import {
   Flame,
   Shirt,
   Crown,
+  Leaf,
+  Bell,
+  Popcorn,
+  Cookie,
+  Hand,
+  Camera,
+  Lock,
 } from "lucide-react";
 import { toast } from "sonner";
-import { PandaStage } from "@/components/panda/PandaStage";
+import { PandaStage, type PandaActions } from "@/components/panda/PandaStage";
 import type { Costume } from "@/components/panda/usePandaBrain";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +29,10 @@ import {
   savePetProgress,
   unlockPet,
   feedPet,
+  buyPetFood,
   setPetCostume,
 } from "@/lib/pet.functions";
-import { FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
+import { PET_FOODS, FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
 import {
   PET_COSTUMES,
   COSTUME_BY_KEY,
@@ -33,6 +41,7 @@ import {
   costumeUnlocked,
 } from "@/lib/pet-wardrobe";
 import { cn } from "@/lib/utils";
+
 
 export const Route = createFileRoute("/_authenticated/app/pet")({
   head: () => ({
