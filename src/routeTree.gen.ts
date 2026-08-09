@@ -25,6 +25,7 @@ import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticat
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicPushDispatchRouteImport } from './routes/api/public/push-dispatch'
 import { Route as AuthenticatedAppWishlistRouteImport } from './routes/_authenticated/app.wishlist'
+import { Route as AuthenticatedAppWidgetRouteImport } from './routes/_authenticated/app.widget'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app.watchlist'
 import { Route as AuthenticatedAppWatchRouteImport } from './routes/_authenticated/app.watch'
 import { Route as AuthenticatedAppUnoRouteImport } from './routes/_authenticated/app.uno'
@@ -166,6 +167,11 @@ const AuthenticatedAppWishlistRoute =
     path: '/wishlist',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppWidgetRoute = AuthenticatedAppWidgetRouteImport.update({
+  id: '/widget',
+  path: '/widget',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppWatchlistRoute =
   AuthenticatedAppWatchlistRouteImport.update({
     id: '/watchlist',
@@ -548,6 +554,7 @@ export interface FileRoutesByFullPath {
   '/app/uno': typeof AuthenticatedAppUnoRoute
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/app/widget': typeof AuthenticatedAppWidgetRoute
   '/app/wishlist': typeof AuthenticatedAppWishlistRoute
   '/api/public/push-dispatch': typeof ApiPublicPushDispatchRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -623,6 +630,7 @@ export interface FileRoutesByTo {
   '/app/uno': typeof AuthenticatedAppUnoRoute
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/app/widget': typeof AuthenticatedAppWidgetRoute
   '/app/wishlist': typeof AuthenticatedAppWishlistRoute
   '/api/public/push-dispatch': typeof ApiPublicPushDispatchRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -701,6 +709,7 @@ export interface FileRoutesById {
   '/_authenticated/app/uno': typeof AuthenticatedAppUnoRoute
   '/_authenticated/app/watch': typeof AuthenticatedAppWatchRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/_authenticated/app/widget': typeof AuthenticatedAppWidgetRoute
   '/_authenticated/app/wishlist': typeof AuthenticatedAppWishlistRoute
   '/api/public/push-dispatch': typeof ApiPublicPushDispatchRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -780,6 +789,7 @@ export interface FileRouteTypes {
     | '/app/uno'
     | '/app/watch'
     | '/app/watchlist'
+    | '/app/widget'
     | '/app/wishlist'
     | '/api/public/push-dispatch'
     | '/lovable/email/suppression'
@@ -855,6 +865,7 @@ export interface FileRouteTypes {
     | '/app/uno'
     | '/app/watch'
     | '/app/watchlist'
+    | '/app/widget'
     | '/app/wishlist'
     | '/api/public/push-dispatch'
     | '/lovable/email/suppression'
@@ -932,6 +943,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/uno'
     | '/_authenticated/app/watch'
     | '/_authenticated/app/watchlist'
+    | '/_authenticated/app/widget'
     | '/_authenticated/app/wishlist'
     | '/api/public/push-dispatch'
     | '/lovable/email/suppression'
@@ -1095,6 +1107,13 @@ declare module '@tanstack/react-router' {
       path: '/wishlist'
       fullPath: '/app/wishlist'
       preLoaderRoute: typeof AuthenticatedAppWishlistRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/widget': {
+      id: '/_authenticated/app/widget'
+      path: '/widget'
+      fullPath: '/app/widget'
+      preLoaderRoute: typeof AuthenticatedAppWidgetRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/watchlist': {
@@ -1615,6 +1634,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppUnoRoute: typeof AuthenticatedAppUnoRoute
   AuthenticatedAppWatchRoute: typeof AuthenticatedAppWatchRoute
   AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
+  AuthenticatedAppWidgetRoute: typeof AuthenticatedAppWidgetRoute
   AuthenticatedAppWishlistRoute: typeof AuthenticatedAppWishlistRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAppCallPeerIdRoute: typeof AuthenticatedAppCallPeerIdRoute
@@ -1666,6 +1686,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppUnoRoute: AuthenticatedAppUnoRoute,
   AuthenticatedAppWatchRoute: AuthenticatedAppWatchRoute,
   AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
+  AuthenticatedAppWidgetRoute: AuthenticatedAppWidgetRoute,
   AuthenticatedAppWishlistRoute: AuthenticatedAppWishlistRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAppCallPeerIdRoute: AuthenticatedAppCallPeerIdRoute,
@@ -1719,3 +1740,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
