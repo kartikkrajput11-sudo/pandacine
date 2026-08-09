@@ -9,6 +9,19 @@
   "background_color": "#1f0f24",
   "theme_color": "#1f0f24",
   "categories": ["lifestyle", "social", "entertainment"],
+  "shortcuts": [
+    {
+      "name": "Anniversary countdown",
+      "short_name": "Countdown",
+      "description": "Live countdown to your next anniversary or milestone",
+      "url": "/app/widget"
+    },
+    {
+      "name": "Chat",
+      "short_name": "Chat",
+      "url": "/app/chat"
+    }
+  ],
   "icons": [
     { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
   ]
