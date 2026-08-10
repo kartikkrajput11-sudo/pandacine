@@ -587,6 +587,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
       <MovieWheelPicker open={wheelOpen} onClose={() => setWheelOpen(false)} onSend={sendMovieWheel} />
       <PandaStickerPicker open={pandaOpen} onClose={() => setPandaOpen(false)} onPick={sendPandaSticker} onOpenAi={() => setAiOpen(true)} />
       <AiStickerPicker open={aiOpen} onClose={() => setAiOpen(false)} onPick={sendAiSticker} />
+      <CameraCapture open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCaptured} />
 
 
 
