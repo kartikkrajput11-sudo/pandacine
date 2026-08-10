@@ -70,6 +70,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
   const [aiOpen, setAiOpen] = useState(false);
   const [whisper, setWhisper] = useState(false);
   const [viewOnce, setViewOnce] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const [recording, setRecording] = useState(false);
   const [focused, setFocused] = useState(false);
   const [openGroup, setOpenGroup] = useState<null | "media" | "sticker" | "together" | "affection">(null);
