@@ -41,6 +41,7 @@ import { Route as AuthenticatedAppPoolRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAppPlayRouteImport } from './routes/_authenticated/app.play'
 import { Route as AuthenticatedAppPetRouteImport } from './routes/_authenticated/app.pet'
 import { Route as AuthenticatedAppPartnerRouteImport } from './routes/_authenticated/app.partner'
+import { Route as AuthenticatedAppPandaShopRouteImport } from './routes/_authenticated/app.panda-shop'
 import { Route as AuthenticatedAppPaintRouteImport } from './routes/_authenticated/app.paint'
 import { Route as AuthenticatedAppMoviesRouteImport } from './routes/_authenticated/app.movies'
 import { Route as AuthenticatedAppMoodRouteImport } from './routes/_authenticated/app.mood'
@@ -251,6 +252,12 @@ const AuthenticatedAppPartnerRoute = AuthenticatedAppPartnerRouteImport.update({
   path: '/partner',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppPandaShopRoute =
+  AuthenticatedAppPandaShopRouteImport.update({
+    id: '/panda-shop',
+    path: '/panda-shop',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppPaintRoute = AuthenticatedAppPaintRouteImport.update({
   id: '/paint',
   path: '/paint',
@@ -546,6 +553,7 @@ export interface FileRoutesByFullPath {
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/app/paint': typeof AuthenticatedAppPaintRoute
+  '/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
   '/app/partner': typeof AuthenticatedAppPartnerRoute
   '/app/pet': typeof AuthenticatedAppPetRoute
   '/app/play': typeof AuthenticatedAppPlayRoute
@@ -623,6 +631,7 @@ export interface FileRoutesByTo {
   '/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/paint': typeof AuthenticatedAppPaintRoute
+  '/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
   '/app/partner': typeof AuthenticatedAppPartnerRoute
   '/app/pet': typeof AuthenticatedAppPetRoute
   '/app/play': typeof AuthenticatedAppPlayRoute
@@ -703,6 +712,7 @@ export interface FileRoutesById {
   '/_authenticated/app/mood': typeof AuthenticatedAppMoodRoute
   '/_authenticated/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/_authenticated/app/paint': typeof AuthenticatedAppPaintRoute
+  '/_authenticated/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
   '/_authenticated/app/partner': typeof AuthenticatedAppPartnerRoute
   '/_authenticated/app/pet': typeof AuthenticatedAppPetRoute
   '/_authenticated/app/play': typeof AuthenticatedAppPlayRoute
@@ -784,6 +794,7 @@ export interface FileRouteTypes {
     | '/app/mood'
     | '/app/movies'
     | '/app/paint'
+    | '/app/panda-shop'
     | '/app/partner'
     | '/app/pet'
     | '/app/play'
@@ -861,6 +872,7 @@ export interface FileRouteTypes {
     | '/app/memory-challenge'
     | '/app/mood'
     | '/app/paint'
+    | '/app/panda-shop'
     | '/app/partner'
     | '/app/pet'
     | '/app/play'
@@ -940,6 +952,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/mood'
     | '/_authenticated/app/movies'
     | '/_authenticated/app/paint'
+    | '/_authenticated/app/panda-shop'
     | '/_authenticated/app/partner'
     | '/_authenticated/app/pet'
     | '/_authenticated/app/play'
@@ -1231,6 +1244,13 @@ declare module '@tanstack/react-router' {
       path: '/partner'
       fullPath: '/app/partner'
       preLoaderRoute: typeof AuthenticatedAppPartnerRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/panda-shop': {
+      id: '/_authenticated/app/panda-shop'
+      path: '/panda-shop'
+      fullPath: '/app/panda-shop'
+      preLoaderRoute: typeof AuthenticatedAppPandaShopRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/paint': {
@@ -1639,6 +1659,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMoodRoute: typeof AuthenticatedAppMoodRoute
   AuthenticatedAppMoviesRoute: typeof AuthenticatedAppMoviesRouteWithChildren
   AuthenticatedAppPaintRoute: typeof AuthenticatedAppPaintRoute
+  AuthenticatedAppPandaShopRoute: typeof AuthenticatedAppPandaShopRoute
   AuthenticatedAppPartnerRoute: typeof AuthenticatedAppPartnerRoute
   AuthenticatedAppPetRoute: typeof AuthenticatedAppPetRoute
   AuthenticatedAppPlayRoute: typeof AuthenticatedAppPlayRoute
@@ -1692,6 +1713,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppMoodRoute: AuthenticatedAppMoodRoute,
   AuthenticatedAppMoviesRoute: AuthenticatedAppMoviesRouteWithChildren,
   AuthenticatedAppPaintRoute: AuthenticatedAppPaintRoute,
+  AuthenticatedAppPandaShopRoute: AuthenticatedAppPandaShopRoute,
   AuthenticatedAppPartnerRoute: AuthenticatedAppPartnerRoute,
   AuthenticatedAppPetRoute: AuthenticatedAppPetRoute,
   AuthenticatedAppPlayRoute: AuthenticatedAppPlayRoute,
