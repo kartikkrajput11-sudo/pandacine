@@ -1,0 +1,278 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Camera, CircleDot, RefreshCw, Send, Square, X, Zap, ZapOff } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+type Mode = "photo" | "video";
+
+/**
+ * In-chat live camera. Captures a photo or a short video from the device camera
+ * and hands the resulting File back so the composer can upload + send it.
+ */
+export function CameraCapture({
+  open,
+  onClose,
+  onCapture,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onCapture: (file: File, kind: "image" | "video") => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<BlobPart[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const [facing, setFacing] = useState<"user" | "environment">("user");
+  const [mode, setMode] = useState<Mode>("photo");
+  const [mirror, setMirror] = useState(true);
+  const [recording, setRecording] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [preview, setPreview] = useState<{ url: string; file: File; kind: "image" | "video" } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const stop = useCallback(() => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    if (timerRef.current) clearInterval(timerRef.current);
+  }, []);
+
+  // Start / restart the stream whenever the dialog opens or the camera flips.
+  useEffect(() => {
+    if (!open || preview) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        stop();
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: true,
+        });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        streamRef.current = stream;
+        setError(null);
+        setMirror(facing === "user");
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play().catch(() => {});
+        }
+      } catch (e: any) {
+        setError(
+          e?.name === "NotAllowedError"
+            ? "Camera permission denied. Allow access in your browser settings to capture."
+            : "No camera available on this device.",
+        );
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, facing, preview, stop]);
+
+  useEffect(() => {
+    if (!open) {
+      stop();
+      setPreview((p) => {
+        if (p) URL.revokeObjectURL(p.url);
+        return null;
+      });
+      setRecording(false);
+      setElapsed(0);
+    }
+  }, [open, stop]);
+
+  function snapPhoto() {
+    const v = videoRef.current;
+    if (!v) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = v.videoWidth;
+    canvas.height = v.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    if (mirror) {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) return;
+        const file = new File([blob], `pandacine-${Date.now()}.jpg`, { type: "image/jpeg" });
+        setPreview({ url: URL.createObjectURL(blob), file, kind: "image" });
+        stop();
+      },
+      "image/jpeg",
+      0.92,
+    );
+  }
+
+  function startRecording() {
+    const stream = streamRef.current;
+    if (!stream) return;
+    const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+      ? "video/webm;codecs=vp9"
+      : MediaRecorder.isTypeSupported("video/webm")
+        ? "video/webm"
+        : "video/mp4";
+    const rec = new MediaRecorder(stream, { mimeType: mime });
+    chunksRef.current = [];
+    rec.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
+    rec.onstop = () => {
+      const blob = new Blob(chunksRef.current, { type: mime });
+      const ext = mime.includes("mp4") ? "mp4" : "webm";
+      const file = new File([blob], `pandacine-${Date.now()}.${ext}`, { type: blob.type });
+      setPreview({ url: URL.createObjectURL(blob), file, kind: "video" });
+      stop();
+    };
+    rec.start();
+    recorderRef.current = rec;
+    setRecording(true);
+    setElapsed(0);
+    timerRef.current = setInterval(() => {
+      setElapsed((s) => {
+        if (s + 1 >= 60) stopRecording();
+        return s + 1;
+      });
+    }, 1000);
+  }
+
+  function stopRecording() {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setRecording(false);
+    recorderRef.current?.state === "recording" && recorderRef.current.stop();
+  }
+
+  function retake() {
+    if (preview) URL.revokeObjectURL(preview.url);
+    setPreview(null);
+    setElapsed(0);
+  }
+
+  function send() {
+    if (!preview) return;
+    onCapture(preview.file, preview.kind);
+    URL.revokeObjectURL(preview.url);
+    setPreview(null);
+    stop();
+    onClose();
+    toast.success(preview.kind === "image" ? "Photo sent" : "Video sent");
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-w-md p-0 overflow-hidden bg-black border-border">
+        <div className="relative aspect-[3/4] bg-black">
+          {error ? (
+            <div className="absolute inset-0 grid place-items-center p-8 text-center">
+              <div>
+                <Camera className="size-8 mx-auto text-candle-muted" />
+                <p className="mt-3 text-sm text-candle-muted">{error}</p>
+              </div>
+            </div>
+          ) : preview ? (
+            preview.kind === "image" ? (
+              <img src={preview.url} alt="Captured photo preview" className="absolute inset-0 size-full object-cover" />
+            ) : (
+              <video src={preview.url} controls playsInline className="absolute inset-0 size-full object-cover" />
+            )
+          ) : (
+            <video
+              ref={videoRef}
+              playsInline
+              muted
+              className={`absolute inset-0 size-full object-cover ${mirror ? "-scale-x-100" : ""}`}
+            />
+          )}
+
+          <button
+            onClick={onClose}
+            aria-label="Close camera"
+            className="absolute top-3 left-3 size-9 rounded-full bg-black/50 backdrop-blur grid place-items-center text-white"
+          >
+            <X className="size-4" />
+          </button>
+
+          {recording && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/60 px-3 py-1.5 text-white text-xs">
+              <span className="size-2 rounded-full bg-rose-500 animate-pulse" />
+              {String(Math.floor(elapsed / 60)).padStart(2, "0")}:{String(elapsed % 60).padStart(2, "0")}
+            </div>
+          )}
+
+          {!preview && !error && (
+            <button
+              onClick={() => setFacing((f) => (f === "user" ? "environment" : "user"))}
+              aria-label="Flip camera"
+              className="absolute top-3 right-3 size-9 rounded-full bg-black/50 backdrop-blur grid place-items-center text-white"
+            >
+              <RefreshCw className="size-4" />
+            </button>
+          )}
+        </div>
+
+        <div className="p-4 bg-ink space-y-3">
+          {preview ? (
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="quiet" onClick={retake}>
+                Retake
+              </Button>
+              <Button onClick={send}>
+                <Send className="size-4" /> Send
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className="flex justify-center gap-2">
+                {(["photo", "video"] as Mode[]).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => !recording && setMode(m)}
+                    className={`rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.2em] transition ${
+                      mode === m ? "bg-petal/15 text-petal" : "text-candle-muted"
+                    }`}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center justify-center gap-6">
+                <button
+                  onClick={() => setMirror((v) => !v)}
+                  aria-label="Toggle mirror"
+                  className="size-10 rounded-full border border-border grid place-items-center text-candle-muted"
+                >
+                  {mirror ? <Zap className="size-4" /> : <ZapOff className="size-4" />}
+                </button>
+                <button
+                  disabled={!!error}
+                  onClick={() => (mode === "photo" ? snapPhoto() : recording ? stopRecording() : startRecording())}
+                  aria-label={mode === "photo" ? "Take photo" : recording ? "Stop recording" : "Start recording"}
+                  className="size-16 rounded-full border-4 border-white/80 grid place-items-center disabled:opacity-40"
+                >
+                  {mode === "video" ? (
+                    recording ? (
+                      <Square className="size-6 fill-rose-500 text-rose-500" />
+                    ) : (
+                      <CircleDot className="size-8 text-rose-400" />
+                    )
+                  ) : (
+                    <span className="size-12 rounded-full bg-white" />
+                  )}
+                </button>
+                <span className="size-10" />
+              </div>
+              <p className="text-center text-[11px] text-candle-muted">
+                {mode === "photo" ? "Tap to capture" : "Hold a moment — up to 60 seconds"}
+              </p>
+            </>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
