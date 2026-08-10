@@ -28,6 +28,7 @@ import { Route as AuthenticatedAppWishlistRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppWidgetRouteImport } from './routes/_authenticated/app.widget'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app.watchlist'
 import { Route as AuthenticatedAppWatchRouteImport } from './routes/_authenticated/app.watch'
+import { Route as AuthenticatedAppWalletRouteImport } from './routes/_authenticated/app.wallet'
 import { Route as AuthenticatedAppUnoRouteImport } from './routes/_authenticated/app.uno'
 import { Route as AuthenticatedAppTriviaRouteImport } from './routes/_authenticated/app.trivia'
 import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenticated/app.timeline'
@@ -181,6 +182,11 @@ const AuthenticatedAppWatchlistRoute =
 const AuthenticatedAppWatchRoute = AuthenticatedAppWatchRouteImport.update({
   id: '/watch',
   path: '/watch',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppWalletRoute = AuthenticatedAppWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
 const AuthenticatedAppUnoRoute = AuthenticatedAppUnoRouteImport.update({
@@ -552,6 +558,7 @@ export interface FileRoutesByFullPath {
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
+  '/app/wallet': typeof AuthenticatedAppWalletRoute
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app/widget': typeof AuthenticatedAppWidgetRoute
@@ -628,6 +635,7 @@ export interface FileRoutesByTo {
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
+  '/app/wallet': typeof AuthenticatedAppWalletRoute
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app/widget': typeof AuthenticatedAppWidgetRoute
@@ -707,6 +715,7 @@ export interface FileRoutesById {
   '/_authenticated/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/_authenticated/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/_authenticated/app/uno': typeof AuthenticatedAppUnoRoute
+  '/_authenticated/app/wallet': typeof AuthenticatedAppWalletRoute
   '/_authenticated/app/watch': typeof AuthenticatedAppWatchRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/_authenticated/app/widget': typeof AuthenticatedAppWidgetRoute
@@ -787,6 +796,7 @@ export interface FileRouteTypes {
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
+    | '/app/wallet'
     | '/app/watch'
     | '/app/watchlist'
     | '/app/widget'
@@ -863,6 +873,7 @@ export interface FileRouteTypes {
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
+    | '/app/wallet'
     | '/app/watch'
     | '/app/watchlist'
     | '/app/widget'
@@ -941,6 +952,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/timeline'
     | '/_authenticated/app/trivia'
     | '/_authenticated/app/uno'
+    | '/_authenticated/app/wallet'
     | '/_authenticated/app/watch'
     | '/_authenticated/app/watchlist'
     | '/_authenticated/app/widget'
@@ -1128,6 +1140,13 @@ declare module '@tanstack/react-router' {
       path: '/watch'
       fullPath: '/app/watch'
       preLoaderRoute: typeof AuthenticatedAppWatchRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/wallet': {
+      id: '/_authenticated/app/wallet'
+      path: '/wallet'
+      fullPath: '/app/wallet'
+      preLoaderRoute: typeof AuthenticatedAppWalletRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/uno': {
@@ -1632,6 +1651,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppTimelineRoute: typeof AuthenticatedAppTimelineRoute
   AuthenticatedAppTriviaRoute: typeof AuthenticatedAppTriviaRoute
   AuthenticatedAppUnoRoute: typeof AuthenticatedAppUnoRoute
+  AuthenticatedAppWalletRoute: typeof AuthenticatedAppWalletRoute
   AuthenticatedAppWatchRoute: typeof AuthenticatedAppWatchRoute
   AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
   AuthenticatedAppWidgetRoute: typeof AuthenticatedAppWidgetRoute
@@ -1684,6 +1704,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppTimelineRoute: AuthenticatedAppTimelineRoute,
   AuthenticatedAppTriviaRoute: AuthenticatedAppTriviaRoute,
   AuthenticatedAppUnoRoute: AuthenticatedAppUnoRoute,
+  AuthenticatedAppWalletRoute: AuthenticatedAppWalletRoute,
   AuthenticatedAppWatchRoute: AuthenticatedAppWatchRoute,
   AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
   AuthenticatedAppWidgetRoute: AuthenticatedAppWidgetRoute,
@@ -1740,13 +1761,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
