@@ -108,20 +108,20 @@
 
 
 .light {
-  /* Lavender Daylight — soft lilac porcelain with electric-purple accents.
-     Inspired by a dreamy lavender iCloud aesthetic: airy, pastel, luminous. */
-  --velvet: #ede4fb;
-  --background: #f1e7fd;
+  /* Porcelain Orchid — warm gallery-white porcelain with a deep orchid
+     accent and ink-plum type. Quiet, editorial, high-contrast. */
+  --velvet: #f4f1f7;
+  --background: #f7f5f9;
   --surface: #ffffff;
-  --surface-elevated: #f6ecff;
-  --foreground: #2b1a52;
-  --candle: #2b1a52;
-  --candle-muted: #6b5aa0;
-  --petal: #8b5cf6;
-  --petal-soft: #e6d7ff;
-  --lavender: #a78bfa;
-  --border: #e0d1f5;
-  --input: #ece0fb;
+  --surface-elevated: #fbf9fd;
+  --foreground: #211a2e;
+  --candle: #211a2e;
+  --candle-muted: #6a6280;
+  --petal: #6d43c8;
+  --petal-soft: #ece3fb;
+  --lavender: #9b7bd8;
+  --border: #e6e1ee;
+  --input: #f0ecf6;
 
   --peach:      #f4b8d0;
   --peach-soft: #fbe0ec;
