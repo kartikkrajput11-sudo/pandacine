@@ -1259,6 +1259,27 @@ export type Database = {
         }
         Relationships: []
       }
+      luvies_settings: {
+        Row: {
+          id: number
+          max_recoveries_per_cycle: number
+          recovery_tiers: Json
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          max_recoveries_per_cycle?: number
+          recovery_tiers?: Json
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          max_recoveries_per_cycle?: number
+          recovery_tiers?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       match_player_messages: {
         Row: {
           content: string
@@ -1586,6 +1607,86 @@ export type Database = {
           id?: string
           pair_key?: string
           stroke?: Json
+        }
+        Relationships: []
+      }
+      panda_inventory: {
+        Row: {
+          acquired_at: string
+          equipped: boolean
+          id: string
+          item_key: string
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          equipped?: boolean
+          id?: string
+          item_key: string
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          equipped?: boolean
+          id?: string
+          item_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "panda_inventory_item_key_fkey"
+            columns: ["item_key"]
+            isOneToOne: false
+            referencedRelation: "panda_shop_items"
+            referencedColumns: ["item_key"]
+          },
+        ]
+      }
+      panda_shop_items: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          description: string | null
+          emoji: string
+          id: string
+          item_key: string
+          metadata: Json
+          name: string
+          price: number
+          rarity: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          description?: string | null
+          emoji?: string
+          id?: string
+          item_key: string
+          metadata?: Json
+          name: string
+          price: number
+          rarity?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          description?: string | null
+          emoji?: string
+          id?: string
+          item_key?: string
+          metadata?: Json
+          name?: string
+          price?: number
+          rarity?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -2225,6 +2326,36 @@ export type Database = {
         }
         Relationships: []
       }
+      streak_recoveries: {
+        Row: {
+          cost: number
+          created_at: string
+          cycle_key: string
+          id: string
+          lost_days: number
+          partner_id: string | null
+          user_id: string
+        }
+        Insert: {
+          cost: number
+          created_at?: string
+          cycle_key: string
+          id?: string
+          lost_days: number
+          partner_id?: string | null
+          user_id: string
+        }
+        Update: {
+          cost?: number
+          created_at?: string
+          cycle_key?: string
+          id?: string
+          lost_days?: number
+          partner_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
@@ -2542,6 +2673,7 @@ export type Database = {
         Args: { _amount: number; _note?: string; _target: string }
         Returns: number
       }
+      buy_panda_item: { Args: { _item_key: string }; Returns: Json }
       call_answer: {
         Args: { _call_id: string; _device_id: string }
         Returns: {
@@ -2715,6 +2847,10 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      equip_panda_item: {
+        Args: { _equip: boolean; _item_key: string }
+        Returns: Json
+      }
       friend_profiles_for_me: {
         Args: { _ids: string[] }
         Returns: {
@@ -2779,6 +2915,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      luvies_wallet: { Args: never; Returns: Json }
       move_to_dlq: {
         Args: {
           dlq_name: string
@@ -2874,6 +3011,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      recover_streak: { Args: never; Returns: Json }
       regenerate_group_invite_code: { Args: { _gid: string }; Returns: string }
       revoke_admin: {
         Args: { _pin: string; _target: string }
@@ -2909,6 +3047,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      streak_recovery_state: { Args: never; Returns: Json }
       suggest_usernames: {
         Args: { _base: string; _count?: number }
         Returns: string[]

@@ -28,6 +28,7 @@ import { Route as AuthenticatedAppWishlistRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppWidgetRouteImport } from './routes/_authenticated/app.widget'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app.watchlist'
 import { Route as AuthenticatedAppWatchRouteImport } from './routes/_authenticated/app.watch'
+import { Route as AuthenticatedAppWalletRouteImport } from './routes/_authenticated/app.wallet'
 import { Route as AuthenticatedAppUnoRouteImport } from './routes/_authenticated/app.uno'
 import { Route as AuthenticatedAppTriviaRouteImport } from './routes/_authenticated/app.trivia'
 import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenticated/app.timeline'
@@ -40,6 +41,7 @@ import { Route as AuthenticatedAppPoolRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAppPlayRouteImport } from './routes/_authenticated/app.play'
 import { Route as AuthenticatedAppPetRouteImport } from './routes/_authenticated/app.pet'
 import { Route as AuthenticatedAppPartnerRouteImport } from './routes/_authenticated/app.partner'
+import { Route as AuthenticatedAppPandaShopRouteImport } from './routes/_authenticated/app.panda-shop'
 import { Route as AuthenticatedAppPaintRouteImport } from './routes/_authenticated/app.paint'
 import { Route as AuthenticatedAppMoviesRouteImport } from './routes/_authenticated/app.movies'
 import { Route as AuthenticatedAppMoodRouteImport } from './routes/_authenticated/app.mood'
@@ -183,6 +185,11 @@ const AuthenticatedAppWatchRoute = AuthenticatedAppWatchRouteImport.update({
   path: '/watch',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppWalletRoute = AuthenticatedAppWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppUnoRoute = AuthenticatedAppUnoRouteImport.update({
   id: '/uno',
   path: '/uno',
@@ -245,6 +252,12 @@ const AuthenticatedAppPartnerRoute = AuthenticatedAppPartnerRouteImport.update({
   path: '/partner',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppPandaShopRoute =
+  AuthenticatedAppPandaShopRouteImport.update({
+    id: '/panda-shop',
+    path: '/panda-shop',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppPaintRoute = AuthenticatedAppPaintRouteImport.update({
   id: '/paint',
   path: '/paint',
@@ -540,6 +553,7 @@ export interface FileRoutesByFullPath {
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/app/paint': typeof AuthenticatedAppPaintRoute
+  '/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
   '/app/partner': typeof AuthenticatedAppPartnerRoute
   '/app/pet': typeof AuthenticatedAppPetRoute
   '/app/play': typeof AuthenticatedAppPlayRoute
@@ -552,6 +566,7 @@ export interface FileRoutesByFullPath {
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
+  '/app/wallet': typeof AuthenticatedAppWalletRoute
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app/widget': typeof AuthenticatedAppWidgetRoute
@@ -616,6 +631,7 @@ export interface FileRoutesByTo {
   '/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/paint': typeof AuthenticatedAppPaintRoute
+  '/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
   '/app/partner': typeof AuthenticatedAppPartnerRoute
   '/app/pet': typeof AuthenticatedAppPetRoute
   '/app/play': typeof AuthenticatedAppPlayRoute
@@ -628,6 +644,7 @@ export interface FileRoutesByTo {
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
+  '/app/wallet': typeof AuthenticatedAppWalletRoute
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app/widget': typeof AuthenticatedAppWidgetRoute
@@ -695,6 +712,7 @@ export interface FileRoutesById {
   '/_authenticated/app/mood': typeof AuthenticatedAppMoodRoute
   '/_authenticated/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/_authenticated/app/paint': typeof AuthenticatedAppPaintRoute
+  '/_authenticated/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
   '/_authenticated/app/partner': typeof AuthenticatedAppPartnerRoute
   '/_authenticated/app/pet': typeof AuthenticatedAppPetRoute
   '/_authenticated/app/play': typeof AuthenticatedAppPlayRoute
@@ -707,6 +725,7 @@ export interface FileRoutesById {
   '/_authenticated/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/_authenticated/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/_authenticated/app/uno': typeof AuthenticatedAppUnoRoute
+  '/_authenticated/app/wallet': typeof AuthenticatedAppWalletRoute
   '/_authenticated/app/watch': typeof AuthenticatedAppWatchRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/_authenticated/app/widget': typeof AuthenticatedAppWidgetRoute
@@ -775,6 +794,7 @@ export interface FileRouteTypes {
     | '/app/mood'
     | '/app/movies'
     | '/app/paint'
+    | '/app/panda-shop'
     | '/app/partner'
     | '/app/pet'
     | '/app/play'
@@ -787,6 +807,7 @@ export interface FileRouteTypes {
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
+    | '/app/wallet'
     | '/app/watch'
     | '/app/watchlist'
     | '/app/widget'
@@ -851,6 +872,7 @@ export interface FileRouteTypes {
     | '/app/memory-challenge'
     | '/app/mood'
     | '/app/paint'
+    | '/app/panda-shop'
     | '/app/partner'
     | '/app/pet'
     | '/app/play'
@@ -863,6 +885,7 @@ export interface FileRouteTypes {
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
+    | '/app/wallet'
     | '/app/watch'
     | '/app/watchlist'
     | '/app/widget'
@@ -929,6 +952,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/mood'
     | '/_authenticated/app/movies'
     | '/_authenticated/app/paint'
+    | '/_authenticated/app/panda-shop'
     | '/_authenticated/app/partner'
     | '/_authenticated/app/pet'
     | '/_authenticated/app/play'
@@ -941,6 +965,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/timeline'
     | '/_authenticated/app/trivia'
     | '/_authenticated/app/uno'
+    | '/_authenticated/app/wallet'
     | '/_authenticated/app/watch'
     | '/_authenticated/app/watchlist'
     | '/_authenticated/app/widget'
@@ -1130,6 +1155,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppWatchRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/wallet': {
+      id: '/_authenticated/app/wallet'
+      path: '/wallet'
+      fullPath: '/app/wallet'
+      preLoaderRoute: typeof AuthenticatedAppWalletRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/uno': {
       id: '/_authenticated/app/uno'
       path: '/uno'
@@ -1212,6 +1244,13 @@ declare module '@tanstack/react-router' {
       path: '/partner'
       fullPath: '/app/partner'
       preLoaderRoute: typeof AuthenticatedAppPartnerRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/panda-shop': {
+      id: '/_authenticated/app/panda-shop'
+      path: '/panda-shop'
+      fullPath: '/app/panda-shop'
+      preLoaderRoute: typeof AuthenticatedAppPandaShopRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/paint': {
@@ -1620,6 +1659,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMoodRoute: typeof AuthenticatedAppMoodRoute
   AuthenticatedAppMoviesRoute: typeof AuthenticatedAppMoviesRouteWithChildren
   AuthenticatedAppPaintRoute: typeof AuthenticatedAppPaintRoute
+  AuthenticatedAppPandaShopRoute: typeof AuthenticatedAppPandaShopRoute
   AuthenticatedAppPartnerRoute: typeof AuthenticatedAppPartnerRoute
   AuthenticatedAppPetRoute: typeof AuthenticatedAppPetRoute
   AuthenticatedAppPlayRoute: typeof AuthenticatedAppPlayRoute
@@ -1632,6 +1672,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppTimelineRoute: typeof AuthenticatedAppTimelineRoute
   AuthenticatedAppTriviaRoute: typeof AuthenticatedAppTriviaRoute
   AuthenticatedAppUnoRoute: typeof AuthenticatedAppUnoRoute
+  AuthenticatedAppWalletRoute: typeof AuthenticatedAppWalletRoute
   AuthenticatedAppWatchRoute: typeof AuthenticatedAppWatchRoute
   AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
   AuthenticatedAppWidgetRoute: typeof AuthenticatedAppWidgetRoute
@@ -1672,6 +1713,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppMoodRoute: AuthenticatedAppMoodRoute,
   AuthenticatedAppMoviesRoute: AuthenticatedAppMoviesRouteWithChildren,
   AuthenticatedAppPaintRoute: AuthenticatedAppPaintRoute,
+  AuthenticatedAppPandaShopRoute: AuthenticatedAppPandaShopRoute,
   AuthenticatedAppPartnerRoute: AuthenticatedAppPartnerRoute,
   AuthenticatedAppPetRoute: AuthenticatedAppPetRoute,
   AuthenticatedAppPlayRoute: AuthenticatedAppPlayRoute,
@@ -1684,6 +1726,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppTimelineRoute: AuthenticatedAppTimelineRoute,
   AuthenticatedAppTriviaRoute: AuthenticatedAppTriviaRoute,
   AuthenticatedAppUnoRoute: AuthenticatedAppUnoRoute,
+  AuthenticatedAppWalletRoute: AuthenticatedAppWalletRoute,
   AuthenticatedAppWatchRoute: AuthenticatedAppWatchRoute,
   AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
   AuthenticatedAppWidgetRoute: AuthenticatedAppWidgetRoute,
@@ -1740,13 +1783,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

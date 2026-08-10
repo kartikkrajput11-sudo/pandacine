@@ -19,6 +19,8 @@ import type { AiStickerMood } from "@/lib/ai-stickers.functions";
 import type { TmdbMovie } from "@/lib/tmdb.functions";
 import { preloadAffectionStickers } from "@/lib/affection-preload";
 import { RitualsPanel } from "./RitualsPanel";
+import { CameraCapture } from "./CameraCapture";
+import { Camera } from "lucide-react";
 
 
 
@@ -68,6 +70,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
   const [aiOpen, setAiOpen] = useState(false);
   const [whisper, setWhisper] = useState(false);
   const [viewOnce, setViewOnce] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const [recording, setRecording] = useState(false);
   const [focused, setFocused] = useState(false);
   const [openGroup, setOpenGroup] = useState<null | "media" | "sticker" | "together" | "affection">(null);
@@ -357,6 +360,30 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
     if (viewOnce) setViewOnce(false);
   }
 
+  /** Photo/video captured live from the in-chat camera. */
+  function handleCaptured(file: File, kind: "image" | "video") {
+    if (kind === "video" && file.size > 60 * 1024 * 1024) {
+      toast.error("Recording too large (max 60 MB)");
+      return;
+    }
+    uploadAndSend(file, kind, (path) => ({
+      type: kind,
+      media_url: path,
+      media_meta: {
+        name: file.name,
+        size: file.size,
+        mime: file.type,
+        captured: true,
+        view_once: viewOnce || undefined,
+      },
+      reply_to_id: replyTo?.id ?? null,
+      disappear_seconds: disappearSecs,
+    }), "capture");
+    if (viewOnce) setViewOnce(false);
+  }
+
+
+
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
@@ -462,7 +489,8 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
             </div>
 
             {openGroup === "media" && (
-              <div className="mt-2 grid grid-cols-4 gap-2 animate-fade-in">
+              <div className="mt-2 grid grid-cols-5 gap-2 animate-fade-in">
+                <GroupChoice icon={<Camera className="size-4 text-petal" />} label="Camera" hint="Live capture" onClick={() => { setCameraOpen(true); setOpenGroup(null); setMenuOpen(false); }} />
                 <GroupChoice icon={<ImageIcon className="size-4" />} label="Photo" hint="From gallery" onClick={() => { imgRef.current?.click(); setOpenGroup(null); }} />
                 <GroupChoice icon={<VideoIcon className="size-4" />} label="Video" hint="Up to 60 MB" onClick={() => { vidRef.current?.click(); setOpenGroup(null); }} />
                 <GroupChoice
@@ -479,6 +507,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 <GroupChoice icon={<Paperclip className="size-4" />} label="File" hint="Any document" onClick={() => { fileRef.current?.click(); setOpenGroup(null); }} />
               </div>
             )}
+
 
             {openGroup === "sticker" && (
               <div className="mt-2 grid grid-cols-2 gap-2 animate-fade-in">
@@ -558,6 +587,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
       <MovieWheelPicker open={wheelOpen} onClose={() => setWheelOpen(false)} onSend={sendMovieWheel} />
       <PandaStickerPicker open={pandaOpen} onClose={() => setPandaOpen(false)} onPick={sendPandaSticker} onOpenAi={() => setAiOpen(true)} />
       <AiStickerPicker open={aiOpen} onClose={() => setAiOpen(false)} onPick={sendAiSticker} />
+      <CameraCapture open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCaptured} />
 
 
 
