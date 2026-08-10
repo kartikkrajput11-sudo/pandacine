@@ -489,7 +489,8 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
             </div>
 
             {openGroup === "media" && (
-              <div className="mt-2 grid grid-cols-4 gap-2 animate-fade-in">
+              <div className="mt-2 grid grid-cols-5 gap-2 animate-fade-in">
+                <GroupChoice icon={<Camera className="size-4 text-petal" />} label="Camera" hint="Live capture" onClick={() => { setCameraOpen(true); setOpenGroup(null); setMenuOpen(false); }} />
                 <GroupChoice icon={<ImageIcon className="size-4" />} label="Photo" hint="From gallery" onClick={() => { imgRef.current?.click(); setOpenGroup(null); }} />
                 <GroupChoice icon={<VideoIcon className="size-4" />} label="Video" hint="Up to 60 MB" onClick={() => { vidRef.current?.click(); setOpenGroup(null); }} />
                 <GroupChoice
@@ -506,6 +507,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 <GroupChoice icon={<Paperclip className="size-4" />} label="File" hint="Any document" onClick={() => { fileRef.current?.click(); setOpenGroup(null); }} />
               </div>
             )}
+
 
             {openGroup === "sticker" && (
               <div className="mt-2 grid grid-cols-2 gap-2 animate-fade-in">
