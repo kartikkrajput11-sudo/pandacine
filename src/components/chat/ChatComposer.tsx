@@ -360,6 +360,30 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
     if (viewOnce) setViewOnce(false);
   }
 
+  /** Photo/video captured live from the in-chat camera. */
+  function handleCaptured(file: File, kind: "image" | "video") {
+    if (kind === "video" && file.size > 60 * 1024 * 1024) {
+      toast.error("Recording too large (max 60 MB)");
+      return;
+    }
+    uploadAndSend(file, kind, (path) => ({
+      type: kind,
+      media_url: path,
+      media_meta: {
+        name: file.name,
+        size: file.size,
+        mime: file.type,
+        captured: true,
+        view_once: viewOnce || undefined,
+      },
+      reply_to_id: replyTo?.id ?? null,
+      disappear_seconds: disappearSecs,
+    }), "capture");
+    if (viewOnce) setViewOnce(false);
+  }
+
+
+
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
