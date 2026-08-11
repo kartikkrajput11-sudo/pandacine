@@ -388,7 +388,7 @@ function PetRoute() {
                 <div className="flex items-baseline justify-between">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Grove market</p>
                   <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
-                    <Coins className="size-3" />
+                    <LuvieCoin className="size-3.5" />
                     {coins}
                   </span>
                 </div>
@@ -403,7 +403,7 @@ function PetRoute() {
                       <div className="flex items-start justify-between">
                         <span className="text-xl">{f.emoji}</span>
                         <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
-                          <Coins className="size-3" />
+                          <LuvieCoin className="size-3.5" />
                           {f.price}
                         </span>
                       </div>
@@ -414,6 +414,67 @@ function PetRoute() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* boutique closet — everything bought in the Panda Shop */}
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Boutique closet</p>
+                  <Link
+                    to="/app/panda-shop"
+                    className="inline-flex items-center gap-1 text-[11px] text-petal hover:underline"
+                  >
+                    <ShoppingBag className="size-3.5" /> Panda Shop <ChevronRight className="size-3" />
+                  </Link>
+                </div>
+                {ownedShopItems.length === 0 ? (
+                  <p className="text-[11px] text-candle-muted">
+                    Nothing from the boutique yet — outfits, props and effects you buy with Luvies appear on your panda
+                    here.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {PANDA_CATEGORIES.map((c) => {
+                      const rows = ownedShopItems.filter((r) => r.item.category === c.key);
+                      if (!rows.length) return null;
+                      return (
+                        <div key={c.key} className="space-y-1.5">
+                          <p className="text-[10px] uppercase tracking-widest text-candle-muted">
+                            {c.icon} {c.label}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {rows.map(({ inv, item }) => (
+                              <button
+                                key={item.item_key}
+                                disabled={equipShopItem.isPending}
+                                onClick={() =>
+                                  equipShopItem.mutate(
+                                    { itemKey: item.item_key, equip: !inv.equipped },
+                                    {
+                                      onSuccess: () =>
+                                        toast.success(inv.equipped ? `${item.name} put away` : `${item.name} on`),
+                                      onError: (e: any) => toast.error(e?.message ?? "Couldn't change that"),
+                                    },
+                                  )
+                                }
+                                className={cn(
+                                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors",
+                                  inv.equipped
+                                    ? "border-petal/60 bg-petal/10 text-petal"
+                                    : "border-border bg-surface/70 hover:border-petal/50",
+                                )}
+                              >
+                                <span>{item.emoji}</span>
+                                <span>{item.name}</span>
+                                {inv.equipped && <Check className="size-3.5" />}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 
