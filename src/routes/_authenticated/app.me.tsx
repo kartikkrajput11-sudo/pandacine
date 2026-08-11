@@ -257,7 +257,10 @@ function Me() {
               </div>
 
               <div className="mt-5 grid grid-cols-3 gap-2">
-                <Stat label="Coins" value={String((me as any).coins ?? 0)} />
+                <Stat
+                  label="Luvies"
+                  value={String(Math.max((me as any).panda_coins ?? 0, (me as any).coins ?? 0))}
+                />
                 <Stat
                   label="Together"
                   value={
