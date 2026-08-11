@@ -7,7 +7,7 @@ import { DailyQuestionCard } from "@/components/DailyQuestionCard";
 import { PartnerPresenceCard } from "@/components/PartnerPresenceCard";
 
 import { MemoryOfTheDayCard } from "@/components/MemoryOfTheDayCard";
-import { Heart, ArrowRight, Users, LineChart, BookHeart, Gift, Feather, Sparkles, Milestone, ListChecks, Compass, MapPin, CalendarHeart, Smartphone } from "lucide-react";
+import { Heart, ArrowRight, Users, LineChart, BookHeart, Gift, Feather, Sparkles, Milestone, ListChecks, Compass, MapPin, CalendarHeart, Smartphone, Wallet, ShoppingBag } from "lucide-react";
 import { AvatarImg } from "@/components/AvatarImg";
 import { Button } from "@/components/ui/button";
 import NotificationCenter from "@/components/NotificationCenter";
