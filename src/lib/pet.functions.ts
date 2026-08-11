@@ -184,9 +184,6 @@ export const buyPetFood = createServerFn({ method: "POST" })
     const cost = food.price * qty;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: prof } = await supabaseAdmin.from("profiles").select("coins").eq("id", context.userId).maybeSingle();
-    const coins = (prof as any)?.coins ?? 0;
-    if (coins < cost) throw new Error(`You need ${cost} coins — you have ${coins}`);
 
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
@@ -195,6 +192,14 @@ export const buyPetFood = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!(pet as any)?.unlocked) throw new Error("Adopt your panda first");
 
+    const { data: remaining, error: sErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
+      _user: context.userId,
+      _amount: cost,
+      _reason: "panda_food",
+      _ref: `food:${food.key}`,
+    } as any);
+    if (sErr) throw new Error(sErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
+
     const pantry = { ...(((pet as any)?.pantry ?? {}) as Record<string, number>) };
     pantry[food.key] = (pantry[food.key] ?? 0) + qty;
 
@@ -202,10 +207,17 @@ export const buyPetFood = createServerFn({ method: "POST" })
       .from("pet_pandas" as any)
       .update({ pantry, updated_at: new Date().toISOString() })
       .eq("user_id", context.userId);
-    if (error) throw error;
+    if (error) {
+      await supabaseAdmin.rpc("credit_luvies" as any, {
+        _user: context.userId,
+        _amount: cost,
+        _reason: "refund",
+        _ref: `food:${food.key}`,
+      } as any);
+      throw error;
+    }
 
-    await supabaseAdmin.from("profiles").update({ coins: coins - cost }).eq("id", context.userId);
-    return { ok: true, coins: coins - cost, pantry };
+    return { ok: true, coins: (remaining as number) ?? 0, pantry };
   });
 
 /** Feeds one pantry item to the panda — restores fullness, affection and unlocks. */
