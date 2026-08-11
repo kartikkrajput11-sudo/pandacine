@@ -226,11 +226,11 @@ function PetRoute() {
             onClick={() => adoptM.mutate()}
           >
             {coins < (data?.cost ?? 250)
-              ? `Needs ${data?.cost ?? 250} coins — you have ${coins}`
-              : `Adopt for ${data?.cost ?? 250} coins`}
+              ? `Needs ${data?.cost ?? 250} Luvies — you have ${coins}`
+              : `Adopt for ${data?.cost ?? 250} Luvies`}
           </Button>
           <p className="text-center text-[11px] text-candle-muted">
-            Earn coins from rituals, streaks and daily questions.
+            Earn Luvies from rituals, streaks and daily questions.
           </p>
         </section>
       )}
