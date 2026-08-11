@@ -74,7 +74,20 @@ function PetRoute() {
 
   const { data, isLoading } = useQuery({ queryKey: ["pet"], queryFn: () => fetchPet({ data: undefined as never }) });
   const pet = data?.pet as any;
-  const coins = data?.coins ?? 0;
+  const { data: wallet } = useLuviesWallet();
+  const coins = wallet?.balance ?? data?.coins ?? 0;
+
+  // Panda Shop purchases, shown on the live mascot.
+  const look = useEquippedLook();
+  const { data: shopItems = [] } = usePandaShop();
+  const { data: shopInventory = [] } = usePandaInventory();
+  const equipShopItem = usePandaEquip();
+  const ownedShopItems = useMemo(() => {
+    const byKey = new Map(shopItems.map((i) => [i.item_key, i]));
+    return shopInventory
+      .map((inv) => ({ inv, item: byKey.get(inv.item_key) }))
+      .filter((r): r is { inv: (typeof shopInventory)[number]; item: (typeof shopItems)[number] } => !!r.item);
+  }, [shopItems, shopInventory]);
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
