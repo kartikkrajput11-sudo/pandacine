@@ -188,10 +188,14 @@ function PetRoute() {
           <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Your companion</p>
           <h1 className="font-serif text-2xl italic leading-tight">The Panda</h1>
         </div>
-        <span className="flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-sm">
-          <Coins className="size-4 text-petal" />
+        <Link
+          to="/app/wallet"
+          className="flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-sm transition hover:text-petal"
+          aria-label="Open your Luvies wallet"
+        >
+          <LuvieCoin className="size-4" />
           <span className="tabular-nums font-semibold text-petal">{coins}</span>
-        </span>
+        </Link>
       </header>
 
       {isLoading && <p className="mt-6 text-sm text-candle-muted">Waking the panda…</p>}
