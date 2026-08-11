@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { PandaLook } from "@/components/panda/PandaPreview";
 import type {
   LuviesWallet,
   PandaInventoryRow,
