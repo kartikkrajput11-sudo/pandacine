@@ -213,7 +213,9 @@ function Home() {
         <EditorialSectionHeader eyebrow="✦ Chapter III" title="Your circle" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
           <TileLink to="/app/friends" Icon={Users} label="Friends" caption="Your circle" />
-          <TileLink to="/app/shop" Icon={Sparkles} label="Tag Shop" caption="Spend your coins" />
+          <TileLink to="/app/wallet" Icon={Wallet} label="Luvies Wallet" caption="Balance & history" />
+          <TileLink to="/app/panda-shop" Icon={ShoppingBag} label="Panda Shop" caption="Dress your panda" />
+          <TileLink to="/app/shop" Icon={Sparkles} label="Tag Shop" caption="Spend your Luvies" />
         </div>
       </section>
 
