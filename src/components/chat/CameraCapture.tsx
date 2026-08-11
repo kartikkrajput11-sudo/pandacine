@@ -165,8 +165,8 @@ export function CameraCapture({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-md p-0 overflow-hidden bg-black border-border">
-        <div className="relative aspect-[3/4] bg-black">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md max-h-[92dvh] p-0 overflow-hidden bg-black border-border flex flex-col">
+        <div className="relative min-h-0 flex-1 aspect-[3/4] max-h-[62dvh] bg-black">
           {error ? (
             <div className="absolute inset-0 grid place-items-center p-8 text-center">
               <div>
@@ -215,7 +215,7 @@ export function CameraCapture({
           )}
         </div>
 
-        <div className="p-4 bg-ink space-y-3">
+        <div className="shrink-0 p-4 bg-ink space-y-3">
           {preview ? (
             <div className="grid grid-cols-2 gap-2">
               <Button variant="quiet" onClick={retake}>
