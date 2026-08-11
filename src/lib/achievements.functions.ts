@@ -3,7 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { RITUAL_REWARD, TAG_BY_KEY } from "./achievements";
 
 /**
- * Awards ritual completion coins to both partners. Idempotent: sets
+ * Awards ritual completion Luvies to both partners. Idempotent: sets
  * ritual.state.coins_awarded=true and refuses to credit twice.
  */
 export const awardRitualCoins = createServerFn({ method: "POST" })
