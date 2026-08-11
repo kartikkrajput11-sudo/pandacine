@@ -283,16 +283,19 @@ function PetRoute() {
               )}
             </div>
 
-            <PandaStage
-              name={name}
-              costume={costume}
-              hideActions
-              onReady={setActions}
-              onInteract={() => {
-                counter.current.interactions += 1;
-                counter.current.affection = Math.min(100, counter.current.affection + 1);
-              }}
-            />
+            <div className="relative">
+              <PandaStage
+                name={name}
+                costume={costume}
+                hideActions
+                onReady={setActions}
+                onInteract={() => {
+                  counter.current.interactions += 1;
+                  counter.current.affection = Math.min(100, counter.current.affection + 1);
+                }}
+              />
+              <PandaAdornments look={look} />
+            </div>
 
             {/* ── Playroom: everything you can do with the panda ── */}
             <div className="rounded-3xl glass-strong p-5 space-y-5">
