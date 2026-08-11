@@ -592,12 +592,12 @@ function UserRow({ user: u }: { user: AdminUserRow }) {
     setSendingCoins(true);
     try {
       const res = await sendCoins({ data: { userId: u.id, amount: n } });
-      toast.success(`Wallet updated · ${res.coins} coins`);
+      toast.success(`Wallet updated · ${res.coins} Luvies`);
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       setCoinsOpen(false);
       setCoinAmt("");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not send coins");
+      toast.error(err instanceof Error ? err.message : "Could not send Luvies");
     } finally {
       setSendingCoins(false);
     }
@@ -687,7 +687,7 @@ function UserRow({ user: u }: { user: AdminUserRow }) {
       </Link>
       <button
         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCoinAmt(""); setCoinsOpen(true); }}
-        title="Send coins"
+        title="Send Luvies"
         className="shrink-0 size-9 rounded-full bg-velvet border border-petal/30 text-petal hover:bg-petal/10 flex items-center justify-center transition-colors"
       >
         <Coins className="size-4" />
@@ -774,7 +774,7 @@ function UserRow({ user: u }: { user: AdminUserRow }) {
             <div className="size-14 mx-auto mb-4 rounded-full bg-petal-soft flex items-center justify-center">
               <Coins className="size-6 text-petal" />
             </div>
-            <h2 className="font-serif text-xl italic mb-1">Send coins</h2>
+            <h2 className="font-serif text-xl italic mb-1">Send Luvies</h2>
             <p className="text-xs text-candle-muted mb-5">
               Fill or debit the wallet of{" "}
               <span className="text-candle">{u.display_name ?? u.username ?? "this user"}</span>.
