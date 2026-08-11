@@ -2838,6 +2838,10 @@ export type Database = {
         }
       }
       credit_coin_purchase: { Args: { _payment_id: string }; Returns: Json }
+      credit_luvies: {
+        Args: { _amount: number; _reason: string; _ref?: string; _user: string }
+        Returns: number
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -3025,6 +3029,10 @@ export type Database = {
           id: string
           username: string
         }[]
+      }
+      spend_luvies: {
+        Args: { _amount: number; _reason: string; _ref?: string; _user: string }
+        Returns: number
       }
       start_group_match: {
         Args: { _match_id: string }

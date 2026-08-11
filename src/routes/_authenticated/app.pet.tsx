@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft,
-  Coins,
   Pencil,
   Check,
   Sparkles,
@@ -18,9 +17,15 @@ import {
   Hand,
   Camera,
   Lock,
+  ShoppingBag,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PandaStage, type PandaActions } from "@/components/panda/PandaStage";
+import { PandaAdornments } from "@/components/panda/PandaAdornments";
+import { LuvieCoin } from "@/components/luvies/LuviesAmount";
+import { useEquippedLook, useLuviesWallet, usePandaEquip, usePandaInventory, usePandaShop } from "@/hooks/useLuvies";
+import { PANDA_CATEGORIES } from "@/lib/luvies";
 import type { Costume } from "@/components/panda/usePandaBrain";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,7 +74,20 @@ function PetRoute() {
 
   const { data, isLoading } = useQuery({ queryKey: ["pet"], queryFn: () => fetchPet({ data: undefined as never }) });
   const pet = data?.pet as any;
-  const coins = data?.coins ?? 0;
+  const { data: wallet } = useLuviesWallet();
+  const coins = wallet?.balance ?? data?.coins ?? 0;
+
+  // Panda Shop purchases, shown on the live mascot.
+  const look = useEquippedLook();
+  const { data: shopItems = [] } = usePandaShop();
+  const { data: shopInventory = [] } = usePandaInventory();
+  const equipShopItem = usePandaEquip();
+  const ownedShopItems = useMemo(() => {
+    const byKey = new Map(shopItems.map((i) => [i.item_key, i]));
+    return shopInventory
+      .map((inv) => ({ inv, item: byKey.get(inv.item_key) }))
+      .filter((r): r is { inv: (typeof shopInventory)[number]; item: (typeof shopItems)[number] } => !!r.item);
+  }, [shopItems, shopInventory]);
 
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
@@ -170,10 +188,14 @@ function PetRoute() {
           <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Your companion</p>
           <h1 className="font-serif text-2xl italic leading-tight">The Panda</h1>
         </div>
-        <span className="flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-sm">
-          <Coins className="size-4 text-petal" />
+        <Link
+          to="/app/wallet"
+          className="flex items-center gap-1.5 rounded-full glass px-3 py-1.5 text-sm transition hover:text-petal"
+          aria-label="Open your Luvies wallet"
+        >
+          <LuvieCoin className="size-4" />
           <span className="tabular-nums font-semibold text-petal">{coins}</span>
-        </span>
+        </Link>
       </header>
 
       {isLoading && <p className="mt-6 text-sm text-candle-muted">Waking the panda…</p>}
@@ -204,11 +226,11 @@ function PetRoute() {
             onClick={() => adoptM.mutate()}
           >
             {coins < (data?.cost ?? 250)
-              ? `Needs ${data?.cost ?? 250} coins — you have ${coins}`
-              : `Adopt for ${data?.cost ?? 250} coins`}
+              ? `Needs ${data?.cost ?? 250} Luvies — you have ${coins}`
+              : `Adopt for ${data?.cost ?? 250} Luvies`}
           </Button>
           <p className="text-center text-[11px] text-candle-muted">
-            Earn coins from rituals, streaks and daily questions.
+            Earn Luvies from rituals, streaks and daily questions.
           </p>
         </section>
       )}
@@ -261,16 +283,19 @@ function PetRoute() {
               )}
             </div>
 
-            <PandaStage
-              name={name}
-              costume={costume}
-              hideActions
-              onReady={setActions}
-              onInteract={() => {
-                counter.current.interactions += 1;
-                counter.current.affection = Math.min(100, counter.current.affection + 1);
-              }}
-            />
+            <div className="relative">
+              <PandaStage
+                name={name}
+                costume={costume}
+                hideActions
+                onReady={setActions}
+                onInteract={() => {
+                  counter.current.interactions += 1;
+                  counter.current.affection = Math.min(100, counter.current.affection + 1);
+                }}
+              />
+              <PandaAdornments look={look} />
+            </div>
 
             {/* ── Playroom: everything you can do with the panda ── */}
             <div className="rounded-3xl glass-strong p-5 space-y-5">
@@ -363,7 +388,7 @@ function PetRoute() {
                 <div className="flex items-baseline justify-between">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Grove market</p>
                   <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
-                    <Coins className="size-3" />
+                    <LuvieCoin className="size-3.5" />
                     {coins}
                   </span>
                 </div>
@@ -378,7 +403,7 @@ function PetRoute() {
                       <div className="flex items-start justify-between">
                         <span className="text-xl">{f.emoji}</span>
                         <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
-                          <Coins className="size-3" />
+                          <LuvieCoin className="size-3.5" />
                           {f.price}
                         </span>
                       </div>
@@ -389,6 +414,67 @@ function PetRoute() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* boutique closet — everything bought in the Panda Shop */}
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Boutique closet</p>
+                  <Link
+                    to="/app/panda-shop"
+                    className="inline-flex items-center gap-1 text-[11px] text-petal hover:underline"
+                  >
+                    <ShoppingBag className="size-3.5" /> Panda Shop <ChevronRight className="size-3" />
+                  </Link>
+                </div>
+                {ownedShopItems.length === 0 ? (
+                  <p className="text-[11px] text-candle-muted">
+                    Nothing from the boutique yet — outfits, props and effects you buy with Luvies appear on your panda
+                    here.
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    {PANDA_CATEGORIES.map((c) => {
+                      const rows = ownedShopItems.filter((r) => r.item.category === c.key);
+                      if (!rows.length) return null;
+                      return (
+                        <div key={c.key} className="space-y-1.5">
+                          <p className="text-[10px] uppercase tracking-widest text-candle-muted">
+                            {c.icon} {c.label}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {rows.map(({ inv, item }) => (
+                              <button
+                                key={item.item_key}
+                                disabled={equipShopItem.isPending}
+                                onClick={() =>
+                                  equipShopItem.mutate(
+                                    { itemKey: item.item_key, equip: !inv.equipped },
+                                    {
+                                      onSuccess: () =>
+                                        toast.success(inv.equipped ? `${item.name} put away` : `${item.name} on`),
+                                      onError: (e: any) => toast.error(e?.message ?? "Couldn't change that"),
+                                    },
+                                  )
+                                }
+                                className={cn(
+                                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors",
+                                  inv.equipped
+                                    ? "border-petal/60 bg-petal/10 text-petal"
+                                    : "border-border bg-surface/70 hover:border-petal/50",
+                                )}
+                              >
+                                <span>{item.emoji}</span>
+                                <span>{item.name}</span>
+                                {inv.equipped && <Check className="size-3.5" />}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
 

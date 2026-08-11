@@ -3,7 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { RITUAL_REWARD, TAG_BY_KEY } from "./achievements";
 
 /**
- * Awards ritual completion coins to both partners. Idempotent: sets
+ * Awards ritual completion Luvies to both partners. Idempotent: sets
  * ritual.state.coins_awarded=true and refuses to credit twice.
  */
 export const awardRitualCoins = createServerFn({ method: "POST" })
@@ -36,18 +36,16 @@ export const awardRitualCoins = createServerFn({ method: "POST" })
 
     const reward = RITUAL_REWARD[r.kind as string] ?? 15;
 
-    // Bump coins for both partners atomically-ish (two updates, tolerated).
+    // Credit both partners through the single Luvies ledger.
     for (const uid of [r.host_id, r.partner_id]) {
-      const { data: prof } = await supabaseAdmin
-        .from("profiles")
-        .select("coins")
-        .eq("id", uid)
-        .maybeSingle();
-      const current = (prof as any)?.coins ?? 0;
-      await supabaseAdmin
-        .from("profiles")
-        .update({ coins: current + reward })
-        .eq("id", uid);
+      if (!uid) continue;
+      const { error } = await supabaseAdmin.rpc("credit_luvies" as any, {
+        _user: uid,
+        _amount: reward,
+        _reason: `ritual:${r.kind}`,
+        _ref: `ritual:${r.id}`,
+      } as any);
+      if (error) throw error;
     }
 
     await supabaseAdmin
@@ -63,8 +61,8 @@ export const awardRitualCoins = createServerFn({ method: "POST" })
   });
 
 /**
- * Buys an achievement tag for the calling user. Deducts coins and inserts the
- * tag. Fails if the tag is already owned or the user can't afford it.
+ * Buys an achievement tag for the calling user. Spends Luvies through the
+ * shared ledger. Fails if the tag is already owned or the balance is short.
  */
 export const purchaseTag = createServerFn({ method: "POST" })
   .inputValidator((input: { tagKey: string }) => input)
@@ -84,28 +82,27 @@ export const purchaseTag = createServerFn({ method: "POST" })
       .maybeSingle();
     if (existing) throw new Error("You already own this tag");
 
-    const { data: prof } = await supabaseAdmin
-      .from("profiles")
-      .select("coins")
-      .eq("id", userId)
-      .maybeSingle();
-    const coins = (prof as any)?.coins ?? 0;
-    if (coins < tag.cost) throw new Error("Not enough coins");
-
-    const { error: dErr } = await supabaseAdmin
-      .from("profiles")
-      .update({ coins: coins - tag.cost })
-      .eq("id", userId);
-    if (dErr) throw dErr;
+    const { data: remaining, error: dErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
+      _user: userId,
+      _amount: tag.cost,
+      _reason: `purchase:${tag.key}`,
+      _ref: `tag:${tag.key}`,
+    } as any);
+    if (dErr) throw new Error(dErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
 
     const { error: iErr } = await supabaseAdmin
       .from("profile_achievements" as any)
       .insert({ user_id: userId, tag_key: tag.key });
     if (iErr) {
-      // roll back coins on failure
-      await supabaseAdmin.from("profiles").update({ coins }).eq("id", userId);
+      // refund through the ledger so history stays honest
+      await supabaseAdmin.rpc("credit_luvies" as any, {
+        _user: userId,
+        _amount: tag.cost,
+        _reason: "refund",
+        _ref: `tag:${tag.key}`,
+      } as any);
       throw iErr;
     }
 
-    return { ok: true, remaining: coins - tag.cost, tag };
+    return { ok: true, remaining: (remaining as number) ?? 0, tag };
   });

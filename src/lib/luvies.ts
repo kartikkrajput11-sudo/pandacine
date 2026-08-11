@@ -69,6 +69,10 @@ export function ledgerLabel(reason: string, refId: string | null): { title: stri
     return { title: "Streak recovery", detail: "Streak restored" };
   }
   if (reason === "purchase_bundle") return { title: "Luvies top-up", detail: "Bundle purchase" };
+  if (reason === "panda_adoption") return { title: "Panda adoption", detail: "Welcomed your panda home" };
+  if (reason === "panda_food") return { title: "Grove market", detail: (refId ?? "").replace(/^food:/, "").replace(/-/g, " ") };
+  if (reason === "refund") return { title: "Refund", detail: refId ?? "Purchase reversed" };
+  if (reason.startsWith("ritual:")) return { title: "Ritual reward", detail: reason.split(":")[1] ?? "" };
   if (reason.startsWith("purchase:")) return { title: "Shop purchase", detail: reason.split(":")[1] ?? "" };
   if (reason.startsWith("admin")) return { title: "Gift from PandaCine", detail: "Admin grant" };
   return { title: reason.replace(/_/g, " "), detail: refId ?? "" };

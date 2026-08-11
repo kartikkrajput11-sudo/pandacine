@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Flame, Heart, Wind, X, Check, Coins, Sparkles } from "lucide-react";
+import { ArrowLeft, Flame, Heart, Wind, X, Check, Sparkles } from "lucide-react";
+import { LuvieCoin } from "@/components/luvies/LuviesAmount";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useProfile";
@@ -149,7 +150,7 @@ function RitualsRoute() {
                 <div className="flex items-center gap-3 mt-2">
                   <p className="text-[10px] uppercase tracking-widest text-petal">{r.minutes} min</p>
                   <p className="text-[10px] uppercase tracking-widest text-petal/80 inline-flex items-center gap-1">
-                    <Coins className="size-3" /> +{RITUAL_REWARD[r.id] ?? 15} each
+                    <LuvieCoin className="size-3.5" /> +{RITUAL_REWARD[r.id] ?? 15} each
                   </p>
                 </div>
               </div>
@@ -211,7 +212,7 @@ function ActiveRitual({ ritual, me, onEnd }: { ritual: Ritual; me: string; onEnd
         setAwarded({ reward: res?.reward ?? 0, already: !!res?.alreadyAwarded });
       })
       .catch((e) => {
-        toast.error(e?.message ?? "Couldn't award coins");
+        toast.error(e?.message ?? "Couldn't award Luvies");
       })
       .finally(() => setAwarding(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -226,15 +227,15 @@ function ActiveRitual({ ritual, me, onEnd }: { ritual: Ritual; me: string; onEnd
           {meta.name} · {meta.minutes} min · both hearts steady
         </p>
         <div className="mx-auto mb-5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-petal-soft border border-petal/40">
-          <Coins className="size-4 text-petal" />
+          <LuvieCoin className="size-4" />
           <span className="text-petal font-semibold">
             {awarding
-              ? "Counting the coins…"
+              ? "Counting the Luvies…"
               : awarded
                 ? awarded.already
                   ? "Already collected"
-                  : `+${awarded.reward} coins each`
-                : `+${RITUAL_REWARD[ritual.kind] ?? 15} coins each`}
+                  : `+${awarded.reward} Luvies each`
+                : `+${RITUAL_REWARD[ritual.kind] ?? 15} Luvies each`}
           </span>
         </div>
         <div className="flex gap-2 justify-center">

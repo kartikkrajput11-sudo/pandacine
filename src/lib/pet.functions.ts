@@ -84,12 +84,17 @@ export const getPet = createServerFn({ method: "POST" })
       (pet as any).fullness = (pet as any).alive === false ? 0 : fullnessNow((pet as any).fullness ?? 100, (pet as any).last_fed_at);
     }
 
-    const { data: prof } = await supabaseAdmin.from("profiles").select("coins").eq("id", userId).maybeSingle();
-    return { pet: pet as unknown as Pet, coins: (prof as any)?.coins ?? 0, cost: PET_COST };
+    const { data: prof } = await supabaseAdmin
+      .from("profiles")
+      .select("coins,panda_coins")
+      .eq("id", userId)
+      .maybeSingle();
+    const balance = Math.max((prof as any)?.panda_coins ?? 0, (prof as any)?.coins ?? 0);
+    return { pet: pet as unknown as Pet, coins: balance, cost: PET_COST };
 
   });
 
-/** Spends coins to adopt the mascot. */
+/** Spends Luvies to adopt the mascot. */
 export const unlockPet = createServerFn({ method: "POST" })
   .inputValidator((input: { name?: string }) => input ?? {})
   .middleware([requireSupabaseAuth])
@@ -104,15 +109,13 @@ export const unlockPet = createServerFn({ method: "POST" })
       .maybeSingle();
     if ((pet as any)?.unlocked) throw new Error("You already adopted your panda");
 
-    const { data: prof } = await supabaseAdmin.from("profiles").select("coins").eq("id", userId).maybeSingle();
-    const coins = (prof as any)?.coins ?? 0;
-    if (coins < PET_COST) throw new Error(`You need ${PET_COST} coins — you have ${coins}`);
-
-    const { error: dErr } = await supabaseAdmin
-      .from("profiles")
-      .update({ coins: coins - PET_COST })
-      .eq("id", userId);
-    if (dErr) throw dErr;
+    const { data: remaining, error: dErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
+      _user: userId,
+      _amount: PET_COST,
+      _reason: "panda_adoption",
+      _ref: "pet:adopt",
+    } as any);
+    if (dErr) throw new Error(dErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
 
     const name = (data.name ?? "").trim().slice(0, 20) || "Pan";
     const { error: uErr } = await supabaseAdmin
@@ -122,10 +125,15 @@ export const unlockPet = createServerFn({ method: "POST" })
         { onConflict: "user_id" },
       );
     if (uErr) {
-      await supabaseAdmin.from("profiles").update({ coins }).eq("id", userId);
+      await supabaseAdmin.rpc("credit_luvies" as any, {
+        _user: userId,
+        _amount: PET_COST,
+        _reason: "refund",
+        _ref: "pet:adopt",
+      } as any);
       throw uErr;
     }
-    return { ok: true, remaining: coins - PET_COST, name };
+    return { ok: true, remaining: (remaining as number) ?? 0, name };
   });
 
 /** Renames the pet. */
@@ -176,9 +184,6 @@ export const buyPetFood = createServerFn({ method: "POST" })
     const cost = food.price * qty;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: prof } = await supabaseAdmin.from("profiles").select("coins").eq("id", context.userId).maybeSingle();
-    const coins = (prof as any)?.coins ?? 0;
-    if (coins < cost) throw new Error(`You need ${cost} coins — you have ${coins}`);
 
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
@@ -187,6 +192,14 @@ export const buyPetFood = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!(pet as any)?.unlocked) throw new Error("Adopt your panda first");
 
+    const { data: remaining, error: sErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
+      _user: context.userId,
+      _amount: cost,
+      _reason: "panda_food",
+      _ref: `food:${food.key}`,
+    } as any);
+    if (sErr) throw new Error(sErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
+
     const pantry = { ...(((pet as any)?.pantry ?? {}) as Record<string, number>) };
     pantry[food.key] = (pantry[food.key] ?? 0) + qty;
 
@@ -194,10 +207,17 @@ export const buyPetFood = createServerFn({ method: "POST" })
       .from("pet_pandas" as any)
       .update({ pantry, updated_at: new Date().toISOString() })
       .eq("user_id", context.userId);
-    if (error) throw error;
+    if (error) {
+      await supabaseAdmin.rpc("credit_luvies" as any, {
+        _user: context.userId,
+        _amount: cost,
+        _reason: "refund",
+        _ref: `food:${food.key}`,
+      } as any);
+      throw error;
+    }
 
-    await supabaseAdmin.from("profiles").update({ coins: coins - cost }).eq("id", context.userId);
-    return { ok: true, coins: coins - cost, pantry };
+    return { ok: true, coins: (remaining as number) ?? 0, pantry };
   });
 
 /** Feeds one pantry item to the panda — restores fullness, affection and unlocks. */

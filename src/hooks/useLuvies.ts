@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { PandaLook } from "@/components/panda/PandaPreview";
 import type {
   LuviesWallet,
   PandaInventoryRow,
@@ -145,4 +147,23 @@ export function useStreakRecovery() {
   });
 
   return { state, recover };
+}
+
+/**
+ * The panda-shop look the user currently has equipped — shared by the shop
+ * preview and the pet page so purchases show up on the live mascot.
+ */
+export function useEquippedLook(): PandaLook {
+  const { data: items = [] } = usePandaShop();
+  const { data: inventory = [] } = usePandaInventory();
+  return useMemo(() => {
+    const byKey = new Map(items.map((i) => [i.item_key, i]));
+    const look: PandaLook = {};
+    for (const inv of inventory) {
+      if (!inv.equipped) continue;
+      const item = byKey.get(inv.item_key);
+      if (item) look[item.category] = item;
+    }
+    return look;
+  }, [items, inventory]);
 }

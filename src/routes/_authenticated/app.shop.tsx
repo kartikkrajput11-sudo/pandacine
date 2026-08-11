@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, Coins, Check, Lock, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, Lock, Sparkles } from "lucide-react";
+import { LuvieCoin } from "@/components/luvies/LuviesAmount";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/useProfile";
@@ -48,7 +49,7 @@ function ShopRoute() {
     }
   }
 
-  const coins = me?.coins ?? 0;
+  const coins = Math.max(me?.panda_coins ?? 0, me?.coins ?? 0);
 
   const displayed = useMemo(() => {
     return ACHIEVEMENT_TAGS.filter((t) => {
@@ -91,7 +92,7 @@ function ShopRoute() {
           <h1 className="font-serif text-2xl italic truncate">Tag Shop</h1>
         </div>
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-petal-soft border border-petal/40">
-          <Coins className="size-4 text-petal" />
+          <LuvieCoin className="size-4" />
           <span className="font-semibold text-petal tabular-nums">{coins}</span>
         </div>
       </header>
@@ -112,11 +113,11 @@ function ShopRoute() {
               Purse
             </p>
             <p className="font-serif text-4xl italic text-candle tabular-nums">
-              {coins} <span className="text-sm text-candle-muted not-italic">coins</span>
+              {coins} <span className="text-sm text-candle-muted not-italic">Luvies</span>
             </p>
           </div>
           <div className="size-14 rounded-full grid place-items-center bg-petal/20 border border-petal/40">
-            <Coins className="size-6 text-petal" />
+            <LuvieCoin className="size-6" />
           </div>
         </div>
 
@@ -142,7 +143,7 @@ function ShopRoute() {
       </div>
 
       <p className="text-sm text-candle-muted mb-4 leading-relaxed">
-        Complete rituals with your partner to earn coins. Spend them on tags that appear as
+        Complete rituals with your partner to earn Luvies. Spend them on tags that appear as
         honors on your profile.
       </p>
 
@@ -199,7 +200,7 @@ function ShopRoute() {
                 <p className="font-serif italic text-lg leading-tight">{t.name}</p>
                 <p className="text-xs text-candle-muted mt-0.5 line-clamp-2">{t.blurb}</p>
                 <p className="text-[11px] mt-1 flex items-center gap-1 text-petal font-medium tabular-nums">
-                  <Coins className="size-3" /> {t.cost}
+                  <LuvieCoin className="size-3.5" /> {t.cost}
                 </p>
               </div>
               {isOwned ? (
