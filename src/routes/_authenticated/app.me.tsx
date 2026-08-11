@@ -304,18 +304,32 @@ function Me() {
           />
 
 
-          <Link
-            to="/app/shop"
-            className="flex items-center justify-between p-3 mb-4 rounded-2xl border border-petal/30 bg-petal-soft/40 hover:bg-petal-soft/60 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <Coins className="size-5 text-petal" />
-              <span className="font-semibold text-petal">{(me as any).coins ?? 0} coins</span>
-            </div>
-            <span className="text-xs text-petal inline-flex items-center gap-1">
-              Tag shop <ChevronRight className="size-3" />
-            </span>
-          </Link>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <Link
+              to="/app/wallet"
+              className="flex items-center justify-between gap-2 p-3 rounded-2xl border border-petal/30 bg-petal-soft/40 hover:bg-petal-soft/60 transition-colors"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <LuvieCoin className="size-5" />
+                <span className="font-semibold text-petal tabular-nums truncate">
+                  {Math.max((me as any).panda_coins ?? 0, (me as any).coins ?? 0)}
+                </span>
+              </div>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-petal inline-flex items-center gap-1 shrink-0">
+                Wallet <ChevronRight className="size-3" />
+              </span>
+            </Link>
+            <Link
+              to="/app/panda-shop"
+              className="flex items-center justify-between gap-2 p-3 rounded-2xl border border-border bg-surface/70 hover:border-petal/40 transition-colors"
+            >
+              <span className="text-sm font-medium truncate">Panda Shop</span>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-candle-muted inline-flex items-center gap-1 shrink-0">
+                Spend <ChevronRight className="size-3" />
+              </span>
+            </Link>
+          </div>
+
 
           <div data-tour="me-badges"><AchievementBadges userId={me.id} equippedOnly /></div>
 
