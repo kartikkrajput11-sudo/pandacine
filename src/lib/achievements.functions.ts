@@ -36,18 +36,16 @@ export const awardRitualCoins = createServerFn({ method: "POST" })
 
     const reward = RITUAL_REWARD[r.kind as string] ?? 15;
 
-    // Bump coins for both partners atomically-ish (two updates, tolerated).
+    // Credit both partners through the single Luvies ledger.
     for (const uid of [r.host_id, r.partner_id]) {
-      const { data: prof } = await supabaseAdmin
-        .from("profiles")
-        .select("coins")
-        .eq("id", uid)
-        .maybeSingle();
-      const current = (prof as any)?.coins ?? 0;
-      await supabaseAdmin
-        .from("profiles")
-        .update({ coins: current + reward })
-        .eq("id", uid);
+      if (!uid) continue;
+      const { error } = await supabaseAdmin.rpc("credit_luvies" as any, {
+        _user: uid,
+        _amount: reward,
+        _reason: `ritual:${r.kind}`,
+        _ref: `ritual:${r.id}`,
+      } as any);
+      if (error) throw error;
     }
 
     await supabaseAdmin
