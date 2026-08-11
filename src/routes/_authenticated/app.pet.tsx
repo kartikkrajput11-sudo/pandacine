@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft,
-  Coins,
   Pencil,
   Check,
   Sparkles,
@@ -18,9 +17,15 @@ import {
   Hand,
   Camera,
   Lock,
+  ShoppingBag,
+  ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PandaStage, type PandaActions } from "@/components/panda/PandaStage";
+import { PandaAdornments } from "@/components/panda/PandaAdornments";
+import { LuvieCoin } from "@/components/luvies/LuviesAmount";
+import { useEquippedLook, useLuviesWallet, usePandaEquip, usePandaInventory, usePandaShop } from "@/hooks/useLuvies";
+import { PANDA_CATEGORIES } from "@/lib/luvies";
 import type { Costume } from "@/components/panda/usePandaBrain";
 import { Button } from "@/components/ui/button";
 import {
