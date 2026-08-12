@@ -78,6 +78,8 @@ function PetRoute() {
   const pet = data?.pet as any;
   const { data: wallet } = useLuviesWallet();
   const coins = wallet?.balance ?? data?.coins ?? 0;
+  const { data: profileData } = useProfile();
+
 
   // Panda Shop purchases, shown on the live mascot.
   const look = useEquippedLook();
