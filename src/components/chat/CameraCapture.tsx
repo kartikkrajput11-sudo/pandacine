@@ -40,6 +40,8 @@ export function CameraCapture({
   }, []);
 
   // Start / restart the stream whenever the dialog opens or the camera flips.
+  // Audio is requested separately (and optionally) so a denied microphone never
+  // kills the camera preview — video recording just falls back to silent.
   useEffect(() => {
     if (!open || preview) return;
     let cancelled = false;
@@ -48,8 +50,19 @@ export function CameraCapture({
         stop();
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
-          audio: true,
+          audio: false,
         });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        try {
+          const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+          if (cancelled) mic.getTracks().forEach((t) => t.stop());
+          else mic.getAudioTracks().forEach((t) => stream.addTrack(t));
+        } catch {
+          /* no mic / denied — keep video only */
+        }
         if (cancelled) {
           stream.getTracks().forEach((t) => t.stop());
           return;
@@ -73,6 +86,7 @@ export function CameraCapture({
       cancelled = true;
     };
   }, [open, facing, preview, stop]);
+
 
   useEffect(() => {
     if (!open) {
@@ -111,35 +125,75 @@ export function CameraCapture({
     );
   }
 
+  function pickMime(): string | undefined {
+    if (typeof MediaRecorder === "undefined") return undefined;
+    const candidates = [
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm",
+      "video/mp4;codecs=h264,aac",
+      "video/mp4",
+    ];
+    return candidates.find((c) => MediaRecorder.isTypeSupported(c));
+  }
+
   function startRecording() {
     const stream = streamRef.current;
     if (!stream) return;
-    const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
-      ? "video/webm;codecs=vp9"
-      : MediaRecorder.isTypeSupported("video/webm")
-        ? "video/webm"
-        : "video/mp4";
-    const rec = new MediaRecorder(stream, { mimeType: mime });
+    if (typeof MediaRecorder === "undefined") {
+      toast.error("Video recording isn't supported in this browser");
+      return;
+    }
+    const mime = pickMime();
+    let rec: MediaRecorder;
+    try {
+      // Some browsers reject any explicit mimeType — fall back to the default.
+      rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+    } catch {
+      try {
+        rec = new MediaRecorder(stream);
+      } catch {
+        toast.error("Couldn't start recording on this device");
+        return;
+      }
+    }
     chunksRef.current = [];
-    rec.ondataavailable = (e) => e.data.size > 0 && chunksRef.current.push(e.data);
+    rec.ondataavailable = (e) => {
+      if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
+    };
+    rec.onerror = () => {
+      toast.error("Recording failed");
+      setRecording(false);
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
     rec.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: mime });
-      const ext = mime.includes("mp4") ? "mp4" : "webm";
-      const file = new File([blob], `pandacine-${Date.now()}.${ext}`, { type: blob.type });
+      const type = rec.mimeType || mime || "video/webm";
+      const blob = new Blob(chunksRef.current, { type });
+      chunksRef.current = [];
+      if (blob.size === 0) {
+        toast.error("Nothing was recorded — try holding a moment longer");
+        return;
+      }
+      const ext = type.includes("mp4") ? "mp4" : "webm";
+      const file = new File([blob], `pandacine-${Date.now()}.${ext}`, { type });
       setPreview({ url: URL.createObjectURL(blob), file, kind: "video" });
       stop();
     };
-    rec.start();
+    // Timeslice keeps chunks flowing so short clips are never empty.
+    rec.start(500);
     recorderRef.current = rec;
     setRecording(true);
     setElapsed(0);
+    if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setElapsed((s) => {
-        if (s + 1 >= 60) stopRecording();
-        return s + 1;
+        const next = s + 1;
+        if (next >= 60) stopRecording();
+        return next;
       });
     }, 1000);
   }
+
 
   function stopRecording() {
     if (timerRef.current) clearInterval(timerRef.current);

@@ -63,6 +63,7 @@ import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated/app.calls'
 import { Route as AuthenticatedAppCalendarRouteImport } from './routes/_authenticated/app.calendar'
 import { Route as AuthenticatedAppBucketRouteImport } from './routes/_authenticated/app.bucket'
+import { Route as AuthenticatedAppArenaRouteImport } from './routes/_authenticated/app.arena'
 import { Route as AuthenticatedAppAnniversaryRouteImport } from './routes/_authenticated/app.anniversary'
 import { Route as AuthenticatedAppMoviesIndexRouteImport } from './routes/_authenticated/app.movies.index'
 import { Route as AuthenticatedAppLettersIndexRouteImport } from './routes/_authenticated/app.letters.index'
@@ -370,6 +371,11 @@ const AuthenticatedAppBucketRoute = AuthenticatedAppBucketRouteImport.update({
   path: '/bucket',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppArenaRoute = AuthenticatedAppArenaRouteImport.update({
+  id: '/arena',
+  path: '/arena',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppAnniversaryRoute =
   AuthenticatedAppAnniversaryRouteImport.update({
     id: '/anniversary',
@@ -532,6 +538,7 @@ export interface FileRoutesByFullPath {
   '/api/livekit-token': typeof ApiLivekitTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
+  '/app/arena': typeof AuthenticatedAppArenaRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
@@ -611,6 +618,7 @@ export interface FileRoutesByTo {
   '/api/livekit-token': typeof ApiLivekitTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
+  '/app/arena': typeof AuthenticatedAppArenaRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
@@ -691,6 +699,7 @@ export interface FileRoutesById {
   '/api/livekit-token': typeof ApiLivekitTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
+  '/_authenticated/app/arena': typeof AuthenticatedAppArenaRoute
   '/_authenticated/app/bucket': typeof AuthenticatedAppBucketRoute
   '/_authenticated/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
@@ -773,6 +782,7 @@ export interface FileRouteTypes {
     | '/api/livekit-token'
     | '/email/unsubscribe'
     | '/app/anniversary'
+    | '/app/arena'
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
@@ -852,6 +862,7 @@ export interface FileRouteTypes {
     | '/api/livekit-token'
     | '/email/unsubscribe'
     | '/app/anniversary'
+    | '/app/arena'
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
@@ -931,6 +942,7 @@ export interface FileRouteTypes {
     | '/api/livekit-token'
     | '/email/unsubscribe'
     | '/_authenticated/app/anniversary'
+    | '/_authenticated/app/arena'
     | '/_authenticated/app/bucket'
     | '/_authenticated/app/calendar'
     | '/_authenticated/app/calls'
@@ -1400,6 +1412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppBucketRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/arena': {
+      id: '/_authenticated/app/arena'
+      path: '/arena'
+      fullPath: '/app/arena'
+      preLoaderRoute: typeof AuthenticatedAppArenaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/anniversary': {
       id: '/_authenticated/app/anniversary'
       path: '/anniversary'
@@ -1638,6 +1657,7 @@ const AuthenticatedAppChatGroupGroupIdRouteWithChildren =
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnniversaryRoute: typeof AuthenticatedAppAnniversaryRoute
+  AuthenticatedAppArenaRoute: typeof AuthenticatedAppArenaRoute
   AuthenticatedAppBucketRoute: typeof AuthenticatedAppBucketRoute
   AuthenticatedAppCalendarRoute: typeof AuthenticatedAppCalendarRoute
   AuthenticatedAppCallsRoute: typeof AuthenticatedAppCallsRoute
@@ -1692,6 +1712,7 @@ interface AuthenticatedAppRouteChildren {
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnniversaryRoute: AuthenticatedAppAnniversaryRoute,
+  AuthenticatedAppArenaRoute: AuthenticatedAppArenaRoute,
   AuthenticatedAppBucketRoute: AuthenticatedAppBucketRoute,
   AuthenticatedAppCalendarRoute: AuthenticatedAppCalendarRoute,
   AuthenticatedAppCallsRoute: AuthenticatedAppCallsRoute,
@@ -1783,3 +1804,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

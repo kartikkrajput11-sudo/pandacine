@@ -42,6 +42,7 @@ import { toEmbedUrl } from "@/lib/video-url";
 import { useFriendships } from "@/hooks/useFriends";
 import { AvatarImg } from "@/components/AvatarImg";
 import { PostMovieReflection } from "@/components/movies/PostMovieReflection";
+import { useActivityEarner } from "@/hooks/useEarn";
 
 type Source = { id: string; label: string; url: (tmdb: number, startAt?: number, mediaType?: "movie" | "tv", season?: number, episode?: number) => string; hint: string };
 
@@ -146,6 +147,8 @@ export const Route = createFileRoute("/_authenticated/app/movies/$id/watch")({
 });
 
 function WatchMovie() {
+  // Watch time pays Luvies (server-capped daily).
+  useActivityEarner("watch", true);
   const { id } = Route.useParams();
   const isCustom = id.startsWith("custom:");
   if (isCustom) return <CustomWatch customId={id.slice("custom:".length)} />;

@@ -46,6 +46,8 @@ import {
   costumeUnlocked,
 } from "@/lib/pet-wardrobe";
 import { cn } from "@/lib/utils";
+import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
+import { useProfile } from "@/hooks/useProfile";
 
 
 export const Route = createFileRoute("/_authenticated/app/pet")({
@@ -76,6 +78,8 @@ function PetRoute() {
   const pet = data?.pet as any;
   const { data: wallet } = useLuviesWallet();
   const coins = wallet?.balance ?? data?.coins ?? 0;
+  const { data: profileData } = useProfile();
+
 
   // Panda Shop purchases, shown on the live mascot.
   const look = useEquippedLook();
@@ -479,6 +483,15 @@ function PetRoute() {
             </div>
 
           </section>
+
+          <PandaLifePanel
+            pet={pet}
+            balance={coins}
+            partnerName={profileData?.partner?.display_name}
+            hasPartner={!!profileData?.partner}
+          />
+
+
 
           {/* ── Care column ──────────────────────────────── */}
           <aside className="space-y-4 lg:sticky lg:top-6">

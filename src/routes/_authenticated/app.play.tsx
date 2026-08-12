@@ -92,8 +92,17 @@ function Play() {
           Play with a friend
           <span className="text-[10px] uppercase tracking-widest text-petal">Invite →</span>
         </Link>
+        <Link
+          to="/app/arena"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-petal/40 text-sm text-candle hover:border-petal transition-colors"
+        >
+          <span className="text-base">🏆</span>
+          Arena — tournaments &amp; leaderboards
+          <span className="text-[10px] uppercase tracking-widest text-petal">Earn →</span>
+        </Link>
         <p className="text-xs text-candle-muted">Send a game invite to any friend from your circle.</p>
       </div>
+
 
 
 
