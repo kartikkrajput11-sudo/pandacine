@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_rewards: {
+        Row: {
+          created_at: string
+          day: string
+          id: string
+          kind: string
+          luvies: number
+          meta: Json
+          minutes: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day?: string
+          id?: string
+          kind: string
+          luvies?: number
+          meta?: Json
+          minutes?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          id?: string
+          kind?: string
+          luvies?: number
+          meta?: Json
+          minutes?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_stickers: {
         Row: {
           created_at: string
@@ -910,6 +943,33 @@ export type Database = {
         }
         Relationships: []
       }
+      game_results: {
+        Row: {
+          created_at: string
+          game: string
+          id: string
+          room_key: string | null
+          user_id: string
+          won: boolean
+        }
+        Insert: {
+          created_at?: string
+          game: string
+          id?: string
+          room_key?: string | null
+          user_id: string
+          won?: boolean
+        }
+        Update: {
+          created_at?: string
+          game?: string
+          id?: string
+          room_key?: string | null
+          user_id?: string
+          won?: boolean
+        }
+        Relationships: []
+      }
       game_sessions: {
         Row: {
           created_at: string
@@ -1690,12 +1750,84 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_bonds: {
+        Row: {
+          created_at: string
+          id: string
+          owner_user: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          owner_user: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          owner_user?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
+      pet_memorials: {
+        Row: {
+          affection: number
+          born_at: string
+          costume: string | null
+          created_at: string
+          days_lived: number
+          death_reason: string
+          died_at: string
+          id: string
+          interactions: number
+          name: string
+          streak: number
+          user_id: string
+        }
+        Insert: {
+          affection?: number
+          born_at: string
+          costume?: string | null
+          created_at?: string
+          days_lived?: number
+          death_reason?: string
+          died_at?: string
+          id?: string
+          interactions?: number
+          name: string
+          streak?: number
+          user_id: string
+        }
+        Update: {
+          affection?: number
+          born_at?: string
+          costume?: string | null
+          created_at?: string
+          days_lived?: number
+          death_reason?: string
+          died_at?: string
+          id?: string
+          interactions?: number
+          name?: string
+          streak?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       pet_pandas: {
         Row: {
           affection: number
           alive: boolean
+          bond_id: string | null
+          born_at: string
           costume: string
           created_at: string
+          death_reason: string | null
           died_at: string | null
           fullness: number
           interactions: number
@@ -1703,6 +1835,7 @@ export type Database = {
           last_visit: string | null
           name: string
           pantry: Json
+          revives: number
           streak: number
           unlocked: boolean
           unlocked_costumes: string[]
@@ -1713,8 +1846,11 @@ export type Database = {
         Insert: {
           affection?: number
           alive?: boolean
+          bond_id?: string | null
+          born_at?: string
           costume?: string
           created_at?: string
+          death_reason?: string | null
           died_at?: string | null
           fullness?: number
           interactions?: number
@@ -1722,6 +1858,7 @@ export type Database = {
           last_visit?: string | null
           name?: string
           pantry?: Json
+          revives?: number
           streak?: number
           unlocked?: boolean
           unlocked_costumes?: string[]
@@ -1732,8 +1869,11 @@ export type Database = {
         Update: {
           affection?: number
           alive?: boolean
+          bond_id?: string | null
+          born_at?: string
           costume?: string
           created_at?: string
+          death_reason?: string | null
           died_at?: string | null
           fullness?: number
           interactions?: number
@@ -1741,6 +1881,7 @@ export type Database = {
           last_visit?: string | null
           name?: string
           pantry?: Json
+          revives?: number
           streak?: number
           unlocked?: boolean
           unlocked_costumes?: string[]
@@ -2410,6 +2551,128 @@ export type Database = {
         }
         Relationships: []
       }
+      tournament_entries: {
+        Row: {
+          awarded: number
+          created_at: string
+          id: string
+          image_url: string
+          partner_id: string | null
+          rank: number | null
+          title: string
+          tournament_id: string
+          user_id: string
+          votes: number
+        }
+        Insert: {
+          awarded?: number
+          created_at?: string
+          id?: string
+          image_url: string
+          partner_id?: string | null
+          rank?: number | null
+          title?: string
+          tournament_id: string
+          user_id: string
+          votes?: number
+        }
+        Update: {
+          awarded?: number
+          created_at?: string
+          id?: string
+          image_url?: string
+          partner_id?: string | null
+          rank?: number | null
+          title?: string
+          tournament_id?: string
+          user_id?: string
+          votes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_entries_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_votes: {
+        Row: {
+          created_at: string
+          entry_id: string
+          id: string
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entry_id: string
+          id?: string
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string
+          id?: string
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_votes_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "tournament_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_votes_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournaments: {
+        Row: {
+          closes_at: string
+          created_at: string
+          id: string
+          kind: string
+          opens_at: string
+          prizes: Json
+          status: string
+          theme: string
+          week_key: string
+        }
+        Insert: {
+          closes_at: string
+          created_at?: string
+          id?: string
+          kind?: string
+          opens_at?: string
+          prizes?: Json
+          status?: string
+          theme: string
+          week_key: string
+        }
+        Update: {
+          closes_at?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          opens_at?: string
+          prizes?: Json
+          status?: string
+          theme?: string
+          week_key?: string
+        }
+        Relationships: []
+      }
       user_blocks: {
         Row: {
           blocked_id: string
@@ -2673,6 +2936,11 @@ export type Database = {
         Args: { _amount: number; _note?: string; _target: string }
         Returns: number
       }
+      award_activity: {
+        Args: { _kind: string; _minutes: number }
+        Returns: Json
+      }
+      bond_pet: { Args: never; Returns: Json }
       buy_panda_item: { Args: { _item_key: string }; Returns: Json }
       call_answer: {
         Args: { _call_id: string; _device_id: string }
@@ -2842,6 +3110,26 @@ export type Database = {
         Args: { _amount: number; _reason: string; _ref?: string; _user: string }
         Returns: number
       }
+      current_tournament: {
+        Args: never
+        Returns: {
+          closes_at: string
+          created_at: string
+          id: string
+          kind: string
+          opens_at: string
+          prizes: Json
+          status: string
+          theme: string
+          week_key: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "tournaments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -2918,6 +3206,26 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      leaderboard_messages: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          total: number
+          user_id: string
+          username: string
+        }[]
+      }
+      leaderboard_wins: {
+        Args: { _limit?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          total: number
+          user_id: string
+          username: string
+        }[]
       }
       luvies_wallet: { Args: never; Returns: Json }
       move_to_dlq: {
@@ -3015,8 +3323,14 @@ export type Database = {
           read_ct: number
         }[]
       }
+      record_game_result: {
+        Args: { _game: string; _room?: string; _won: boolean }
+        Returns: Json
+      }
       recover_streak: { Args: never; Returns: Json }
       regenerate_group_invite_code: { Args: { _gid: string }; Returns: string }
+      retire_pet: { Args: { _reason?: string }; Returns: Json }
+      revive_pet: { Args: never; Returns: Json }
       revoke_admin: {
         Args: { _pin: string; _target: string }
         Returns: boolean
@@ -3030,6 +3344,7 @@ export type Database = {
           username: string
         }[]
       }
+      settle_tournament: { Args: { _id: string }; Returns: Json }
       spend_luvies: {
         Args: { _amount: number; _reason: string; _ref?: string; _user: string }
         Returns: number
