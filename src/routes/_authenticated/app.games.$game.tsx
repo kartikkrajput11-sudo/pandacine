@@ -23,6 +23,7 @@ import {
 import { generateGameCard, generateGameCardBatch } from "@/lib/games.functions";
 import { gameSfx } from "@/lib/game-sfx";
 import { GameChat } from "@/components/games/GameChat";
+import { useActivityEarner } from "@/hooks/useEarn";
 
 const paramsSchema = z.object({
   game: z.enum([
@@ -55,6 +56,8 @@ export const Route = createFileRoute("/_authenticated/app/games/$game")({
 type Session = { id: string; host_id: string; partner_id: string; game: string; state: any };
 
 function GameRoute() {
+  // Play time pays Luvies (server-capped daily).
+  useActivityEarner("game", true);
   const { game } = Route.useParams();
   const navigate = useNavigate();
   const { data } = useProfile();
