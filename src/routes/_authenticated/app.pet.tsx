@@ -482,6 +482,15 @@ function PetRoute() {
 
           </section>
 
+          <PandaLifePanel
+            pet={pet}
+            balance={coins}
+            partnerName={profileData?.partner?.display_name}
+            hasPartner={!!profileData?.partner}
+          />
+
+
+
           {/* ── Care column ──────────────────────────────── */}
           <aside className="space-y-4 lg:sticky lg:top-6">
             <div className="rounded-3xl glass-strong p-5 space-y-4">
