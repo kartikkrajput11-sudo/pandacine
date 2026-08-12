@@ -46,6 +46,8 @@ import {
   costumeUnlocked,
 } from "@/lib/pet-wardrobe";
 import { cn } from "@/lib/utils";
+import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
+import { useProfile } from "@/hooks/useProfile";
 
 
 export const Route = createFileRoute("/_authenticated/app/pet")({
