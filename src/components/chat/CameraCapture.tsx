@@ -40,6 +40,8 @@ export function CameraCapture({
   }, []);
 
   // Start / restart the stream whenever the dialog opens or the camera flips.
+  // Audio is requested separately (and optionally) so a denied microphone never
+  // kills the camera preview — video recording just falls back to silent.
   useEffect(() => {
     if (!open || preview) return;
     let cancelled = false;
@@ -48,8 +50,19 @@ export function CameraCapture({
         stop();
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
-          audio: true,
+          audio: false,
         });
+        if (cancelled) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        try {
+          const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+          if (cancelled) mic.getTracks().forEach((t) => t.stop());
+          else mic.getAudioTracks().forEach((t) => stream.addTrack(t));
+        } catch {
+          /* no mic / denied — keep video only */
+        }
         if (cancelled) {
           stream.getTracks().forEach((t) => t.stop());
           return;
@@ -73,6 +86,7 @@ export function CameraCapture({
       cancelled = true;
     };
   }, [open, facing, preview, stop]);
+
 
   useEffect(() => {
     if (!open) {
