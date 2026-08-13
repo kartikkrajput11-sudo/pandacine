@@ -249,7 +249,7 @@ function PersonCard({
 }) {
   return (
     <div className="rounded-3xl border border-border bg-surface/70 backdrop-blur-xl p-4 flex items-center gap-4">
-      <AvatarImg src={avatar} name={name} className="size-12 rounded-2xl object-cover" />
+      <AvatarImg src={avatar} alt={name} className="size-12 rounded-2xl object-cover" />
       <div className="min-w-0 flex-1">
         <p className="text-[10px] uppercase tracking-[0.24em] text-candle-muted truncate">{name}</p>
         <p className="font-serif text-lg italic truncate leading-tight">{label}</p>
