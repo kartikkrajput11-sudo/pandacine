@@ -26,8 +26,3 @@ export const TAG_BY_KEY: Record<string, AchievementTag> = Object.fromEntries(
 );
 
 // Coin rewards per ritual kind (both partners get this each).
-export const RITUAL_REWARD: Record<string, number> = {
-  candle: 30,
-  breathing: 15,
-  gratitude: 20,
-};
