@@ -22,7 +22,7 @@ import pandaSlap from "@/assets/panda-slap-sticker.png";
 import pandaAnger from "@/assets/panda-anger-sticker.png";
 import pandaTickle from "@/assets/panda-tickle-sticker.png";
 import pandaWink from "@/assets/panda-wink-sticker.png";
-import { LoveLetterCard, TimeCapsuleCard, ConfessionCard, MoodCard } from "./RitualCards";
+import { LoveLetterCard, TimeCapsuleCard, ConfessionCard } from "./MomentCards";
 
 
 
@@ -190,7 +190,7 @@ function ChatBubbleImpl({
   const [whisperRevealed, setWhisperRevealed] = useState(false);
   useSharedTick(isLast);
 
-  const isRitualCard = m.type === "mood" || m.type === "love_letter" || m.type === "time_capsule" || m.type === "confession";
+  const isRitualCard = m.type === "love_letter" || m.type === "time_capsule" || m.type === "confession";
   const bare = isSticker || isWatchInvite || isGameInvite || isMovieWheel || isKiss || isHug || isHeadpat || isHandhold || isBoop || isNudge || isCall || isRitualCard || !!affectionFx;
 
 
@@ -636,9 +636,6 @@ function ChatBubbleImpl({
                 <p className="text-xs">{mine ? "you sent your heartbeat" : "feel this"}</p>
               </div>
             </div>
-          )}
-          {m.type === "mood" && (
-            <MoodCard moodId={(m.media_meta as any)?.mood} note={m.content ?? undefined} />
           )}
           {m.type === "love_letter" && <LoveLetterCard content={m.content ?? ""} mine={mine} />}
           {m.type === "time_capsule" && (

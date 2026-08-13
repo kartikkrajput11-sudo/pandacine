@@ -197,8 +197,16 @@ export function MediaLightbox({ paths, index, onIndex, onClose }: Props) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] bg-black/95 select-none"
-      style={{ height: "100dvh" }}
+      className="bg-black/95 select-none overscroll-contain"
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100dvh",
+        zIndex: 2147483000,
+        touchAction: "none",
+        WebkitUserSelect: "none",
+      }}
       onPointerDown={(e) => e.stopPropagation()}
     >
       {/* Ambient bloom */}

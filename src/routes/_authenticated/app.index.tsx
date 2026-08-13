@@ -7,7 +7,9 @@ import { DailyQuestionCard } from "@/components/DailyQuestionCard";
 import { PartnerPresenceCard } from "@/components/PartnerPresenceCard";
 
 import { MemoryOfTheDayCard } from "@/components/MemoryOfTheDayCard";
-import { Heart, ArrowRight, Users, LineChart, BookHeart, Gift, Feather, Sparkles, Milestone, ListChecks, Compass, MapPin, CalendarHeart, Smartphone, Wallet, ShoppingBag } from "lucide-react";
+import { Heart, ArrowRight, Users, LineChart, BookHeart, Gift, Feather, Sparkles, Milestone, ListChecks, Compass, MapPin, CalendarHeart, Smartphone, Wallet, ShoppingBag, Trophy } from "lucide-react";
+import { useLuviesWallet } from "@/hooks/useLuvies";
+import { LuviesAmount } from "@/components/luvies/LuviesAmount";
 import { AvatarImg } from "@/components/AvatarImg";
 import { Button } from "@/components/ui/button";
 import NotificationCenter from "@/components/NotificationCenter";
@@ -26,6 +28,7 @@ function Home() {
   const partner = data?.partner;
 
   const greeting = useGreeting();
+  const { data: wallet } = useLuviesWallet();
   const partnerName = partner ? (profile?.partner_nickname || partner.display_name) : "your panda";
 
   return (
@@ -75,6 +78,41 @@ function Home() {
       />
       </div>
 
+
+      {/* Wallet + Tournaments — top of the house */}
+      <section className="relative z-10 grid gap-3 sm:grid-cols-2">
+        <Link
+          to="/app/wallet"
+          className="group flex items-center gap-4 overflow-hidden rounded-3xl border border-gilt/25 bg-[linear-gradient(150deg,color-mix(in_oklab,var(--gilt)_16%,transparent),transparent_72%)] p-5 backdrop-blur-xl transition-transform hover:-translate-y-0.5"
+        >
+          <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-gilt/30 bg-gilt/10">
+            <Wallet className="size-5 text-gilt" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-gilt/90">Your wallet</p>
+            <div className="font-serif text-2xl italic leading-tight">
+              <LuviesAmount value={wallet?.balance ?? 0} size="lg" />
+            </div>
+            <p className="mt-0.5 text-[11px] text-candle-muted">Earned from watch time, wins & streaks.</p>
+          </div>
+          <ArrowRight className="size-4 text-candle-muted transition-all group-hover:translate-x-0.5 group-hover:text-gilt" />
+        </Link>
+
+        <Link
+          to="/app/arena"
+          className="group flex items-center gap-4 overflow-hidden rounded-3xl border border-petal/25 bg-[linear-gradient(150deg,var(--petal-soft),transparent_72%)] p-5 backdrop-blur-xl transition-transform hover:-translate-y-0.5"
+        >
+          <div className="grid size-12 shrink-0 place-items-center rounded-2xl border border-petal/30 bg-petal/10">
+            <Trophy className="size-5 text-petal" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Tournaments</p>
+            <p className="font-serif text-xl italic leading-tight">The Arena</p>
+            <p className="mt-0.5 text-[11px] text-candle-muted">Weekly drawing duel & monthly leaderboards.</p>
+          </div>
+          <ArrowRight className="size-4 text-candle-muted transition-all group-hover:translate-x-0.5 group-hover:text-petal" />
+        </Link>
+      </section>
 
       {/* Invite banner (no partner) */}
       {!partner && !isLoading && (
@@ -186,7 +224,6 @@ function Home() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             <SignatureTile to="/app/letters" Icon={Feather} label="Love Letters" caption="Seal now, open later" swatch="from-[#c9a84c]/40 to-[#f0d78c]/10" />
             <SignatureTile to="/app/timeline" Icon={Milestone} label="Timeline" caption="Highlights of us" swatch="from-[#c96b7a]/40 to-[#f0c0cc]/10" />
-            <SignatureTile to="/app/rituals" Icon={Sparkles} label="Rituals" caption="Little habits, kept" swatch="from-[#9d7bd8]/40 to-[#e2d4ff]/10" />
             <SignatureTile to="/app/watchlist" Icon={ListChecks} label="Watchlist" caption="Shared queue" swatch="from-[#f0d78c]/40 to-[#c9a84c]/10" />
             <SignatureTile to="/app/concierge" Icon={Compass} label="Concierge" caption="Ideas for tonight" swatch="from-[#5cbdb9]/40 to-[#0d7a5f]/10" />
           </div>
@@ -201,7 +238,6 @@ function Home() {
           
           <TileLink to="/app/anniversary" Icon={Heart} label="Anniversary" caption="Just for us" />
           <TileLink to="/app/wishlist" Icon={Gift} label="Wishlist" caption="Little dreams" />
-          <TileLink to="/app/coupons" Icon={Heart} label="Coupons" caption="Sweet favors" />
           <TileLink to="/app/bucket" Icon={MapPin} label="Bucket List" caption="Dreams together" />
           <TileLink to="/app/journal" Icon={BookHeart} label="Our Journal" caption="Shared timeline" />
           <TileLink to="/app/widget" Icon={Smartphone} label="Home Widget" caption="Countdown on your phone" />
@@ -213,7 +249,6 @@ function Home() {
         <EditorialSectionHeader eyebrow="✦ Chapter III" title="Your circle" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
           <TileLink to="/app/friends" Icon={Users} label="Friends" caption="Your circle" />
-          <TileLink to="/app/wallet" Icon={Wallet} label="Luvies Wallet" caption="Balance & history" />
           <TileLink to="/app/panda-shop" Icon={ShoppingBag} label="Panda Shop" caption="Dress your panda" />
           <TileLink to="/app/shop" Icon={Sparkles} label="Tag Shop" caption="Spend your Luvies" />
         </div>

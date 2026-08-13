@@ -35,7 +35,6 @@ import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppTamannaRouteImport } from './routes/_authenticated/app.tamanna'
 import { Route as AuthenticatedAppShopRouteImport } from './routes/_authenticated/app.shop'
 import { Route as AuthenticatedAppScribbleRouteImport } from './routes/_authenticated/app.scribble'
-import { Route as AuthenticatedAppRitualsRouteImport } from './routes/_authenticated/app.rituals'
 import { Route as AuthenticatedAppPuzzleRouteImport } from './routes/_authenticated/app.puzzle'
 import { Route as AuthenticatedAppPoolRouteImport } from './routes/_authenticated/app.pool'
 import { Route as AuthenticatedAppPlayRouteImport } from './routes/_authenticated/app.play'
@@ -57,7 +56,6 @@ import { Route as AuthenticatedAppHideseekRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated/app.help'
 import { Route as AuthenticatedAppFriendsRouteImport } from './routes/_authenticated/app.friends'
 import { Route as AuthenticatedAppDailyChallengeRouteImport } from './routes/_authenticated/app.daily-challenge'
-import { Route as AuthenticatedAppCouponsRouteImport } from './routes/_authenticated/app.coupons'
 import { Route as AuthenticatedAppConciergeRouteImport } from './routes/_authenticated/app.concierge'
 import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticated/app.chess'
 import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated/app.calls'
@@ -223,11 +221,6 @@ const AuthenticatedAppScribbleRoute =
     path: '/scribble',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppRitualsRoute = AuthenticatedAppRitualsRouteImport.update({
-  id: '/rituals',
-  path: '/rituals',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
 const AuthenticatedAppPuzzleRoute = AuthenticatedAppPuzzleRouteImport.update({
   id: '/puzzle',
   path: '/puzzle',
@@ -339,11 +332,6 @@ const AuthenticatedAppDailyChallengeRoute =
     path: '/daily-challenge',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppCouponsRoute = AuthenticatedAppCouponsRouteImport.update({
-  id: '/coupons',
-  path: '/coupons',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
 const AuthenticatedAppConciergeRoute =
   AuthenticatedAppConciergeRouteImport.update({
     id: '/concierge',
@@ -544,7 +532,6 @@ export interface FileRoutesByFullPath {
   '/app/calls': typeof AuthenticatedAppCallsRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
-  '/app/coupons': typeof AuthenticatedAppCouponsRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/app/friends': typeof AuthenticatedAppFriendsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -566,7 +553,6 @@ export interface FileRoutesByFullPath {
   '/app/play': typeof AuthenticatedAppPlayRoute
   '/app/pool': typeof AuthenticatedAppPoolRoute
   '/app/puzzle': typeof AuthenticatedAppPuzzleRoute
-  '/app/rituals': typeof AuthenticatedAppRitualsRoute
   '/app/scribble': typeof AuthenticatedAppScribbleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
@@ -624,7 +610,6 @@ export interface FileRoutesByTo {
   '/app/calls': typeof AuthenticatedAppCallsRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
-  '/app/coupons': typeof AuthenticatedAppCouponsRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/app/friends': typeof AuthenticatedAppFriendsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -645,7 +630,6 @@ export interface FileRoutesByTo {
   '/app/play': typeof AuthenticatedAppPlayRoute
   '/app/pool': typeof AuthenticatedAppPoolRoute
   '/app/puzzle': typeof AuthenticatedAppPuzzleRoute
-  '/app/rituals': typeof AuthenticatedAppRitualsRoute
   '/app/scribble': typeof AuthenticatedAppScribbleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
@@ -705,7 +689,6 @@ export interface FileRoutesById {
   '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
   '/_authenticated/app/chess': typeof AuthenticatedAppChessRoute
   '/_authenticated/app/concierge': typeof AuthenticatedAppConciergeRoute
-  '/_authenticated/app/coupons': typeof AuthenticatedAppCouponsRoute
   '/_authenticated/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/_authenticated/app/friends': typeof AuthenticatedAppFriendsRoute
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
@@ -727,7 +710,6 @@ export interface FileRoutesById {
   '/_authenticated/app/play': typeof AuthenticatedAppPlayRoute
   '/_authenticated/app/pool': typeof AuthenticatedAppPoolRoute
   '/_authenticated/app/puzzle': typeof AuthenticatedAppPuzzleRoute
-  '/_authenticated/app/rituals': typeof AuthenticatedAppRitualsRoute
   '/_authenticated/app/scribble': typeof AuthenticatedAppScribbleRoute
   '/_authenticated/app/shop': typeof AuthenticatedAppShopRoute
   '/_authenticated/app/tamanna': typeof AuthenticatedAppTamannaRoute
@@ -788,7 +770,6 @@ export interface FileRouteTypes {
     | '/app/calls'
     | '/app/chess'
     | '/app/concierge'
-    | '/app/coupons'
     | '/app/daily-challenge'
     | '/app/friends'
     | '/app/help'
@@ -810,7 +791,6 @@ export interface FileRouteTypes {
     | '/app/play'
     | '/app/pool'
     | '/app/puzzle'
-    | '/app/rituals'
     | '/app/scribble'
     | '/app/shop'
     | '/app/tamanna'
@@ -868,7 +848,6 @@ export interface FileRouteTypes {
     | '/app/calls'
     | '/app/chess'
     | '/app/concierge'
-    | '/app/coupons'
     | '/app/daily-challenge'
     | '/app/friends'
     | '/app/help'
@@ -889,7 +868,6 @@ export interface FileRouteTypes {
     | '/app/play'
     | '/app/pool'
     | '/app/puzzle'
-    | '/app/rituals'
     | '/app/scribble'
     | '/app/shop'
     | '/app/tamanna'
@@ -948,7 +926,6 @@ export interface FileRouteTypes {
     | '/_authenticated/app/calls'
     | '/_authenticated/app/chess'
     | '/_authenticated/app/concierge'
-    | '/_authenticated/app/coupons'
     | '/_authenticated/app/daily-challenge'
     | '/_authenticated/app/friends'
     | '/_authenticated/app/help'
@@ -970,7 +947,6 @@ export interface FileRouteTypes {
     | '/_authenticated/app/play'
     | '/_authenticated/app/pool'
     | '/_authenticated/app/puzzle'
-    | '/_authenticated/app/rituals'
     | '/_authenticated/app/scribble'
     | '/_authenticated/app/shop'
     | '/_authenticated/app/tamanna'
@@ -1216,13 +1192,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppScribbleRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/rituals': {
-      id: '/_authenticated/app/rituals'
-      path: '/rituals'
-      fullPath: '/app/rituals'
-      preLoaderRoute: typeof AuthenticatedAppRitualsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
     '/_authenticated/app/puzzle': {
       id: '/_authenticated/app/puzzle'
       path: '/puzzle'
@@ -1368,13 +1337,6 @@ declare module '@tanstack/react-router' {
       path: '/daily-challenge'
       fullPath: '/app/daily-challenge'
       preLoaderRoute: typeof AuthenticatedAppDailyChallengeRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/coupons': {
-      id: '/_authenticated/app/coupons'
-      path: '/coupons'
-      fullPath: '/app/coupons'
-      preLoaderRoute: typeof AuthenticatedAppCouponsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/concierge': {
@@ -1663,7 +1625,6 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppCallsRoute: typeof AuthenticatedAppCallsRoute
   AuthenticatedAppChessRoute: typeof AuthenticatedAppChessRoute
   AuthenticatedAppConciergeRoute: typeof AuthenticatedAppConciergeRoute
-  AuthenticatedAppCouponsRoute: typeof AuthenticatedAppCouponsRoute
   AuthenticatedAppDailyChallengeRoute: typeof AuthenticatedAppDailyChallengeRoute
   AuthenticatedAppFriendsRoute: typeof AuthenticatedAppFriendsRoute
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
@@ -1685,7 +1646,6 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppPlayRoute: typeof AuthenticatedAppPlayRoute
   AuthenticatedAppPoolRoute: typeof AuthenticatedAppPoolRoute
   AuthenticatedAppPuzzleRoute: typeof AuthenticatedAppPuzzleRoute
-  AuthenticatedAppRitualsRoute: typeof AuthenticatedAppRitualsRoute
   AuthenticatedAppScribbleRoute: typeof AuthenticatedAppScribbleRoute
   AuthenticatedAppShopRoute: typeof AuthenticatedAppShopRoute
   AuthenticatedAppTamannaRoute: typeof AuthenticatedAppTamannaRoute
@@ -1718,7 +1678,6 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppCallsRoute: AuthenticatedAppCallsRoute,
   AuthenticatedAppChessRoute: AuthenticatedAppChessRoute,
   AuthenticatedAppConciergeRoute: AuthenticatedAppConciergeRoute,
-  AuthenticatedAppCouponsRoute: AuthenticatedAppCouponsRoute,
   AuthenticatedAppDailyChallengeRoute: AuthenticatedAppDailyChallengeRoute,
   AuthenticatedAppFriendsRoute: AuthenticatedAppFriendsRoute,
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
@@ -1740,7 +1699,6 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppPlayRoute: AuthenticatedAppPlayRoute,
   AuthenticatedAppPoolRoute: AuthenticatedAppPoolRoute,
   AuthenticatedAppPuzzleRoute: AuthenticatedAppPuzzleRoute,
-  AuthenticatedAppRitualsRoute: AuthenticatedAppRitualsRoute,
   AuthenticatedAppScribbleRoute: AuthenticatedAppScribbleRoute,
   AuthenticatedAppShopRoute: AuthenticatedAppShopRoute,
   AuthenticatedAppTamannaRoute: AuthenticatedAppTamannaRoute,

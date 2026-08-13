@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-  HeartPulse, Mail, Hourglass, Sparkles, PenLine, EyeOff, Timer, Shuffle, Mic,
+  HeartPulse, Mail, Hourglass, PenLine, EyeOff, Timer, Shuffle, Mic,
 } from "lucide-react";
-import { MOODS, drawConfessionPrompt } from "@/lib/rituals";
+import { drawConfessionPrompt } from "@/lib/moments";
 import { VoiceRecorder } from "./VoiceRecorder";
 
 type SendFn = (input: {
@@ -14,14 +14,14 @@ type SendFn = (input: {
   disappear_seconds?: number | null;
 }) => Promise<void>;
 
-type Mode = null | "letter" | "capsule" | "confession" | "mood" | "voicekiss";
+type Mode = null | "letter" | "capsule" | "confession" | "voicekiss";
 
 /**
- * RitualsPanel — the premium chat rituals: heartbeat ping, mood ring,
+ * MomentsPanel — the premium chat moments: heartbeat ping,
  * love letter, time capsule, confession jar, voice kiss, duet pad and
  * vanish mode. Every action is guarded so a failure never breaks the chat.
  */
-export function RitualsPanel({
+export function MomentsPanel({
   meId,
   partnerName,
   onSend,
@@ -53,7 +53,7 @@ export function RitualsPanel({
       setMode(null);
       onClose();
     } catch (err: any) {
-      console.error("[RitualsPanel]", err);
+      console.error("[MomentsPanel]", err);
       toast.error(err?.message ?? fallback);
     } finally {
       setBusy(false);
@@ -77,14 +77,13 @@ export function RitualsPanel({
       <div className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 w-64 h-24 rounded-full bg-gilt/15 blur-3xl" />
       <div className="relative px-3 pt-2.5 pb-3">
         <p className="text-[8px] uppercase tracking-[0.32em] text-gilt/85 font-medium text-center mb-2">
-          {mode ? "Rituals" : "Rituals"}
+          Moments
         </p>
 
         {!mode && (
           <div className="grid grid-cols-4 gap-2">
             <Choice icon={<HeartPulse className="size-4" />} label="Heartbeat" onClick={sendHeartbeat} />
-            <Choice icon={<Sparkles className="size-4" />} label="Mood" onClick={() => setMode("mood")} />
-            <Choice icon={<Mail className="size-4" />} label="Letter" onClick={() => setMode("letter")} />
+                        <Choice icon={<Mail className="size-4" />} label="Letter" onClick={() => setMode("letter")} />
             <Choice icon={<Hourglass className="size-4" />} label="Capsule" onClick={() => setMode("capsule")} />
             <Choice icon={<PenLine className="size-4" />} label="Confess" onClick={() => setMode("confession")} />
             <Choice icon={<Mic className="size-4" />} label="Voice kiss" onClick={() => setMode("voicekiss")} />
@@ -98,28 +97,6 @@ export function RitualsPanel({
           </div>
         )}
 
-        {mode === "mood" && (
-          <div className="grid grid-cols-3 gap-2">
-            {MOODS.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                disabled={busy}
-                onClick={() =>
-                  guard(
-                    () => onSend({ type: "mood", content: m.note, media_meta: { mood: m.id } }),
-                    "Couldn't set your mood",
-                  )
-                }
-                className="rounded-2xl border px-2 py-2.5 flex flex-col items-center gap-1 active:scale-95 transition"
-                style={{ borderColor: `hsl(${m.hue} / 0.35)`, background: `hsl(${m.hue} / 0.10)` }}
-              >
-                <span className="text-lg">{m.emoji}</span>
-                <span className="text-[10px] text-candle">{m.label}</span>
-              </button>
-            ))}
-          </div>
-        )}
 
         {(mode === "letter" || mode === "capsule" || mode === "confession") && (
           <div className="space-y-2">

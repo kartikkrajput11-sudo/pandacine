@@ -1,22 +1,7 @@
 /**
- * Chat rituals — shared data for the premium chat features:
- * Mood Ring, Confession Jar, Love Letter, Time Capsule.
+ * Chat moments — shared data for the premium chat features:
+ * Love Letter, Confession Jar, Time Capsule.
  */
-
-export type MoodId = "adore" | "calm" | "playful" | "missing" | "fire" | "blue";
-
-export const MOODS: { id: MoodId; label: string; emoji: string; hue: string; note: string }[] = [
-  { id: "adore", label: "Adoring", emoji: "💗", hue: "342 68% 62%", note: "everything about you" },
-  { id: "calm", label: "Calm", emoji: "🌙", hue: "220 60% 66%", note: "soft and quiet" },
-  { id: "playful", label: "Playful", emoji: "✨", hue: "38 85% 62%", note: "up to something" },
-  { id: "missing", label: "Missing you", emoji: "🫧", hue: "268 60% 68%", note: "counting hours" },
-  { id: "fire", label: "Fired up", emoji: "🔥", hue: "12 85% 60%", note: "full of energy" },
-  { id: "blue", label: "Low", emoji: "🌧️", hue: "205 45% 58%", note: "need you close" },
-];
-
-export function moodById(id: string | undefined | null) {
-  return MOODS.find((m) => m.id === id) ?? null;
-}
 
 export const CONFESSION_PROMPTS = [
   "Something I never told you…",
