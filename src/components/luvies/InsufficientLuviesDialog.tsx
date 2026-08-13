@@ -33,7 +33,7 @@ export function InsufficientLuviesDialog({
             </div>
           </div>
           <p className="text-xs text-candle-muted">
-            Earn Luvies from daily check-ins, rituals, streaks and daily questions — or top up your wallet.
+            Earn Luvies from watch time, game wins, streaks and Arena tournaments.
           </p>
           <div className="grid grid-cols-2 gap-2">
             <Button variant="quiet" onClick={onClose}>

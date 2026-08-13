@@ -60,7 +60,7 @@ function WalletRoute() {
               </Link>
             </Button>
             <Button variant="quiet" asChild>
-              <Link to="/app/rituals">Earn Luvies</Link>
+              <Link to="/app/arena">Earn Luvies</Link>
             </Button>
           </div>
         </section>

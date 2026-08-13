@@ -143,7 +143,7 @@ function ShopRoute() {
       </div>
 
       <p className="text-sm text-candle-muted mb-4 leading-relaxed">
-        Complete rituals with your partner to earn Luvies. Spend them on tags that appear as
+        Watch, play and win with your partner to earn Luvies. Spend them on tags that appear as
         honors on your profile.
       </p>
 

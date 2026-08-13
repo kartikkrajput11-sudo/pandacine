@@ -234,7 +234,7 @@ function PetRoute() {
               : `Adopt for ${data?.cost ?? 250} Luvies`}
           </Button>
           <p className="text-center text-[11px] text-candle-muted">
-            Earn Luvies from rituals, streaks and daily questions.
+            Earn Luvies from watch time, game wins and Arena tournaments.
           </p>
         </section>
       )}
