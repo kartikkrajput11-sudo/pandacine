@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Lock, Hourglass, Mail } from "lucide-react";
-import { formatUnlockCountdown, moodById } from "@/lib/rituals";
+import { formatUnlockCountdown } from "@/lib/moments";
 
 /** Love Letter — sealed envelope that tears open with a wax seal. */
 export function LoveLetterCard({ content, mine }: { content: string; mine: boolean }) {
@@ -92,26 +92,3 @@ export function ConfessionCard({ prompt, content }: { prompt: string; content: s
   );
 }
 
-/** Mood Ring — a mood announcement that also tints the chat. */
-export function MoodCard({ moodId, note }: { moodId: string; note?: string }) {
-  const mood = moodById(moodId);
-  if (!mood) return null;
-  return (
-    <div
-      className="w-56 rounded-3xl border overflow-hidden"
-      style={{
-        borderColor: `hsl(${mood.hue} / 0.4)`,
-        background: `linear-gradient(160deg, hsl(${mood.hue} / 0.22), transparent)`,
-      }}
-    >
-      <div className="px-4 py-3.5 flex items-center gap-3">
-        <span className="text-3xl animate-affection-float">{mood.emoji}</span>
-        <div>
-          <p className="text-[8px] uppercase tracking-[0.32em] text-candle-muted">Mood ring</p>
-          <p className="text-sm text-candle font-medium">{mood.label}</p>
-          <p className="text-[11px] text-candle-muted italic">{note || mood.note}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
