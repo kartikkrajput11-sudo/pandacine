@@ -50,6 +50,14 @@ import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
 import { useProfile } from "@/hooks/useProfile";
 
 
+type PlayTab = "care" | "wardrobe" | "market" | "closet";
+const PLAY_TABS: { key: PlayTab; label: string }[] = [
+  { key: "care", label: "Care" },
+  { key: "wardrobe", label: "Wardrobe" },
+  { key: "market", label: "Market" },
+  { key: "closet", label: "Boutique" },
+];
+
 export const Route = createFileRoute("/_authenticated/app/pet")({
   head: () => ({
     meta: [
@@ -97,6 +105,7 @@ function PetRoute() {
   const [draft, setDraft] = useState("");
   const [adoptName, setAdoptName] = useState("Pan");
   const [actions, setActions] = useState<PandaActions | null>(null);
+  const [tab, setTab] = useState<PlayTab>("care");
   const counter = useRef({ interactions: 0, affection: 0 });
 
 
@@ -308,6 +317,22 @@ function PetRoute() {
                 <p className="text-[11px] text-candle-muted">Pat · boop · belly rub · tail pull</p>
               </div>
 
+              <div className="flex gap-1 rounded-full border border-border bg-velvet/60 p-1">
+                {PLAY_TABS.map((t) => (
+                  <button
+                    key={t.key}
+                    onClick={() => setTab(t.key)}
+                    className={cn(
+                      "flex-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] transition-colors",
+                      tab === t.key ? "bg-petal text-velvet" : "text-candle-muted hover:text-candle",
+                    )}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {tab === "care" && (
               <div className="flex flex-wrap items-center justify-center gap-2">
                 <Act onClick={() => actions?.bamboo()} Icon={Leaf} label="Hold bamboo" />
                 <Act onClick={() => actions?.bell()} Icon={Bell} label="Ring bell" />
@@ -317,7 +342,9 @@ function PetRoute() {
                 <Act onClick={() => actions?.photo()} Icon={Camera} label="Photo" />
                 <Act onClick={() => actions?.dance()} Icon={Sparkles} label="Dance" />
               </div>
+              )}
 
+              {tab === "care" && (
               {/* pantry / quick feed */}
               <div className="space-y-2">
                 <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Pantry</p>
@@ -342,7 +369,9 @@ function PetRoute() {
                   </div>
                 )}
               </div>
+              )}
 
+              {tab === "wardrobe" && (
               {/* wardrobe */}
               <div className="space-y-2">
                 <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Wardrobe</p>
@@ -386,7 +415,9 @@ function PetRoute() {
                   })}
                 </div>
               </div>
+              )}
 
+              {tab === "market" && (
               {/* market */}
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between">
@@ -419,7 +450,9 @@ function PetRoute() {
                   ))}
                 </div>
               </div>
+              )}
 
+              {tab === "closet" && (
               {/* boutique closet — everything bought in the Panda Shop */}
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between">
@@ -480,6 +513,9 @@ function PetRoute() {
                   </div>
                 )}
               </div>
+              )}
+
+
             </div>
 
           </section>
