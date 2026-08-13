@@ -18,7 +18,7 @@ import { pandaStickerContent, type PandaStickerId } from "@/lib/panda-stickers";
 import type { AiStickerMood } from "@/lib/ai-stickers.functions";
 import type { TmdbMovie } from "@/lib/tmdb.functions";
 import { preloadAffectionStickers } from "@/lib/affection-preload";
-import { RitualsPanel } from "./RitualsPanel";
+import { MomentsPanel } from "./MomentsPanel";
 import { CameraCapture } from "./CameraCapture";
 import { Camera } from "lucide-react";
 
@@ -56,7 +56,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
   const [stickersOpen, setStickersOpen] = useState(false);
   const [manualDisappear, setManualDisappear] = useState<number | null>(null);
   const [vanish, setVanish] = useState(false);
-  const [ritualsOpen, setRitualsOpen] = useState(false);
+  const [momentsOpen, setMomentsOpen] = useState(false);
   // Vanish mode gives every message a default 60s life unless a longer
   // timer was picked manually.
   const disappearSecs = vanish ? (manualDisappear ?? 60) : manualDisappear;
@@ -551,8 +551,8 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
         </div>
       )}
 
-      {ritualsOpen && (
-        <RitualsPanel
+      {momentsOpen && (
+        <MomentsPanel
           meId={meId}
           partnerName={partnerName}
           vanish={vanish}
@@ -577,7 +577,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
             onSend({ ...input, disappear_seconds: input.disappear_seconds ?? disappearSecs })
           }
 
-          onClose={() => setRitualsOpen(false)}
+          onClose={() => setMomentsOpen(false)}
         />
       )}
 
@@ -664,19 +664,19 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 setMenuOpen(false);
                 setStickersOpen(false);
                 setOpenGroup(null);
-                setRitualsOpen((r) => !r);
+                setMomentsOpen((r) => !r);
               } catch (err) {
-                console.error("[ChatComposer] failed to open rituals", err);
-                toast.error("Couldn't open rituals");
+                console.error("[ChatComposer] failed to open moments", err);
+                toast.error("Couldn't open moments");
               }
             }}
             className={`size-11 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-              ritualsOpen
+              momentsOpen
                 ? "bg-gilt text-velvet"
                 : "bg-surface border border-border text-gilt hover:border-gilt/60"
             }`}
-            title="Rituals — heartbeat, mood, letters, capsules & more"
-            aria-label="Open rituals panel"
+            title="Moments — heartbeat, letters, capsules & more"
+            aria-label="Open moments panel"
           >
             <Sparkles className="size-4" />
           </button>

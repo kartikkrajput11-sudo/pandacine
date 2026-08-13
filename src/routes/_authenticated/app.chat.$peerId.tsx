@@ -17,7 +17,6 @@ import { ChatSearch } from "@/components/chat/ChatSearch";
 import { KissOverlay } from "@/components/chat/KissOverlay";
 import { HeartbeatOverlay } from "@/components/chat/HeartbeatOverlay";
 import { DuetCanvas } from "@/components/chat/DuetCanvas";
-import { moodById } from "@/lib/rituals";
 
 import { HugOverlay } from "@/components/chat/HugOverlay";
 import { HeadpatOverlay } from "@/components/chat/HeadpatOverlay";
@@ -188,7 +187,6 @@ function ChatPeer() {
   const [tickleTick, setTickleTick] = useState(0);
   const [winkTick, setWinkTick] = useState(0);
   const [heartbeatTick, setHeartbeatTick] = useState(0);
-  const [moodTint, setMoodTint] = useState<string | null>(null);
   const [duetOpen, setDuetOpen] = useState(false);
   useEffect(() => {
     const open = () => setDuetOpen(true);
@@ -359,10 +357,6 @@ function ChatPeer() {
       } else if (m.type === "heartbeat") {
         window.setTimeout(() => setHeartbeatTick((t) => t + 1), delay);
         delay += 520;
-      } else if (m.type === "mood") {
-        const id = (m.media_meta as any)?.mood;
-        if (typeof id === "string") setMoodTint(id);
-
       } else if (m.type === "nudge" && !nudgePlayed) {
         nudgePlayed = true;
         window.setTimeout(() => {
@@ -698,12 +692,6 @@ function ChatPeer() {
       <TickleOverlay trigger={tickleTick} />
       <WinkOverlay trigger={winkTick} />
       <HeartbeatOverlay trigger={heartbeatTick} />
-      {moodTint && (
-        <div
-          className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-1000"
-          style={{ background: `radial-gradient(circle at 50% 0%, hsl(${moodById(moodTint)?.hue ?? "342 68% 62%"} / 0.14), transparent 65%)` }}
-        />
-      )}
       {me && peer && (
         <DuetCanvas
           open={duetOpen}
