@@ -345,7 +345,6 @@ function PetRoute() {
               )}
 
               {tab === "care" && (
-              {/* pantry / quick feed */}
               <div className="space-y-2">
                 <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Pantry</p>
                 {pantryList.length === 0 ? (
@@ -372,7 +371,6 @@ function PetRoute() {
               )}
 
               {tab === "wardrobe" && (
-              {/* wardrobe */}
               <div className="space-y-2">
                 <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Wardrobe</p>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -418,7 +416,6 @@ function PetRoute() {
               )}
 
               {tab === "market" && (
-              {/* market */}
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Grove market</p>
@@ -453,7 +450,6 @@ function PetRoute() {
               )}
 
               {tab === "closet" && (
-              {/* boutique closet — everything bought in the Panda Shop */}
               <div className="space-y-2">
                 <div className="flex items-baseline justify-between">
                   <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Boutique closet</p>
