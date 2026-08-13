@@ -9,68 +9,78 @@ type Item = {
   exact?: boolean;
   primary?: boolean;
   search?: Record<string, unknown>;
-  from: string;
-  to2: string;
 };
 
 const items: Item[] = [
-  { to: "/app", label: "Home", Icon: Home, exact: true, from: "#a955ff", to2: "#ea51ff" },
-  { to: "/app/chat", label: "Chat", Icon: MessageCircle, from: "#56CCF2", to2: "#2F80ED" },
-  { to: "/app/movies", label: "Watch", Icon: Film, search: { q: "" }, from: "#FF9966", to2: "#FF5E62" },
-  { to: "/app/pet", label: "Panda", Icon: PawPrint, primary: true, from: "#ffa9c6", to2: "#f434e2" },
-  { to: "/app/play", label: "Play", Icon: Gamepad2, from: "#80FF72", to2: "#7EE8FA" },
-  { to: "/app/me", label: "Me", Icon: User, from: "#f0d78c", to2: "#c9a84c" },
+  { to: "/app", label: "Home", Icon: Home, exact: true },
+  { to: "/app/chat", label: "Chat", Icon: MessageCircle },
+  { to: "/app/movies", label: "Watch", Icon: Film, search: { q: "" } },
+  { to: "/app/pet", label: "Panda", Icon: PawPrint, primary: true },
+  { to: "/app/play", label: "Play", Icon: Gamepad2 },
+  { to: "/app/me", label: "Me", Icon: User },
 ];
 
+/**
+ * The house rail — a quiet glass bar with a single champagne indicator.
+ * One accent, no rainbow: the palette stays editorial in both themes.
+ */
 export function BottomNav() {
   const location = useLocation();
   const unread = useUnreadMessages();
+
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[460px] z-40">
-      <ul className="mx-3 mb-3 flex items-center justify-center gap-2 rounded-full glass-strong px-3 py-2 shadow-2xl">
-        {items.map(({ to, label, Icon, exact, search, primary, from, to2 }) => {
+    <nav
+      className="fixed bottom-0 left-1/2 z-40 w-full max-w-[520px] -translate-x-1/2"
+      style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+    >
+      <div className="pointer-events-none absolute inset-x-8 bottom-2 h-10 rounded-full bg-petal/20 blur-2xl" />
+      <ul className="relative mx-3 flex items-center justify-between gap-1 rounded-full border border-border/70 bg-surface/80 px-2 py-2 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.85)] backdrop-blur-2xl">
+        {items.map(({ to, label, Icon, exact, search, primary }) => {
           const active = exact ? location.pathname === to : location.pathname.startsWith(to);
           return (
-            <li
-              key={to}
-              style={{ ["--gradient-from" as string]: from, ["--gradient-to" as string]: to2 }}
-              className={`group relative flex h-[46px] items-center justify-center rounded-full transition-all duration-500 ${
-                active ? "w-[110px]" : "w-[46px] hover:w-[110px]"
-              } ${primary ? "-translate-y-3" : ""}`}
-            >
-              <span
-                aria-hidden
-                className={`absolute inset-0 rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] transition-opacity duration-500 ${
-                  active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                }`}
-              />
-              <span
-                aria-hidden
-                className={`absolute inset-x-0 top-[8px] -z-10 h-full rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] blur-[15px] transition-opacity duration-500 ${
-                  active ? "opacity-50" : "opacity-0 group-hover:opacity-50"
-                }`}
-              />
+            <li key={to} className={`relative flex-1 ${primary ? "-translate-y-2.5" : ""}`}>
               <Link
                 to={to}
                 search={search as never}
                 aria-label={label}
-                className="absolute inset-0 flex items-center justify-center rounded-full active:scale-95"
+                aria-current={active ? "page" : undefined}
+                className="group relative flex flex-col items-center gap-1 rounded-full px-1 py-1.5 transition-transform active:scale-95"
               >
                 <span
-                  className={`relative z-10 transition-transform duration-500 ${
-                    active ? "scale-0" : "group-hover:scale-0"
+                  aria-hidden
+                  className={`absolute inset-0 rounded-full border transition-all duration-300 ${
+                    active
+                      ? "border-petal/40 bg-[linear-gradient(160deg,var(--petal-soft),transparent_75%)] opacity-100"
+                      : "border-transparent opacity-0 group-hover:border-border group-hover:bg-velvet/50 group-hover:opacity-100"
                   }`}
-                >
-                  <Icon className="size-[20px] text-candle-muted" />
-                  {to === "/app/chat" && unread > 0 && !active && (
-                    <span className="absolute -top-1.5 -right-2 flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
+                />
+
+                <span className="relative">
+                  <span
+                    className={`relative grid size-8 place-items-center rounded-full transition-colors ${
+                      primary
+                        ? active
+                          ? "bg-petal text-velvet shadow-[0_10px_24px_-10px_var(--petal)]"
+                          : "border border-petal/35 bg-petal/10 text-petal"
+                        : ""
+                    }`}
+                  >
+                    <Icon
+                      className={`size-[19px] transition-colors ${
+                        primary && active ? "" : active ? "text-petal" : "text-candle-muted group-hover:text-candle"
+                      }`}
+                    />
+                  </span>
+                  {to === "/app/chat" && unread > 0 && (
+                    <span className="absolute -right-1 -top-0.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-coral px-1 text-[9px] font-bold text-velvet">
                       {unread > 9 ? "9+" : unread}
                     </span>
                   )}
                 </span>
+
                 <span
-                  className={`absolute z-10 text-[11px] uppercase tracking-wide text-white transition-transform delay-150 duration-500 ${
-                    active ? "scale-100" : "scale-0 group-hover:scale-100"
+                  className={`relative text-[9px] uppercase tracking-[0.16em] transition-colors ${
+                    active ? "text-petal" : "text-candle-muted/70 group-hover:text-candle-muted"
                   }`}
                 >
                   {label}
