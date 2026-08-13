@@ -46,9 +46,10 @@ export function SignedImage({ path, className }: { path: string; className?: str
         className={`${className ?? ""} cursor-zoom-in transition-transform duration-300 hover:scale-[1.015]`}
         loading="lazy"
         alt=""
+        style={{ touchAction: "manipulation" }}
         onPointerDown={stop}
-        onPointerUp={stop}
-        onClick={(e) => { e.stopPropagation(); setGallery(collectGallery(path)); }}
+        onPointerUp={(e) => { stop(e); }}
+        onClick={(e) => { e.stopPropagation(); e.preventDefault(); setGallery(collectGallery(path)); }}
       />
 
       {gallery && (
