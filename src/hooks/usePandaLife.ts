@@ -66,31 +66,19 @@ export function usePetLifeActions() {
     qc.invalidateQueries({ queryKey: ["luvies"] });
   };
 
-  const revive = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await db.rpc("revive_pet");
-      if (error) throw clean(error);
-      return data as { balance: number; cost: number };
+  // A panda that has died stays dead. The only way forward is an explicit,
+  // separate purchase of a brand-new panda (see useBirthNewPanda).
+  const birth = useMutation({
+    mutationFn: async (name?: string) => {
+      const { birthNewPanda } = await import("@/lib/pet.functions");
+      return birthNewPanda({ data: { name } });
     },
     onSuccess: () => {
-      toast.success("Your panda opened their eyes again 🐼");
-      refresh();
-    },
-    onError: (e: any) => toast.error(e.message),
-  });
-
-  const retire = useMutation({
-    mutationFn: async (reason?: string) => {
-      const { data, error } = await db.rpc("retire_pet", { _reason: reason ?? "let go" });
-      if (error) throw clean(error);
-      return data;
-    },
-    onSuccess: () => {
-      toast.success("Saved to your panda memorial. You can adopt again.");
+      toast.success("A new panda opens their eyes 🐼");
       refresh();
       qc.invalidateQueries({ queryKey: ["pet", "memorials"] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(String(e?.message ?? e)),
   });
 
   const bond = useMutation({
