@@ -27,6 +27,7 @@ const SCALE: { score: number; emoji: string; label: string }[] = [
 ];
 
 const RANGES = [
+  { days: 1, label: "Today" },
   { days: 7, label: "7 days" },
   { days: 14, label: "14 days" },
   { days: 30, label: "30 days" },
@@ -209,7 +210,12 @@ function MoodPage() {
           </div>
         </div>
 
-        <MoodChart days={days} mine={mine} theirs={partner ? theirs : null} />
+        <MoodChart
+          days={days}
+          mine={mine}
+          theirs={partner ? theirs : null}
+          partnerName={partner?.display_name ?? "Partner"}
+        />
 
         <div className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-candle-muted">
           <Legend color={MINE} label={`You · avg ${myAvg ? myAvg.toFixed(1) : "—"}`} />
