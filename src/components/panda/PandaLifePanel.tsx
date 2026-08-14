@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { HeartPulse, Link2, Scroll, Skull, Sparkles } from "lucide-react";
+import { Link2, Skull, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LuviesAmount } from "@/components/luvies/LuviesAmount";
-import { BOND_COST, REVIVE_COST, usePetBond, usePetLifeActions, usePetMemorials } from "@/hooks/usePandaLife";
+import { BOND_COST, usePetBond, usePetLifeActions, usePetMemorials } from "@/hooks/usePandaLife";
+import { REBIRTH_COST, pandaLifecycle } from "@/lib/panda-lifecycle";
 
 function fmt(d: string | null | undefined) {
   if (!d) return "—";
