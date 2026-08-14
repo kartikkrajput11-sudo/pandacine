@@ -47,6 +47,8 @@ import {
 } from "@/lib/pet-wardrobe";
 import { cn } from "@/lib/utils";
 import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
+import { REBIRTH_COST, pandaLifecycle } from "@/lib/panda-lifecycle";
+import { usePetLifeActions } from "@/hooks/usePandaLife";
 import { useProfile } from "@/hooks/useProfile";
 
 
@@ -101,6 +103,7 @@ function PetRoute() {
       .filter((r): r is { inv: (typeof shopInventory)[number]; item: (typeof shopItems)[number] } => !!r.item);
   }, [shopItems, shopInventory]);
 
+  const { birth } = usePetLifeActions();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [adoptName, setAdoptName] = useState("Pan");
@@ -175,7 +178,8 @@ function PetRoute() {
   }, [pet?.unlocked, pet?.interactions, save]);
 
   const name = pet?.name ?? "Pan";
-  const alive = pet?.alive !== false;
+  const lifecycle = pandaLifecycle(pet);
+  const alive = lifecycle === "ACTIVE_PANDA";
   const fullness = useMemo(() => (pet ? fullnessNow(pet.fullness ?? 100, pet.last_fed_at) : 100), [pet]);
   const hoursLeft = Math.max(0, Math.round(STARVE_HOURS - hoursSinceFed(pet?.last_fed_at)));
   const pantry = (pet?.pantry ?? {}) as Record<string, number>;
@@ -213,7 +217,7 @@ function PetRoute() {
 
       {isLoading && <p className="mt-6 text-sm text-candle-muted">Waking the panda…</p>}
 
-      {!isLoading && !pet?.unlocked && (
+      {!isLoading && lifecycle === "NO_PANDA_YET" && (
         <section className="mx-auto mt-6 max-w-md rounded-3xl glass-strong p-5 space-y-4">
           <div className="pointer-events-none">
             <PandaStage playful={false} lite className="mx-auto max-w-[300px]" />
