@@ -90,7 +90,13 @@ export const getPet = createServerFn({ method: "POST" })
       .eq("id", userId)
       .maybeSingle();
     const balance = Math.max((prof as any)?.panda_coins ?? 0, (prof as any)?.coins ?? 0);
-    return { pet: pet as unknown as Pet, coins: balance, cost: PET_COST };
+    return {
+      pet: pet as unknown as Pet,
+      lifecycle: pandaLifecycle(pet as any),
+      coins: balance,
+      cost: PET_COST,
+      rebirthCost: REBIRTH_COST,
+    };
 
   });
 
