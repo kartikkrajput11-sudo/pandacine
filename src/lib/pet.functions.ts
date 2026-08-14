@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
 import { COSTUME_BY_KEY, costumeUnlocked } from "@/lib/pet-wardrobe";
+import { REBIRTH_COST, pandaLifecycle } from "@/lib/panda-lifecycle";
 
 export const PET_COST = 250;
 
