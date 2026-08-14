@@ -30,12 +30,13 @@ export function PandaLifePanel({
   partnerName?: string | null;
   hasPartner: boolean;
 }) {
-  const { revive, retire, bond } = usePetLifeActions();
+  const { bond } = usePetLifeActions();
   const { data: memorials = [] } = usePetMemorials();
   const { data: bonded } = usePetBond();
   const [openHistory, setOpenHistory] = useState(false);
 
-  const gone = pet?.unlocked && pet?.alive === false;
+  const lifecycle = pandaLifecycle(pet);
+  const gone = lifecycle === "DEAD_PANDA";
 
   return (
     <section className="rounded-3xl glass p-5 space-y-4">
