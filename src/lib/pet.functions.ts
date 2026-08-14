@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
 import { COSTUME_BY_KEY, costumeUnlocked } from "@/lib/pet-wardrobe";
+import { REBIRTH_COST, pandaLifecycle } from "@/lib/panda-lifecycle";
 
 export const PET_COST = 250;
 
@@ -90,7 +91,13 @@ export const getPet = createServerFn({ method: "POST" })
       .eq("id", userId)
       .maybeSingle();
     const balance = Math.max((prof as any)?.panda_coins ?? 0, (prof as any)?.coins ?? 0);
-    return { pet: pet as unknown as Pet, coins: balance, cost: PET_COST };
+    return {
+      pet: pet as unknown as Pet,
+      lifecycle: pandaLifecycle(pet as any),
+      coins: balance,
+      cost: PET_COST,
+      rebirthCost: REBIRTH_COST,
+    };
 
   });
 
@@ -303,4 +310,99 @@ export const setPetCostume = createServerFn({ method: "POST" })
       .eq("user_id", context.userId);
     if (error) throw error;
     return { ok: true, costume: def.key };
+  });
+
+/**
+ * Explicit new-panda purchase after a loss — NOT a revive.
+ * The fallen panda is preserved forever in the memorial; a brand-new panda
+ * (new birthday, fresh stats) is born for REBIRTH_COST Luvies.
+ */
+export const birthNewPanda = createServerFn({ method: "POST" })
+  .inputValidator((input: { name?: string }) => input ?? {})
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ data, context }) => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: pet } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const p = pet as any;
+    if (pandaLifecycle(p) !== "DEAD_PANDA") {
+      throw new Error("This is only for a panda that has passed away");
+    }
+
+    const { data: remaining, error: sErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
+      _user: userId,
+      _amount: REBIRTH_COST,
+      _reason: "panda_birth",
+      _ref: "pet:birth",
+    } as any);
+    if (sErr) throw new Error(sErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
+
+    const diedAt = p.died_at ?? new Date().toISOString();
+    const daysLived = Math.max(
+      0,
+      Math.round((new Date(diedAt).getTime() - new Date(p.born_at).getTime()) / 864e5),
+    );
+
+    // Keep the fallen panda's story before the row is reused.
+    const { data: existingMemorial } = await supabaseAdmin
+      .from("pet_memorials" as any)
+      .select("id")
+      .eq("user_id", userId)
+      .eq("died_at", diedAt)
+      .maybeSingle();
+    if (!existingMemorial) {
+      await supabaseAdmin.from("pet_memorials" as any).insert({
+        user_id: userId,
+        name: p.name ?? "Pan",
+        costume: p.costume ?? null,
+        born_at: p.born_at,
+        died_at: diedAt,
+        death_reason: p.death_reason ?? "starvation",
+        affection: p.affection ?? 0,
+        interactions: p.interactions ?? 0,
+        streak: p.streak ?? 0,
+        days_lived: daysLived,
+      });
+    }
+
+    const name = (data.name ?? "").trim().slice(0, 20) || "Pan";
+    const now = new Date().toISOString();
+    const { error } = await supabaseAdmin
+      .from("pet_pandas" as any)
+      .update({
+        name,
+        unlocked: true,
+        alive: true,
+        died_at: null,
+        death_reason: null,
+        born_at: now,
+        last_fed_at: now,
+        last_visit: today(),
+        fullness: 100,
+        affection: 0,
+        interactions: 0,
+        streak: 1,
+        costume: "classic",
+        pantry: {},
+        unlocked_expressions: [],
+        unlocked_costumes: [],
+        updated_at: now,
+      })
+      .eq("user_id", userId);
+    if (error) {
+      await supabaseAdmin.rpc("credit_luvies" as any, {
+        _user: userId,
+        _amount: REBIRTH_COST,
+        _reason: "refund",
+        _ref: "pet:birth",
+      } as any);
+      throw error;
+    }
+
+    return { ok: true, name, coins: (remaining as number) ?? 0 };
   });

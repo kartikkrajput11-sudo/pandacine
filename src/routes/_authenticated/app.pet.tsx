@@ -47,6 +47,8 @@ import {
 } from "@/lib/pet-wardrobe";
 import { cn } from "@/lib/utils";
 import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
+import { REBIRTH_COST, pandaLifecycle } from "@/lib/panda-lifecycle";
+import { usePetLifeActions } from "@/hooks/usePandaLife";
 import { useProfile } from "@/hooks/useProfile";
 
 
@@ -101,6 +103,7 @@ function PetRoute() {
       .filter((r): r is { inv: (typeof shopInventory)[number]; item: (typeof shopItems)[number] } => !!r.item);
   }, [shopItems, shopInventory]);
 
+  const { birth } = usePetLifeActions();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
   const [adoptName, setAdoptName] = useState("Pan");
@@ -175,7 +178,8 @@ function PetRoute() {
   }, [pet?.unlocked, pet?.interactions, save]);
 
   const name = pet?.name ?? "Pan";
-  const alive = pet?.alive !== false;
+  const lifecycle = pandaLifecycle(pet);
+  const alive = lifecycle === "ACTIVE_PANDA";
   const fullness = useMemo(() => (pet ? fullnessNow(pet.fullness ?? 100, pet.last_fed_at) : 100), [pet]);
   const hoursLeft = Math.max(0, Math.round(STARVE_HOURS - hoursSinceFed(pet?.last_fed_at)));
   const pantry = (pet?.pantry ?? {}) as Record<string, number>;
@@ -213,7 +217,7 @@ function PetRoute() {
 
       {isLoading && <p className="mt-6 text-sm text-candle-muted">Waking the panda…</p>}
 
-      {!isLoading && !pet?.unlocked && (
+      {!isLoading && lifecycle === "NO_PANDA_YET" && (
         <section className="mx-auto mt-6 max-w-md rounded-3xl glass-strong p-5 space-y-4">
           <div className="pointer-events-none">
             <PandaStage playful={false} lite className="mx-auto max-w-[300px]" />
@@ -248,17 +252,53 @@ function PetRoute() {
         </section>
       )}
 
-      {!isLoading && pet?.unlocked && !alive && (
-        <section className="mx-auto mt-6 max-w-md rounded-3xl glass-strong p-8 text-center space-y-3">
-          <p className="text-4xl">🕯️</p>
-          <h2 className="font-serif text-2xl italic">{name} is gone</h2>
-          <p className="text-sm text-candle-muted">
-            {name} went {STARVE_HOURS} hours without food. Pandas don't come back — the grove keeps their memory.
-          </p>
-        </section>
+      {!isLoading && lifecycle === "DEAD_PANDA" && (
+        <div className="mx-auto mt-6 max-w-md space-y-4">
+          <section className="rounded-3xl glass-strong p-8 text-center space-y-3">
+            <p className="text-4xl">🕯️</p>
+            <h2 className="font-serif text-2xl italic">{name} is gone</h2>
+            <p className="text-sm text-candle-muted">
+              {name} went {STARVE_HOURS} hours without food. Pandas don't come back — the grove keeps their memory.
+            </p>
+          </section>
+
+          <section className="rounded-3xl glass p-5 space-y-3">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.24em] text-petal">A new beginning</p>
+              <h3 className="font-serif text-xl italic">Welcome a new panda</h3>
+              <p className="mt-1 text-[12px] text-candle-muted">
+                This is a brand-new panda with their own birthday and story — {name} stays in the memorial.
+              </p>
+            </div>
+            <input
+              value={adoptName}
+              onChange={(e) => setAdoptName(e.target.value)}
+              maxLength={20}
+              placeholder="Name your new panda"
+              className="w-full rounded-2xl border border-border bg-surface px-4 py-3 text-center font-serif text-lg italic outline-none focus:border-petal/60"
+            />
+            <Button
+              variant="petal"
+              size="block"
+              disabled={birth.isPending || coins < REBIRTH_COST}
+              onClick={() => birth.mutate(adoptName)}
+            >
+              {coins < REBIRTH_COST
+                ? `Needs ${REBIRTH_COST} Luvies — you have ${coins}`
+                : `Welcome a new panda · ${REBIRTH_COST} Luvies`}
+            </Button>
+          </section>
+
+          <PandaLifePanel
+            pet={pet}
+            balance={coins}
+            partnerName={profileData?.partner?.display_name}
+            hasPartner={!!profileData?.partner}
+          />
+        </div>
       )}
 
-      {!isLoading && pet?.unlocked && alive && (
+      {!isLoading && lifecycle === "ACTIVE_PANDA" && (
         <div className="mx-auto mt-6 grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
           {/* ── Stage column ─────────────────────────────── */}
           <section className="space-y-4">

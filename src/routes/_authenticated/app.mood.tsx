@@ -27,6 +27,7 @@ const SCALE: { score: number; emoji: string; label: string }[] = [
 ];
 
 const RANGES = [
+  { days: 1, label: "Today" },
   { days: 7, label: "7 days" },
   { days: 14, label: "14 days" },
   { days: 30, label: "30 days" },
@@ -209,7 +210,12 @@ function MoodPage() {
           </div>
         </div>
 
-        <MoodChart days={days} mine={mine} theirs={partner ? theirs : null} />
+        <MoodChart
+          days={days}
+          mine={mine}
+          theirs={partner ? theirs : null}
+          partnerName={partner?.display_name ?? "Partner"}
+        />
 
         <div className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-candle-muted">
           <Legend color={MINE} label={`You · avg ${myAvg ? myAvg.toFixed(1) : "—"}`} />
@@ -264,23 +270,30 @@ function PersonCard({
   );
 }
 
-/** Editorial line chart — smooth curves, soft area fill, quiet gridlines. */
+/**
+ * One shared coordinate system: a single X (timeline) and Y (mood 1–5) axis
+ * with two lines. Missing days are real gaps — never zero, never invented.
+ */
 function MoodChart({
   days,
   mine,
   theirs,
+  partnerName,
 }: {
   days: string[];
   mine: (number | null)[];
   theirs: (number | null)[] | null;
+  partnerName: string;
 }) {
+  const [active, setActive] = useState<number | null>(null);
   const W = 720;
-  const H = 220;
-  const padX = 14;
-  const padY = 18;
-  const stepX = (W - padX * 2) / Math.max(1, days.length - 1);
+  const H = 240;
+  const padX = 30;
+  const padY = 22;
+  const single = days.length === 1;
+  const stepX = single ? 0 : (W - padX * 2) / (days.length - 1);
   const y = (v: number) => padY + (1 - (v - 1) / 4) * (H - padY * 2);
-  const x = (i: number) => padX + i * stepX;
+  const x = (i: number) => (single ? W / 2 : padX + i * stepX);
 
   const path = (series: (number | null)[]) => {
     const pts = series.map((v, i) => (v == null ? null : { x: x(i), y: y(v) }));
@@ -305,48 +318,121 @@ function MoodChart({
 
   const hasAny = mine.some((v) => v != null) || (theirs?.some((v) => v != null) ?? false);
 
+  const pick = (clientX: number, el: SVGSVGElement) => {
+    if (single) return setActive(0);
+    const r = el.getBoundingClientRect();
+    const rel = ((clientX - r.left) / r.width) * W;
+    const i = Math.round((rel - padX) / stepX);
+    setActive(Math.min(days.length - 1, Math.max(0, i)));
+  };
+
+  const label = (v: number | null) => SCALE.find((s) => s.score === v)?.label ?? "No entry";
+  const emoji = (v: number | null) => SCALE.find((s) => s.score === v)?.emoji ?? "·";
+
   return (
     <div className="relative">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-[220px]" preserveAspectRatio="none">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full h-[240px] touch-none"
+        onMouseMove={(e) => pick(e.clientX, e.currentTarget)}
+        onMouseLeave={() => setActive(null)}
+        onTouchStart={(e) => pick(e.touches[0]!.clientX, e.currentTarget)}
+        onTouchMove={(e) => pick(e.touches[0]!.clientX, e.currentTarget)}
+      >
         <defs>
           <linearGradient id="mineFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={MINE} stopOpacity="0.28" />
+            <stop offset="0%" stopColor={MINE} stopOpacity="0.24" />
             <stop offset="100%" stopColor={MINE} stopOpacity="0" />
           </linearGradient>
         </defs>
 
-        {[1, 2, 3, 4, 5].map((v) => (
-          <line
-            key={v}
-            x1={padX}
-            x2={W - padX}
-            y1={y(v)}
-            y2={y(v)}
-            stroke="currentColor"
-            className="text-border"
-            strokeWidth={1}
-            strokeDasharray={v === 3 ? "0" : "3 7"}
-            opacity={v === 3 ? 0.8 : 0.5}
-          />
+        {/* Shared Y axis — same 1–5 mood scale for both partners */}
+        {SCALE.map((s) => (
+          <g key={s.score}>
+            <line
+              x1={padX}
+              x2={W - padX}
+              y1={y(s.score)}
+              y2={y(s.score)}
+              stroke="currentColor"
+              className="text-border"
+              strokeWidth={1}
+              strokeDasharray={s.score === 3 ? "0" : "3 7"}
+              opacity={s.score === 3 ? 0.8 : 0.45}
+            />
+            <text
+              x={6}
+              y={y(s.score) + 4}
+              className="fill-current text-candle-muted"
+              style={{ fontSize: 11 }}
+            >
+              {s.score}
+            </text>
+          </g>
         ))}
 
-        {mine.some((v) => v != null) && (
-          <>
-            <path
-              d={`${path(mine)} L${x(days.length - 1)},${H - padY} L${x(0)},${H - padY} Z`}
-              fill="url(#mineFill)"
-              opacity={0.9}
-            />
-            <path d={path(mine)} fill="none" stroke={MINE} strokeWidth={2.5} strokeLinecap="round" />
-          </>
+        {active != null && (
+          <line
+            x1={x(active)}
+            x2={x(active)}
+            y1={padY}
+            y2={H - padY}
+            stroke={MINE}
+            strokeWidth={1}
+            opacity={0.45}
+          />
         )}
-        {theirs && <path d={path(theirs)} fill="none" stroke={THEIRS} strokeWidth={2.5} strokeLinecap="round" strokeDasharray="6 6" />}
+
+        {mine.some((v) => v != null) && !single && (
+          <path
+            d={`${path(mine)} L${x(days.length - 1)},${H - padY} L${x(0)},${H - padY} Z`}
+            fill="url(#mineFill)"
+            opacity={0.7}
+          />
+        )}
+        <path d={path(mine)} fill="none" stroke={MINE} strokeWidth={2.5} strokeLinecap="round" />
+        {theirs && (
+          <path
+            d={path(theirs)}
+            fill="none"
+            stroke={THEIRS}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeDasharray="6 6"
+          />
+        )}
 
         {mine.map((v, i) =>
-          v == null ? null : <circle key={`m${i}`} cx={x(i)} cy={y(v)} r={3.5} fill={MINE} />,
+          v == null ? null : (
+            <circle key={`m${i}`} cx={x(i)} cy={y(v)} r={active === i ? 5.5 : 3.5} fill={MINE} />
+          ),
         )}
-        {theirs?.map((v, i) => (v == null ? null : <circle key={`t${i}`} cx={x(i)} cy={y(v)} r={3.5} fill={THEIRS} />))}
+        {theirs?.map((v, i) =>
+          v == null ? null : (
+            <circle key={`t${i}`} cx={x(i)} cy={y(v)} r={active === i ? 5.5 : 3.5} fill={THEIRS} />
+          ),
+        )}
       </svg>
+
+      {active != null && (
+        <div
+          className="pointer-events-none absolute top-2 rounded-2xl border border-border bg-surface/95 px-3 py-2 text-[11px] shadow-xl backdrop-blur"
+          style={{
+            left: `${(x(active) / W) * 100}%`,
+            transform: `translateX(${x(active) > W / 2 ? "-105%" : "5%"})`,
+          }}
+        >
+          <p className="uppercase tracking-[0.2em] text-candle-muted">{formatDay(days[active])}</p>
+          <p className="mt-1" style={{ color: MINE }}>
+            {emoji(mine[active] ?? null)} You · {label(mine[active] ?? null)}
+          </p>
+          {theirs && (
+            <p style={{ color: THEIRS }}>
+              {emoji(theirs[active] ?? null)} {partnerName} · {label(theirs[active] ?? null)}
+            </p>
+          )}
+        </div>
+      )}
 
       {!hasAny && (
         <div className="absolute inset-0 grid place-items-center">
@@ -356,12 +442,13 @@ function MoodChart({
 
       <div className="mt-1 flex justify-between text-[9px] uppercase tracking-[0.2em] text-candle-muted">
         <span>{formatDay(days[0])}</span>
-        <span>{formatDay(days[Math.floor(days.length / 2)])}</span>
+        {days.length > 2 && <span>{formatDay(days[Math.floor(days.length / 2)])}</span>}
         <span>Today</span>
       </div>
     </div>
   );
 }
+
 
 function formatDay(iso?: string) {
   if (!iso) return "";

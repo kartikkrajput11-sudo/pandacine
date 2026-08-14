@@ -14,6 +14,7 @@ import { newGameRoomId } from "@/lib/game-room";
 import { MovieWheelPicker, type WheelEntry } from "./MovieWheelPicker";
 import { PandaStickerPicker } from "./PandaStickerPicker";
 import { AiStickerPicker } from "./AiStickerPicker";
+import { GifPicker, type GifPick } from "./GifPicker";
 import { pandaStickerContent, type PandaStickerId } from "@/lib/panda-stickers";
 import type { AiStickerMood } from "@/lib/ai-stickers.functions";
 import type { TmdbMovie } from "@/lib/tmdb.functions";
@@ -68,6 +69,7 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
   const [wheelOpen, setWheelOpen] = useState(false);
   const [pandaOpen, setPandaOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
+  const [gifOpen, setGifOpen] = useState(false);
   const [whisper, setWhisper] = useState(false);
   const [viewOnce, setViewOnce] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
@@ -510,9 +512,10 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
 
 
             {openGroup === "sticker" && (
-              <div className="mt-2 grid grid-cols-2 gap-2 animate-fade-in">
+              <div className="mt-2 grid grid-cols-3 gap-2 animate-fade-in">
                 <GroupChoice icon={<span className="text-base leading-none">🐼</span>} label="Panda" hint="Curated set" onClick={() => { setOpenGroup(null); setPandaOpen(true); setMenuOpen(false); }} />
                 <GroupChoice icon={<Sparkles className="size-4 text-petal" />} label="AI ✨" hint="Made for you" onClick={() => { setOpenGroup(null); setAiOpen(true); setMenuOpen(false); }} />
+                <GroupChoice icon={<span className="text-[10px] font-semibold leading-none">GIF</span>} label="GIF" hint="Search Giphy" onClick={() => { setOpenGroup(null); setGifOpen(true); setMenuOpen(false); }} />
               </div>
             )}
 
@@ -586,6 +589,26 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
       <GameInvitePicker open={gamePickerOpen} onClose={() => setGamePickerOpen(false)} onPick={sendGameInvite} />
       <MovieWheelPicker open={wheelOpen} onClose={() => setWheelOpen(false)} onSend={sendMovieWheel} />
       <PandaStickerPicker open={pandaOpen} onClose={() => setPandaOpen(false)} onPick={sendPandaSticker} onOpenAi={() => setAiOpen(true)} />
+      <GifPicker
+        open={gifOpen}
+        onClose={() => setGifOpen(false)}
+        onPick={async (g: GifPick) => {
+          try {
+            await onSend({
+              type: "gif",
+              content: g.title,
+              media_url: g.url,
+              media_meta: { width: g.width, height: g.height, source: "giphy" },
+              reply_to_id: replyTo?.id ?? null,
+              disappear_seconds: disappearSecs,
+            });
+            onClearReply?.();
+          } catch (err) {
+            console.error("[ChatComposer] gif send failed", err);
+            toast.error("Couldn't send that GIF");
+          }
+        }}
+      />
       <AiStickerPicker open={aiOpen} onClose={() => setAiOpen(false)} onPick={sendAiSticker} />
       <CameraCapture open={cameraOpen} onClose={() => setCameraOpen(false)} onCapture={handleCaptured} />
 
