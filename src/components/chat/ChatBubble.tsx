@@ -365,6 +365,7 @@ function ChatBubbleImpl({
             <div className={`mb-1.5 px-2 py-1 rounded-lg text-xs border-l-2 ${mine ? "bg-velvet/20 border-velvet/40" : "bg-petal/10 border-petal/60"}`}>
               <p className="opacity-70 truncate">
                 {replyTo.type === "voice" ? "🎙 Voice" :
+                 replyTo.type === "gif" ? "🎞️ GIF" :
                  replyTo.type === "image" ? "📷 Photo" :
                  replyTo.type === "video" ? "🎬 Video" :
                  replyTo.type === "file" ? `📎 ${replyTo.content}` :
@@ -661,6 +662,14 @@ function ChatBubbleImpl({
               ? <ViewOnceMedia m={m} mine={mine} />
               : <SignedImage path={m.media_url} className="rounded-xl max-w-[240px] max-h-[320px] object-cover" />
           )}
+          {m.type === "gif" && m.media_url && (
+            <img
+              src={m.media_url}
+              alt={m.content || "GIF"}
+              className="rounded-xl max-w-[240px] max-h-[320px] object-contain"
+              loading="lazy"
+            />
+          )}
           {m.type === "video" && m.media_url && (
             (m.media_meta as any)?.view_once
               ? <ViewOnceMedia m={m} mine={mine} />
@@ -752,7 +761,8 @@ function ChatBubbleImpl({
               onClick={(e) => e.stopPropagation()}
             >
               {m.type === "text" ? <span className="break-words whitespace-pre-wrap">{m.content}</span> :
-               m.type === "image" ? <span className="opacity-80">📷 Photo</span> :
+               m.type === "gif" ? <span className="opacity-80">🎞️ GIF</span> :
+              m.type === "image" ? <span className="opacity-80">📷 Photo</span> :
                m.type === "video" ? <span className="opacity-80">🎬 Video</span> :
                m.type === "voice" ? <span className="opacity-80">🎙️ Voice</span> :
                m.type === "file" ? <span className="opacity-80">📎 {m.content}</span> :
