@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { birthNewPanda } from "@/lib/pet.functions";
 
 const db = supabase as any;
 
@@ -70,7 +71,6 @@ export function usePetLifeActions() {
   // separate purchase of a brand-new panda (see useBirthNewPanda).
   const birth = useMutation({
     mutationFn: async (name?: string) => {
-      const { birthNewPanda } = await import("@/lib/pet.functions");
       return birthNewPanda({ data: { name } });
     },
     onSuccess: () => {
@@ -95,5 +95,5 @@ export function usePetLifeActions() {
     onError: (e: any) => toast.error(e.message),
   });
 
-  return { revive, retire, bond };
+  return { birth, bond };
 }
