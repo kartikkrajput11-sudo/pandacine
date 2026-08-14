@@ -64,37 +64,15 @@ export function PandaLifePanel({
       )}
 
       {gone && (
-        <div className="rounded-2xl border border-coral/40 bg-coral/5 p-4 space-y-3">
+        <div className="rounded-2xl border border-coral/40 bg-coral/5 p-4 space-y-2">
           <p className="flex items-center gap-2 text-sm">
             <Skull className="size-4 text-coral" />
             {pet.name} is gone — {REASON_TEXT[pet.death_reason ?? "starvation"] ?? pet.death_reason ?? "starvation"}.
           </p>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <Button
-              onClick={() => revive.mutate()}
-              disabled={revive.isPending || balance < REVIVE_COST}
-              className="justify-center"
-            >
-              <HeartPulse className="size-4" />
-              Revive · <LuviesAmount value={REVIVE_COST} />
-            </Button>
-            <Button
-              variant="quiet"
-              className="justify-center"
-              disabled={retire.isPending}
-              onClick={() => {
-                if (confirm(`Say goodbye to ${pet.name} and adopt a new panda? Their story is kept forever.`))
-                  retire.mutate("starvation");
-              }}
-            >
-              <Scroll className="size-4" /> Adopt a new panda
-            </Button>
-          </div>
-          {balance < REVIVE_COST && (
-            <p className="text-[11px] text-candle-muted">
-              You need {REVIVE_COST - balance} more Luvies to revive — earn them by watching, playing and winning.
-            </p>
-          )}
+          <p className="text-[11px] text-candle-muted">
+            Their story stays here forever. Pandas never come back — but you can welcome a new one home for{" "}
+            <LuviesAmount value={REBIRTH_COST} /> whenever you're ready.
+          </p>
         </div>
       )}
 
