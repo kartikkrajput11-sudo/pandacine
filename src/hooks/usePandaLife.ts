@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 const db = supabase as any;
 
-export const REVIVE_COST = 3000;
 export const BOND_COST = 999;
 
 export type PetMemorial = {
