@@ -56,6 +56,7 @@ function MartRoute() {
   const [receipt, setReceipt] = useState<MartOrder | null>(null);
   const [tab, setTab] = useState<"shop" | "receipts">("shop");
 
+  const me_profile = (profile as any)?.profile ?? null;
   const partner = (profile as any)?.partner ?? null;
   const total = cartTotal(cart.lines);
   const count = cartCount(cart.lines);
@@ -111,7 +112,7 @@ function MartRoute() {
               <div className="min-w-0 flex-1 text-center sm:text-left">
                 <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Your cashier</p>
                 <p className="mt-1 font-serif text-xl italic leading-snug">
-                  “Welcome to PandaMart, {profile?.display_name?.split(" ")[0] ?? "keeper"}. Aisles are stocked.”
+                  “Welcome to PandaMart, {me_profile?.display_name?.split(" ")[0] ?? "keeper"}. Aisles are stocked.”
                 </p>
                 <p className="mt-1 text-xs text-candle-muted">
                   Everything is paid with your PandaCine Card. Bills can be split with {partner?.display_name ?? "your partner"}.
@@ -210,8 +211,8 @@ function MartRoute() {
 
         <aside className="space-y-4 lg:sticky lg:top-6">
           <PandaCineCard
-            holder={profile?.display_name ?? profile?.username ?? "Keeper"}
-            userId={(profile as any)?.id}
+            holder={me_profile?.display_name ?? me_profile?.username ?? "Keeper"}
+            userId={me_profile?.id}
             balance={balance}
             partnerName={partner?.display_name}
           />
