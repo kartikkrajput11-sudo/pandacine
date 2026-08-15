@@ -464,6 +464,19 @@ function PetRoute() {
                     {coins}
                   </span>
                 </div>
+                <Link
+                  to="/app/mart"
+                  className="flex items-center justify-between rounded-2xl border border-petal/40 bg-petal/10 px-4 py-3 transition hover:bg-petal/15"
+                >
+                  <span>
+                    <span className="block font-serif text-sm italic">Visit PandaMart 🛒</span>
+                    <span className="block text-[10px] text-candle-muted">
+                      Full aisles, boutique looks, card checkout & split bills
+                    </span>
+                  </span>
+                  <span className="text-[10px] uppercase tracking-[0.22em] text-petal">Open</span>
+                </Link>
+
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {PET_FOODS.map((f) => (
                     <button

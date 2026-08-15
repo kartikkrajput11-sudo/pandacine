@@ -1340,6 +1340,51 @@ export type Database = {
         }
         Relationships: []
       }
+      mart_orders: {
+        Row: {
+          buyer_id: string
+          buyer_share: number
+          created_at: string
+          id: string
+          items: Json
+          note: string | null
+          partner_id: string | null
+          partner_share: number
+          receipt_no: string
+          settled_at: string | null
+          split_status: string
+          total: number
+        }
+        Insert: {
+          buyer_id: string
+          buyer_share?: number
+          created_at?: string
+          id?: string
+          items?: Json
+          note?: string | null
+          partner_id?: string | null
+          partner_share?: number
+          receipt_no: string
+          settled_at?: string | null
+          split_status?: string
+          total?: number
+        }
+        Update: {
+          buyer_id?: string
+          buyer_share?: number
+          created_at?: string
+          id?: string
+          items?: Json
+          note?: string | null
+          partner_id?: string | null
+          partner_share?: number
+          receipt_no?: string
+          settled_at?: string | null
+          split_status?: string
+          total?: number
+        }
+        Relationships: []
+      }
       match_player_messages: {
         Row: {
           content: string
