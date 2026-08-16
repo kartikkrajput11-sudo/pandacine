@@ -35,17 +35,19 @@ export const getPet = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
 
     let { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("*")
-      .eq("user_id", userId)
+      .eq("user_id", ownerId)
       .maybeSingle();
 
     if (!pet) {
       const { data: created } = await supabaseAdmin
         .from("pet_pandas" as any)
-        .insert({ user_id: userId, last_visit: today() })
+        .insert({ user_id: ownerId, last_visit: today() })
         .select("*")
         .maybeSingle();
       pet = created;
@@ -63,7 +65,7 @@ export const getPet = createServerFn({ method: "POST" })
             costume: streak >= 7 ? "golden" : p.costume,
             updated_at: new Date().toISOString(),
           })
-          .eq("user_id", userId)
+          .eq("user_id", ownerId)
           .select("*")
           .maybeSingle();
         pet = updated ?? pet;
@@ -76,7 +78,7 @@ export const getPet = createServerFn({ method: "POST" })
       const { data: dead } = await supabaseAdmin
         .from("pet_pandas" as any)
         .update({ alive: false, died_at: new Date().toISOString(), fullness: 0 })
-        .eq("user_id", userId)
+        .eq("user_id", ownerId)
         .select("*")
         .maybeSingle();
       pet = dead ?? pet;
@@ -108,11 +110,13 @@ export const unlockPet = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
 
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("unlocked")
-      .eq("user_id", userId)
+      .eq("user_id", ownerId)
       .maybeSingle();
     if ((pet as any)?.unlocked) throw new Error("You already adopted your panda");
 
@@ -128,7 +132,7 @@ export const unlockPet = createServerFn({ method: "POST" })
     const { error: uErr } = await supabaseAdmin
       .from("pet_pandas" as any)
       .upsert(
-        { user_id: userId, unlocked: true, name, last_visit: today(), streak: 1, updated_at: new Date().toISOString() },
+        { user_id: ownerId, unlocked: true, name, last_visit: today(), streak: 1, updated_at: new Date().toISOString() },
         { onConflict: "user_id" },
       );
     if (uErr) {
@@ -151,10 +155,12 @@ export const renamePet = createServerFn({ method: "POST" })
     const name = data.name.trim().slice(0, 20);
     if (name.length < 2) throw new Error("Name needs at least 2 characters");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { error } = await supabaseAdmin
       .from("pet_pandas" as any)
       .update({ name, updated_at: new Date().toISOString() })
-      .eq("user_id", context.userId);
+      .eq("user_id", ownerId);
     if (error) throw error;
     return { ok: true, name };
   });
@@ -165,10 +171,12 @@ export const savePetProgress = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("interactions,affection")
-      .eq("user_id", context.userId)
+      .eq("user_id", ownerId)
       .maybeSingle();
     const p = (pet ?? {}) as any;
     const interactions = Math.max(p.interactions ?? 0, data.interactions);
@@ -176,7 +184,7 @@ export const savePetProgress = createServerFn({ method: "POST" })
     await supabaseAdmin
       .from("pet_pandas" as any)
       .update({ interactions, affection, updated_at: new Date().toISOString() })
-      .eq("user_id", context.userId);
+      .eq("user_id", ownerId);
     return { interactions, affection };
   });
 
@@ -191,11 +199,13 @@ export const buyPetFood = createServerFn({ method: "POST" })
     const cost = food.price * qty;
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
 
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("pantry,alive,unlocked")
-      .eq("user_id", context.userId)
+      .eq("user_id", ownerId)
       .maybeSingle();
     if (!(pet as any)?.unlocked) throw new Error("Adopt your panda first");
 
@@ -213,7 +223,7 @@ export const buyPetFood = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("pet_pandas" as any)
       .update({ pantry, updated_at: new Date().toISOString() })
-      .eq("user_id", context.userId);
+      .eq("user_id", ownerId);
     if (error) {
       await supabaseAdmin.rpc("credit_luvies" as any, {
         _user: context.userId,
@@ -236,10 +246,12 @@ export const feedPet = createServerFn({ method: "POST" })
     if (!food) throw new Error("Unknown item");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("*")
-      .eq("user_id", context.userId)
+      .eq("user_id", ownerId)
       .maybeSingle();
     const p = pet as any;
     if (!p?.unlocked) throw new Error("Adopt your panda first");
@@ -278,7 +290,7 @@ export const feedPet = createServerFn({ method: "POST" })
         unlocked_costumes: costumes,
         updated_at: new Date().toISOString(),
       })
-      .eq("user_id", context.userId);
+      .eq("user_id", ownerId);
     if (error) throw error;
 
     return { ok: true, fullness, affection, pantry, unlocked };
@@ -293,10 +305,12 @@ export const setPetCostume = createServerFn({ method: "POST" })
     if (!def) throw new Error("Unknown outfit");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("affection,streak,interactions,unlocked_costumes,unlocked,alive")
-      .eq("user_id", context.userId)
+      .eq("user_id", ownerId)
       .maybeSingle();
     const p = pet as any;
     if (!p?.unlocked) throw new Error("Adopt your panda first");
@@ -307,7 +321,7 @@ export const setPetCostume = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin
       .from("pet_pandas" as any)
       .update({ costume: def.key, unlocked_costumes: costumes, updated_at: new Date().toISOString() })
-      .eq("user_id", context.userId);
+      .eq("user_id", ownerId);
     if (error) throw error;
     return { ok: true, costume: def.key };
   });
@@ -323,11 +337,13 @@ export const birthNewPanda = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
 
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("*")
-      .eq("user_id", userId)
+      .eq("user_id", ownerId)
       .maybeSingle();
     const p = pet as any;
     if (pandaLifecycle(p) !== "DEAD_PANDA") {
@@ -352,12 +368,12 @@ export const birthNewPanda = createServerFn({ method: "POST" })
     const { data: existingMemorial } = await supabaseAdmin
       .from("pet_memorials" as any)
       .select("id")
-      .eq("user_id", userId)
+      .eq("user_id", ownerId)
       .eq("died_at", diedAt)
       .maybeSingle();
     if (!existingMemorial) {
       await supabaseAdmin.from("pet_memorials" as any).insert({
-        user_id: userId,
+        user_id: ownerId,
         name: p.name ?? "Pan",
         costume: p.costume ?? null,
         born_at: p.born_at,
@@ -393,7 +409,7 @@ export const birthNewPanda = createServerFn({ method: "POST" })
         unlocked_costumes: [],
         updated_at: now,
       })
-      .eq("user_id", userId);
+      .eq("user_id", ownerId);
     if (error) {
       await supabaseAdmin.rpc("credit_luvies" as any, {
         _user: userId,
