@@ -19,6 +19,8 @@ import {
   Lock,
   ShoppingBag,
   ChevronRight,
+  Heart,
+  PawPrint,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PandaStage, type PandaActions } from "@/components/panda/PandaStage";
@@ -28,6 +30,7 @@ import { useEquippedLook, useLuviesWallet, usePandaEquip, usePandaInventory, use
 import { PANDA_CATEGORIES } from "@/lib/luvies";
 import type { Costume } from "@/components/panda/usePandaBrain";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   getPet,
   renamePet,
@@ -53,11 +56,20 @@ import { useProfile } from "@/hooks/useProfile";
 
 
 type PlayTab = "care" | "wardrobe" | "market" | "closet";
-const PLAY_TABS: { key: PlayTab; label: string }[] = [
-  { key: "care", label: "Care" },
-  { key: "wardrobe", label: "Wardrobe" },
-  { key: "market", label: "Market" },
-  { key: "closet", label: "Boutique" },
+const PLAY_TABS: { key: PlayTab; label: string; Icon: typeof Leaf }[] = [
+  { key: "care", label: "Care", Icon: Heart },
+  { key: "wardrobe", label: "Wardrobe", Icon: Shirt },
+  { key: "market", label: "Market", Icon: ShoppingBag },
+  { key: "closet", label: "Boutique", Icon: Crown },
+];
+
+/** XP is earned by every interaction and every point of affection. */
+const XP_PER_LEVEL = 1000;
+const UNLOCKS: { level: number; label: string }[] = [
+  { level: 3, label: "Dance floor" },
+  { level: 5, label: "Photo mode" },
+  { level: 8, label: "Golden grove" },
+  { level: 12, label: "Legacy album" },
 ];
 
 export const Route = createFileRoute("/_authenticated/app/pet")({
@@ -108,7 +120,7 @@ function PetRoute() {
   const [draft, setDraft] = useState("");
   const [adoptName, setAdoptName] = useState("Pan");
   const [actions, setActions] = useState<PandaActions | null>(null);
-  const [tab, setTab] = useState<PlayTab>("care");
+  const [sheet, setSheet] = useState<PlayTab | null>(null);
   const counter = useRef({ interactions: 0, affection: 0 });
 
 
@@ -185,6 +197,11 @@ function PetRoute() {
   const pantry = (pet?.pantry ?? {}) as Record<string, number>;
   const pantryList = Object.entries(pantry).filter(([, n]) => n > 0);
   const costume = (pet?.costume ?? "classic") as Costume;
+  const xpTotal = (pet?.interactions ?? 0) * 20 + (pet?.affection ?? 0) * 8 + (pet?.streak ?? 0) * 40;
+  const level = Math.floor(xpTotal / XP_PER_LEVEL) + 1;
+  const xpInLevel = xpTotal % XP_PER_LEVEL;
+  const xpPct = Math.max(3, Math.round((xpInLevel / XP_PER_LEVEL) * 100));
+  const nextUnlock = UNLOCKS.find((u) => u.level > level) ?? UNLOCKS[UNLOCKS.length - 1]!;
   const tycoon = PET_COSTUMES.find((c) => c.key === "tycoon")!;
   const tycoonReady = costumeUnlocked(tycoon, pet);
 
@@ -788,5 +805,107 @@ function Act({ onClick, Icon, label }: { onClick: () => void; Icon: typeof Leaf;
       <Icon className="size-3.5" />
       {label}
     </button>
+  );
+}
+
+
+function Vital({
+  Icon,
+  label,
+  value,
+  tone,
+}: {
+  Icon: typeof Leaf;
+  label: string;
+  value: number;
+  tone: "leaf" | "petal" | "alert";
+}) {
+  return (
+    <div className="space-y-1.5 text-right">
+      <div className="flex items-center justify-end gap-2">
+        <span
+          className={cn(
+            "grid size-8 place-items-center rounded-full border",
+            tone === "alert" ? "border-coral/50 bg-coral/10" : "border-petal/40 bg-petal/10",
+          )}
+        >
+          <Icon className={cn("size-4", tone === "alert" ? "text-coral" : "text-petal")} />
+        </span>
+        <span>
+          <span className="block text-[9px] uppercase tracking-[0.18em] text-candle-muted">{label}</span>
+          <span className="block text-sm tabular-nums">{Math.round(value)}%</span>
+        </span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-surface">
+        <div
+          className={cn("h-full rounded-full", tone === "alert" ? "bg-coral" : "bg-petal")}
+          style={{ width: `${Math.max(3, Math.min(100, value))}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function Touch({ Icon, label, onClick }: { Icon: typeof Leaf; label: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex items-center gap-2 rounded-2xl border border-border bg-surface/60 px-3 py-2.5 text-left transition-all hover:border-petal/50 active:scale-[0.97]"
+    >
+      <Icon className="size-4 shrink-0 text-petal" />
+      <span className="whitespace-pre-line text-[11px] uppercase leading-tight tracking-[0.14em] text-candle">
+        {label}
+      </span>
+    </button>
+  );
+}
+
+function Portal2({
+  Icon,
+  title,
+  hint,
+  onClick,
+}: {
+  Icon: typeof Leaf;
+  title: string;
+  hint: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-2xl border border-border bg-surface/50 p-4 text-center transition-all hover:border-petal/50 active:scale-[0.97]"
+    >
+      <Icon className="mx-auto size-5 text-petal" />
+      <p className="mt-2 text-[11px] uppercase tracking-[0.18em]">{title}</p>
+      <p className="text-[10px] text-candle-muted">{hint}</p>
+    </button>
+  );
+}
+
+function Goal({ label, value, total }: { label: string; value: number; total: number }) {
+  const done = value >= total;
+  return (
+    <div className="flex items-center gap-3">
+      <span
+        className={cn(
+          "grid size-8 shrink-0 place-items-center rounded-full border",
+          done ? "border-petal/60 bg-petal/15" : "border-border bg-surface/60",
+        )}
+      >
+        {done ? <Check className="size-4 text-petal" /> : <Heart className="size-4 text-candle-muted" />}
+      </span>
+      <div className="flex-1">
+        <div className="flex items-baseline justify-between text-sm">
+          <span>{label}</span>
+          <span className="text-[11px] tabular-nums text-candle-muted">
+            {Math.min(value, total)} / {total}
+          </span>
+        </div>
+        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface">
+          <div className="h-full rounded-full bg-petal" style={{ width: `${(Math.min(value, total) / total) * 100}%` }} />
+        </div>
+      </div>
+    </div>
   );
 }
