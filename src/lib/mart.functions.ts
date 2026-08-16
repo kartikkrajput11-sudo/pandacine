@@ -27,6 +27,8 @@ export const martCheckout = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { userId } = context;
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { resolvePetOwner } = await import("@/lib/pet-owner.server");
+    const petOwnerId = await resolvePetOwner(supabaseAdmin, userId);
 
     const requested = (data.items ?? []).filter((i) => i && i.key).slice(0, 40);
     if (!requested.length) throw new Error("Your cart is empty");
@@ -46,7 +48,7 @@ export const martCheckout = createServerFn({ method: "POST" })
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("pantry,unlocked,alive")
-      .eq("user_id", userId)
+      .eq("user_id", petOwnerId)
       .maybeSingle();
 
     const lines: {
@@ -117,7 +119,7 @@ export const martCheckout = createServerFn({ method: "POST" })
         const { error } = await supabaseAdmin
           .from("pet_pandas" as any)
           .update({ pantry, updated_at: new Date().toISOString() })
-          .eq("user_id", userId);
+          .eq("user_id", petOwnerId);
         if (error) throw error;
       }
       const boutique = lines.filter((l) => l.kind === "boutique");
