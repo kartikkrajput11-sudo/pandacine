@@ -299,275 +299,206 @@ function PetRoute() {
       )}
 
       {!isLoading && lifecycle === "ACTIVE_PANDA" && (
-        <div className="mx-auto mt-6 grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-          {/* ── Stage column ─────────────────────────────── */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              {editing ? (
-                <>
-                  <input
-                    autoFocus
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    maxLength={20}
-                    className="w-40 rounded-xl border border-border bg-surface px-3 py-1.5 text-center font-serif italic outline-none focus:border-petal/60"
-                  />
-                  <Button variant="petal" size="icon" onClick={() => renameM.mutate(draft)} aria-label="Save name">
-                    <Check className="size-4" />
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <h2 className="font-serif text-3xl italic">{name}</h2>
-                  <span className="rounded-full border border-border px-2.5 py-0.5 text-[10px] uppercase tracking-widest text-candle-muted">
-                    {COSTUME_BY_KEY[costume]?.name ?? "Classic coat"}
-                  </span>
-                  <button
-                    onClick={() => {
-                      setDraft(name);
-                      setEditing(true);
-                    }}
-                    aria-label="Rename panda"
-                    className="text-candle-muted hover:text-petal"
-                  >
-                    <Pencil className="size-4" />
-                  </button>
-                </>
-              )}
-            </div>
-
-            <div className="relative">
-              <PandaStage
-                name={name}
-                costume={costume}
-                hideActions
-                onReady={setActions}
-                onInteract={() => {
-                  counter.current.interactions += 1;
-                  counter.current.affection = Math.min(100, counter.current.affection + 1);
-                }}
-              />
-              <PandaAdornments look={look} />
-            </div>
-
-            {/* ── Playroom: everything you can do with the panda ── */}
-            <div className="rounded-3xl glass-strong p-5 space-y-5">
-              <div className="flex items-baseline justify-between">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Playroom</p>
-                <p className="text-[11px] text-candle-muted">Pat · boop · belly rub · tail pull</p>
-              </div>
-
-              <div className="flex gap-1 rounded-full border border-border bg-velvet/60 p-1">
-                {PLAY_TABS.map((t) => (
-                  <button
-                    key={t.key}
-                    onClick={() => setTab(t.key)}
-                    className={cn(
-                      "flex-1 rounded-full px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] transition-colors",
-                      tab === t.key ? "bg-petal text-velvet" : "text-candle-muted hover:text-candle",
-                    )}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-
-              {tab === "care" && (
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <Act onClick={() => actions?.bamboo()} Icon={Leaf} label="Hold bamboo" />
-                <Act onClick={() => actions?.bell()} Icon={Bell} label="Ring bell" />
-                <Act onClick={() => actions?.popcorn()} Icon={Popcorn} label="Popcorn" />
-                <Act onClick={() => actions?.cookie()} Icon={Cookie} label="Cookie" />
-                <Act onClick={() => actions?.paw()} Icon={Hand} label="Paw shake" />
-                <Act onClick={() => actions?.photo()} Icon={Camera} label="Photo" />
-                <Act onClick={() => actions?.dance()} Icon={Sparkles} label="Dance" />
-              </div>
-              )}
-
-              {tab === "care" && (
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Pantry</p>
-                {pantryList.length === 0 ? (
-                  <p className="text-[11px] text-candle-muted">
-                    The pantry is empty — buy something from the grove market below.
-                  </p>
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {pantryList.map(([key, n]) => (
+        <div className="mx-auto mt-5 max-w-5xl space-y-4">
+          {/* ── Companion card ───────────────────────────── */}
+          <section className="relative overflow-hidden rounded-[28px] glass-strong p-4 sm:p-5">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 opacity-70"
+              style={{
+                background:
+                  "radial-gradient(60% 55% at 50% 30%, color-mix(in oklab, var(--petal) 12%, transparent), transparent 70%)",
+              }}
+            />
+            <div className="relative grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+              {/* identity + progress */}
+              <div className="order-2 sm:order-1 space-y-2.5">
+                <div className="flex items-center gap-2">
+                  {editing ? (
+                    <>
+                      <input
+                        autoFocus
+                        value={draft}
+                        onChange={(e) => setDraft(e.target.value)}
+                        maxLength={20}
+                        className="w-36 rounded-xl border border-border bg-surface px-3 py-1.5 font-serif italic outline-none focus:border-petal/60"
+                      />
+                      <Button variant="petal" size="icon" onClick={() => renameM.mutate(draft)} aria-label="Save name">
+                        <Check className="size-4" />
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="font-serif text-3xl italic uppercase tracking-tight">{name}</h2>
                       <button
-                        key={key}
-                        disabled={feedM.isPending}
-                        onClick={() => feedM.mutate(key)}
-                        className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs transition-colors hover:border-petal/60 hover:text-petal"
+                        onClick={() => {
+                          setDraft(name);
+                          setEditing(true);
+                        }}
+                        aria-label="Rename panda"
+                        className="text-candle-muted transition hover:text-petal"
                       >
-                        <span>{FOOD_BY_KEY[key]?.emoji}</span>
-                        <span>{FOOD_BY_KEY[key]?.name}</span>
-                        <span className="tabular-nums text-candle-muted">×{n}</span>
+                        <Pencil className="size-4" />
                       </button>
-                    ))}
+                    </>
+                  )}
+                </div>
+
+                <span className="inline-block rounded-full border border-petal/40 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-petal">
+                  Level {String(level).padStart(2, "0")}
+                </span>
+
+                <div className="max-w-[240px] space-y-1">
+                  <div className="h-1.5 overflow-hidden rounded-full bg-surface">
+                    <div className="h-full rounded-full bg-petal petal-glow" style={{ width: `${xpPct}%` }} />
                   </div>
-                )}
-              </div>
-              )}
-
-              {tab === "wardrobe" && (
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Wardrobe</p>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {PET_COSTUMES.map((c) => {
-                    const unlocked = costumeUnlocked(c, pet);
-                    const worn = costume === c.key;
-                    return (
-                      <button
-                        key={c.key}
-                        disabled={!unlocked || worn || wearM.isPending}
-                        onClick={() => wearM.mutate(c.key)}
-                        className={cn(
-                          "rounded-2xl border p-3 text-left transition-all",
-                          worn
-                            ? "border-petal/60 bg-petal/10"
-                            : unlocked
-                              ? "border-border bg-surface/60 hover:border-petal/50"
-                              : "border-border bg-surface/40 opacity-70",
-                        )}
-                      >
-                        <div className="flex items-start justify-between">
-                          <span className="text-xl">{c.emoji}</span>
-                          {!unlocked && <Lock className="size-3.5 text-candle-muted" />}
-                        </div>
-                        <p className="mt-1 font-serif text-sm italic leading-tight">{c.name}</p>
-                        {unlocked ? (
-                          <p className="text-[10px] uppercase tracking-widest text-petal">
-                            {worn ? "Wearing" : "Wear"}
-                          </p>
-                        ) : (
-                          <>
-                            <Progress value={costumeProgress(c, pet)} />
-                            <p className="mt-1 text-[10px] leading-tight text-candle-muted">
-                              {costumeRequirementText(c)}
-                            </p>
-                          </>
-                        )}
-                      </button>
-                    );
-                  })}
+                  <p className="text-xs text-candle-muted tabular-nums">
+                    <span className="text-candle">{xpInLevel}</span> / {XP_PER_LEVEL} XP
+                  </p>
+                  <p className="text-xs text-candle-muted">{XP_PER_LEVEL - xpInLevel} XP to level {String(level + 1).padStart(2, "0")}</p>
                 </div>
-              </div>
-              )}
 
-              {tab === "market" && (
-              <div className="space-y-2">
-                <div className="flex items-baseline justify-between">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Grove market</p>
-                  <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
-                    <LuvieCoin className="size-3.5" />
-                    {coins}
-                  </span>
-                </div>
-                <Link
-                  to="/app/mart"
-                  className="flex items-center justify-between rounded-2xl border border-petal/40 bg-petal/10 px-4 py-3 transition hover:bg-petal/15"
-                >
-                  <span>
-                    <span className="block font-serif text-sm italic">Visit PandaMart 🛒</span>
-                    <span className="block text-[10px] text-candle-muted">
-                      Full aisles, boutique looks, card checkout & split bills
+                <div className="pt-1">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Next unlock</p>
+                  <div className="mt-1.5 inline-flex items-center gap-2.5 rounded-2xl border border-border bg-surface/60 px-3 py-2">
+                    <span className="grid size-8 place-items-center rounded-xl border border-petal/40 bg-petal/10">
+                      <Camera className="size-4 text-petal" />
                     </span>
-                  </span>
-                  <span className="text-[10px] uppercase tracking-[0.22em] text-petal">Open</span>
-                </Link>
-
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {PET_FOODS.map((f) => (
-                    <button
-                      key={f.key}
-                      disabled={buyM.isPending || coins < f.price}
-                      onClick={() => buyM.mutate(f.key)}
-                      className="rounded-2xl border border-border bg-surface/60 p-3 text-left transition-all hover:border-petal/50 disabled:opacity-50"
-                    >
-                      <div className="flex items-start justify-between">
-                        <span className="text-xl">{f.emoji}</span>
-                        <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
-                          <LuvieCoin className="size-3.5" />
-                          {f.price}
-                        </span>
-                      </div>
-                      <p className="mt-1 font-serif text-sm italic leading-tight">{f.name}</p>
-                      <p className="text-[10px] text-candle-muted">
-                        +{f.fullness} fullness · +{f.affection} affection
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-              )}
-
-              {tab === "closet" && (
-              <div className="space-y-2">
-                <div className="flex items-baseline justify-between">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Boutique closet</p>
-                  <Link
-                    to="/app/panda-shop"
-                    className="inline-flex items-center gap-1 text-[11px] text-petal hover:underline"
-                  >
-                    <ShoppingBag className="size-3.5" /> Panda Shop <ChevronRight className="size-3" />
-                  </Link>
-                </div>
-                {ownedShopItems.length === 0 ? (
-                  <p className="text-[11px] text-candle-muted">
-                    Nothing from the boutique yet — outfits, props and effects you buy with Luvies appear on your panda
-                    here.
-                  </p>
-                ) : (
-                  <div className="space-y-3">
-                    {PANDA_CATEGORIES.map((c) => {
-                      const rows = ownedShopItems.filter((r) => r.item.category === c.key);
-                      if (!rows.length) return null;
-                      return (
-                        <div key={c.key} className="space-y-1.5">
-                          <p className="text-[10px] uppercase tracking-widest text-candle-muted">
-                            {c.icon} {c.label}
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {rows.map(({ inv, item }) => (
-                              <button
-                                key={item.item_key}
-                                disabled={equipShopItem.isPending}
-                                onClick={() =>
-                                  equipShopItem.mutate(
-                                    { itemKey: item.item_key, equip: !inv.equipped },
-                                    {
-                                      onSuccess: () =>
-                                        toast.success(inv.equipped ? `${item.name} put away` : `${item.name} on`),
-                                      onError: (e: any) => toast.error(e?.message ?? "Couldn't change that"),
-                                    },
-                                  )
-                                }
-                                className={cn(
-                                  "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors",
-                                  inv.equipped
-                                    ? "border-petal/60 bg-petal/10 text-petal"
-                                    : "border-border bg-surface/70 hover:border-petal/50",
-                                )}
-                              >
-                                <span>{item.emoji}</span>
-                                <span>{item.name}</span>
-                                {inv.equipped && <Check className="size-3.5" />}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <span>
+                      <span className="block text-sm">{nextUnlock.label}</span>
+                      <span className="block text-[11px] text-candle-muted">Level {String(nextUnlock.level).padStart(2, "0")}</span>
+                    </span>
                   </div>
-                )}
+                </div>
               </div>
-              )}
 
+              {/* stage + vitals */}
+              <div className="order-1 sm:order-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                <div className="relative">
+                  <PandaStage
+                    name={name}
+                    costume={costume}
+                    hideActions
+                    onReady={setActions}
+                    onInteract={() => {
+                      counter.current.interactions += 1;
+                      counter.current.affection = Math.min(100, counter.current.affection + 1);
+                    }}
+                  />
+                  <PandaAdornments look={look} />
+                </div>
 
+                <div className="w-[104px] space-y-4">
+                  <Vital
+                    Icon={Leaf}
+                    label="Fullness"
+                    value={fullness}
+                    tone={fullness < 30 ? "alert" : "leaf"}
+                  />
+                  <Vital Icon={Heart} label="Affection" value={pet.affection ?? 0} tone="petal" />
+                  <p className="text-center text-[10px] uppercase tracking-[0.18em] text-candle-muted">{mood}</p>
+                </div>
+              </div>
             </div>
 
+            {/* direct touches */}
+            <div className="relative mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Touch Icon={Hand} label={"Pat\nhead"} onClick={() => actions?.headpat()} />
+              <Touch Icon={Heart} label={"Belly\nrub"} onClick={() => actions?.bellyRub()} />
+              <Touch Icon={Bell} label={"Boop\nnose"} onClick={() => actions?.boop()} />
+              <Touch Icon={PawPrint} label={"Pull\ntail"} onClick={() => actions?.tailPull()} />
+            </div>
           </section>
+
+          {/* ── Playroom launcher — opens over the screen ── */}
+          <section className="rounded-[28px] glass-strong p-3">
+            <div className="flex gap-1 rounded-full border border-border bg-velvet/60 p-1">
+              {PLAY_TABS.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setSheet(t.key)}
+                  className={cn(
+                    "flex flex-1 items-center justify-center gap-1.5 rounded-full px-2 py-2 text-[10px] uppercase tracking-[0.16em] transition-colors",
+                    sheet === t.key ? "bg-petal text-velvet" : "text-candle-muted hover:text-candle",
+                  )}
+                >
+                  <t.Icon className="size-3.5" />
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              <Portal2 Icon={Leaf} title="Feed" hint="Keep them full" onClick={() => setSheet("care")} />
+              <Portal2 Icon={Sparkles} title="Play" hint="Have fun" onClick={() => setSheet("care")} />
+              <Portal2 Icon={Shirt} title="Dress" hint="Wardrobe" onClick={() => setSheet("wardrobe")} />
+              <Portal2 Icon={ShoppingBag} title="Shop" hint="Market & boutique" onClick={() => setSheet("market")} />
+            </div>
+          </section>
+
+          {/* ── Goals & bond ─────────────────────────────── */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            <section className="rounded-[28px] glass-strong p-5 space-y-3">
+              <p className="flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-petal">
+                <Sparkles className="size-3.5" /> Today&apos;s goal
+              </p>
+              <Goal label="Give 3 affection" value={Math.min(3, pet.interactions ?? 0)} total={3} />
+              <Goal label="Feed your panda" value={fullness > 60 ? 1 : 0} total={1} />
+              <Goal label="Play together" value={(pet.interactions ?? 0) > 0 ? 1 : 0} total={1} />
+              <div className="flex items-center gap-2 border-t border-border pt-3 text-sm text-candle-muted">
+                🎁 <span className="text-petal">+45 XP</span>
+              </div>
+            </section>
+
+            <div className="space-y-4">
+              <section className="rounded-[28px] glass-strong p-5">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Golden tycoon</p>
+                  <Crown className={cn("size-4", tycoonReady ? "text-[#f0d78c]" : "text-candle-muted")} />
+                </div>
+                <p className="mt-1.5 text-xs leading-snug text-candle-muted">{tycoon.blurb}</p>
+                <div className="mt-3">
+                  {tycoonReady ? (
+                    <Button
+                      variant="petal"
+                      size="block"
+                      disabled={wearM.isPending || costume === "tycoon"}
+                      onClick={() => wearM.mutate("tycoon")}
+                    >
+                      {costume === "tycoon" ? "Currently wearing" : "Wear the gold suit"}
+                    </Button>
+                  ) : (
+                    <>
+                      <Progress value={costumeProgress(tycoon, pet)} />
+                      <p className="mt-1.5 text-[10px] uppercase tracking-widest text-candle-muted">
+                        {costumeRequirementText(tycoon)}
+                      </p>
+                    </>
+                  )}
+                </div>
+              </section>
+
+              <section className="rounded-[28px] glass-strong p-5">
+                <p className="flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-petal">
+                  <Heart className="size-3.5" /> Our bond
+                </p>
+                <p className="mt-2 text-sm">
+                  {profileData?.partner
+                    ? `${name} is shared with ${profileData.partner.display_name}`
+                    : "Pair with your partner to raise this panda together"}
+                </p>
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  <Stat label="Playtime" value={String(pet.interactions ?? 0)} Icon={Sparkles} />
+                  <Stat label="Streak" value={`${pet.streak ?? 0}d`} Icon={Flame} />
+                  <Stat
+                    label="Outfits"
+                    value={String(PET_COSTUMES.filter((c) => costumeUnlocked(c, pet)).length)}
+                    Icon={Shirt}
+                  />
+                </div>
+              </section>
+            </div>
+          </div>
 
           <PandaLifePanel
             pet={pet}
@@ -576,68 +507,200 @@ function PetRoute() {
             hasPartner={!!profileData?.partner}
           />
 
-
-
-          {/* ── Care column ──────────────────────────────── */}
-          <aside className="space-y-4 lg:sticky lg:top-6">
-            <div className="rounded-3xl glass-strong p-5 space-y-4">
-              <div className="flex items-baseline justify-between">
-                <p className="text-[10px] uppercase tracking-[0.24em] text-petal">Vitals</p>
-                <p className="text-xs text-candle-muted">{mood}</p>
-              </div>
-
-              <Meter
-                label="Fullness"
-                value={fullness}
-                hint={`${hoursLeft}h left`}
-                tone={fullness < 30 ? "alert" : "petal"}
-              />
-              <Meter label="Affection" value={pet.affection ?? 0} hint={`${pet.affection ?? 0}%`} tone="rose" />
-
-              <div className="grid grid-cols-3 gap-2 pt-1">
-                <Stat label="Playtime" value={String(pet.interactions ?? 0)} Icon={Sparkles} />
-                <Stat label="Streak" value={`${pet.streak ?? 0}d`} Icon={Flame} />
-                <Stat label="Outfits" value={String(PET_COSTUMES.filter((c) => costumeUnlocked(c, pet)).length)} Icon={Shirt} />
-              </div>
-            </div>
-
-            {/* Golden tycoon showcase */}
-            <div
-              className={cn(
-                "relative overflow-hidden rounded-3xl border p-5",
-                tycoonReady
-                  ? "border-[#e6c477]/60 bg-[linear-gradient(135deg,rgba(230,196,119,0.18),transparent_65%)]"
-                  : "border-border bg-surface/60",
-              )}
+          {/* ── Overlay sheets ───────────────────────────── */}
+          <Sheet open={!!sheet} onOpenChange={(o) => !o && setSheet(null)}>
+            <SheetContent
+              side="bottom"
+              className="max-h-[85vh] overflow-y-auto rounded-t-[28px] border-border bg-velvet/95 backdrop-blur-xl p-5"
             >
-              <div className="flex items-center gap-2">
-                <Crown className={cn("size-4", tycoonReady ? "text-[#f0d78c]" : "text-candle-muted")} />
-                <p className="text-[10px] uppercase tracking-[0.24em] text-candle-muted">Legendary</p>
-              </div>
-              <h3 className="mt-1 font-serif text-xl italic">Golden tycoon 💼</h3>
-              <p className="mt-1 text-xs leading-snug text-candle-muted">{tycoon.blurb}</p>
-              <div className="mt-3">
-                {tycoonReady ? (
-                  <Button
-                    variant="petal"
-                    size="block"
-                    disabled={wearM.isPending || costume === "tycoon"}
-                    onClick={() => wearM.mutate("tycoon")}
-                  >
-                    {costume === "tycoon" ? "Currently wearing" : "Wear the gold suit"}
-                  </Button>
-                ) : (
+              <SheetHeader className="text-left">
+                <SheetTitle className="font-serif text-2xl italic">
+                  {PLAY_TABS.find((t) => t.key === sheet)?.label ?? ""}
+                </SheetTitle>
+              </SheetHeader>
+
+              <div className="mt-4 space-y-5 pb-6">
+                {sheet === "care" && (
                   <>
-                    <Progress value={costumeProgress(tycoon, pet)} />
-                    <p className="mt-1.5 text-[10px] uppercase tracking-widest text-candle-muted">
-                      {costumeRequirementText(tycoon)}
-                    </p>
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      <Act onClick={() => actions?.bamboo()} Icon={Leaf} label="Hold bamboo" />
+                      <Act onClick={() => actions?.bell()} Icon={Bell} label="Ring bell" />
+                      <Act onClick={() => actions?.popcorn()} Icon={Popcorn} label="Popcorn" />
+                      <Act onClick={() => actions?.cookie()} Icon={Cookie} label="Cookie" />
+                      <Act onClick={() => actions?.paw()} Icon={Hand} label="Paw shake" />
+                      <Act onClick={() => actions?.photo()} Icon={Camera} label="Photo" />
+                      <Act onClick={() => actions?.dance()} Icon={Sparkles} label="Dance" />
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[10px] uppercase tracking-[0.22em] text-candle-muted">Pantry</p>
+                      {pantryList.length === 0 ? (
+                        <p className="text-[11px] text-candle-muted">
+                          The pantry is empty — buy something from the market.
+                        </p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {pantryList.map(([key, n]) => (
+                            <button
+                              key={key}
+                              disabled={feedM.isPending}
+                              onClick={() => feedM.mutate(key)}
+                              className="flex items-center gap-1.5 rounded-full border border-border bg-surface/70 px-3 py-1.5 text-xs transition-colors hover:border-petal/60 hover:text-petal"
+                            >
+                              <span>{FOOD_BY_KEY[key]?.emoji}</span>
+                              <span>{FOOD_BY_KEY[key]?.name}</span>
+                              <span className="tabular-nums text-candle-muted">×{n}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </>
                 )}
-              </div>
-            </div>
-          </aside>
 
+                {sheet === "wardrobe" && (
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {PET_COSTUMES.map((c) => {
+                      const unlocked = costumeUnlocked(c, pet);
+                      const worn = costume === c.key;
+                      return (
+                        <button
+                          key={c.key}
+                          disabled={!unlocked || worn || wearM.isPending}
+                          onClick={() => wearM.mutate(c.key)}
+                          className={cn(
+                            "rounded-2xl border p-3 text-left transition-all",
+                            worn
+                              ? "border-petal/60 bg-petal/10"
+                              : unlocked
+                                ? "border-border bg-surface/60 hover:border-petal/50"
+                                : "border-border bg-surface/40 opacity-70",
+                          )}
+                        >
+                          <div className="flex items-start justify-between">
+                            <span className="text-xl">{c.emoji}</span>
+                            {!unlocked && <Lock className="size-3.5 text-candle-muted" />}
+                          </div>
+                          <p className="mt-1 font-serif text-sm italic leading-tight">{c.name}</p>
+                          {unlocked ? (
+                            <p className="text-[10px] uppercase tracking-widest text-petal">
+                              {worn ? "Wearing" : "Wear"}
+                            </p>
+                          ) : (
+                            <>
+                              <Progress value={costumeProgress(c, pet)} />
+                              <p className="mt-1 text-[10px] leading-tight text-candle-muted">
+                                {costumeRequirementText(c)}
+                              </p>
+                            </>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {sheet === "market" && (
+                  <div className="space-y-3">
+                    <Link
+                      to="/app/mart"
+                      className="flex items-center justify-between rounded-2xl border border-petal/40 bg-petal/10 px-4 py-3 transition hover:bg-petal/15"
+                    >
+                      <span>
+                        <span className="block font-serif text-sm italic">Visit PandaMart 🛒</span>
+                        <span className="block text-[10px] text-candle-muted">
+                          Full aisles, boutique looks, card checkout & split bills
+                        </span>
+                      </span>
+                      <ChevronRight className="size-4 text-petal" />
+                    </Link>
+
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                      {PET_FOODS.map((f) => (
+                        <button
+                          key={f.key}
+                          disabled={buyM.isPending || coins < f.price}
+                          onClick={() => buyM.mutate(f.key)}
+                          className="rounded-2xl border border-border bg-surface/60 p-3 text-left transition-all hover:border-petal/50 disabled:opacity-50"
+                        >
+                          <div className="flex items-start justify-between">
+                            <span className="text-xl">{f.emoji}</span>
+                            <span className="flex items-center gap-1 text-[11px] text-petal tabular-nums">
+                              <LuvieCoin className="size-3.5" />
+                              {f.price}
+                            </span>
+                          </div>
+                          <p className="mt-1 font-serif text-sm italic leading-tight">{f.name}</p>
+                          <p className="text-[10px] text-candle-muted">
+                            +{f.fullness} fullness · +{f.affection} affection
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {sheet === "closet" && (
+                  <div className="space-y-3">
+                    <Link
+                      to="/app/panda-shop"
+                      className="inline-flex items-center gap-1 text-[11px] text-petal hover:underline"
+                    >
+                      <ShoppingBag className="size-3.5" /> Panda Shop <ChevronRight className="size-3" />
+                    </Link>
+                    {ownedShopItems.length === 0 ? (
+                      <p className="text-[11px] text-candle-muted">
+                        Nothing from the boutique yet — outfits, props and effects you buy with Luvies appear on your
+                        panda here.
+                      </p>
+                    ) : (
+                      <div className="space-y-3">
+                        {PANDA_CATEGORIES.map((c) => {
+                          const rows = ownedShopItems.filter((r) => r.item.category === c.key);
+                          if (!rows.length) return null;
+                          return (
+                            <div key={c.key} className="space-y-1.5">
+                              <p className="text-[10px] uppercase tracking-widest text-candle-muted">
+                                {c.icon} {c.label}
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                {rows.map(({ inv, item }) => (
+                                  <button
+                                    key={item.item_key}
+                                    disabled={equipShopItem.isPending}
+                                    onClick={() =>
+                                      equipShopItem.mutate(
+                                        { itemKey: item.item_key, equip: !inv.equipped },
+                                        {
+                                          onSuccess: () =>
+                                            toast.success(inv.equipped ? `${item.name} put away` : `${item.name} on`),
+                                          onError: (e: any) => toast.error(e?.message ?? "Couldn't change that"),
+                                        },
+                                      )
+                                    }
+                                    className={cn(
+                                      "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors",
+                                      inv.equipped
+                                        ? "border-petal/60 bg-petal/10 text-petal"
+                                        : "border-border bg-surface/70 hover:border-petal/50",
+                                    )}
+                                  >
+                                    <span>{item.emoji}</span>
+                                    <span>{item.name}</span>
+                                    {inv.equipped && <Check className="size-3.5" />}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       )}
     </div>
