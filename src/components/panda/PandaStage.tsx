@@ -15,6 +15,10 @@ export type PandaActions = {
   paw: () => void;
   photo: () => void;
   dance: () => void;
+  headpat: () => void;
+  bellyRub: () => void;
+  boop: () => void;
+  tailPull: () => void;
 };
 
 type Props = {
@@ -119,6 +123,10 @@ export function PandaStage({
       paw: () => interact("paw-r"),
       photo: () => interact("camera"),
       dance,
+      headpat: () => interact("head"),
+      bellyRub: () => interact("belly"),
+      boop: () => interact("nose"),
+      tailPull: () => interact("tail"),
     }),
     [callWithBamboo, ringBell, treat, interact, dance],
   );
