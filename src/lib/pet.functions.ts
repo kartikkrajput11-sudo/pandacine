@@ -156,7 +156,7 @@ export const renamePet = createServerFn({ method: "POST" })
     if (name.length < 2) throw new Error("Name needs at least 2 characters");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { resolvePetOwner } = await import("@/lib/pet-owner.server");
-    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { error } = await supabaseAdmin
       .from("pet_pandas" as any)
       .update({ name, updated_at: new Date().toISOString() })
@@ -172,7 +172,7 @@ export const savePetProgress = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { resolvePetOwner } = await import("@/lib/pet-owner.server");
-    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("interactions,affection")
@@ -200,7 +200,7 @@ export const buyPetFood = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { resolvePetOwner } = await import("@/lib/pet-owner.server");
-    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
 
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
@@ -247,7 +247,7 @@ export const feedPet = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { resolvePetOwner } = await import("@/lib/pet-owner.server");
-    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("*")
@@ -306,7 +306,7 @@ export const setPetCostume = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { resolvePetOwner } = await import("@/lib/pet-owner.server");
-    const ownerId = await resolvePetOwner(supabaseAdmin, userId);
+    const ownerId = await resolvePetOwner(supabaseAdmin, context.userId);
     const { data: pet } = await supabaseAdmin
       .from("pet_pandas" as any)
       .select("affection,streak,interactions,unlocked_costumes,unlocked,alive")
