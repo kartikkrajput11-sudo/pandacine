@@ -50,7 +50,15 @@ export type LuviesWallet = { balance: number; earned: number; spent: number };
 
 export type StreakRecoveryState = {
   eligible: boolean;
-  reason?: "no_partner" | "streak_intact" | "already_recovered" | "ok" | string;
+  reason?:
+    | "no_partner"
+    | "streak_intact"
+    | "already_recovered"
+    | "declined"
+    | "expired"
+    | "insufficient_luvies"
+    | "ok"
+    | string;
   lost_days?: number;
   missed_days?: number;
   gap_start?: string;
@@ -58,7 +66,11 @@ export type StreakRecoveryState = {
   cost?: number;
   balance: number;
   cycle_key?: string;
+  /** When the streak officially broke, and the 48h deadline to recover it. */
+  broke_at?: string;
+  expires_at?: string;
 };
+
 
 /** Human label for a ledger row so history reads like a statement. */
 export function ledgerLabel(reason: string, refId: string | null): { title: string; detail: string } {
