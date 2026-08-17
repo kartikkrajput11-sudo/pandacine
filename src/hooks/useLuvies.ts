@@ -146,8 +146,19 @@ export function useStreakRecovery() {
     },
   });
 
-  return { state, recover };
+  // Declining hides the offer for this broken streak — permanently.
+  const decline = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await db.rpc("decline_streak_recovery");
+      if (error) throw cleanError(error);
+      return data as { declined: boolean };
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["luvies", "streak-recovery"] }),
+  });
+
+  return { state, recover, decline };
 }
+
 
 /**
  * The panda-shop look the user currently has equipped — shared by the shop
