@@ -2517,6 +2517,7 @@ export type Database = {
           cost: number
           created_at: string
           cycle_key: string
+          declined: boolean
           id: string
           lost_days: number
           partner_id: string | null
@@ -2526,6 +2527,7 @@ export type Database = {
           cost: number
           created_at?: string
           cycle_key: string
+          declined?: boolean
           id?: string
           lost_days: number
           partner_id?: string | null
@@ -2535,6 +2537,7 @@ export type Database = {
           cost?: number
           created_at?: string
           cycle_key?: string
+          declined?: boolean
           id?: string
           lost_days?: number
           partner_id?: string | null
@@ -3175,6 +3178,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      decline_streak_recovery: { Args: never; Returns: Json }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
