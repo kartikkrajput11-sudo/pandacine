@@ -4,6 +4,7 @@ import { EyeOff, X, Flame, Sparkles, Lock } from "lucide-react";
 import { SignedImage } from "./SignedImage";
 import { SignedVideo } from "./SignedVideo";
 import type { MessageRow } from "@/lib/chat";
+import { lockBodyScroll } from "@/lib/scroll-lock";
 
 const KEY = (id: string) => `msg-view-once-opened:${id}`;
 const DURATION = 15;
@@ -42,15 +43,14 @@ export function ViewOnceMedia({ m, mine }: { m: MessageRow; mine: boolean }) {
 
   useEffect(() => {
     if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const unlock = lockBodyScroll();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     window.addEventListener("keydown", onKey);
     // reveal sweep
     setRevealing(true);
     const t = setTimeout(() => setRevealing(false), 900);
     return () => {
-      document.body.style.overflow = prev;
+      unlock();
       window.removeEventListener("keydown", onKey);
       clearTimeout(t);
     };

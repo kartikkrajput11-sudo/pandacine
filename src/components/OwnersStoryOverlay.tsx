@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { X, Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 import StoryScene from "@/components/story/StoryScene";
+import { lockBodyScroll } from "@/lib/scroll-lock";
 
 
 // Slide-based cinematic retelling: one chapter at a time, with big stickers
@@ -82,9 +83,8 @@ export default function OwnersStoryOverlay({
     if (!open) return;
     setI(0);
     setAutoPlay(false);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    const unlock = lockBodyScroll();
+    return unlock;
   }, [open]);
 
   const next = useCallback(() => setI((v) => Math.min(slides.length - 1, v + 1)), [slides.length]);

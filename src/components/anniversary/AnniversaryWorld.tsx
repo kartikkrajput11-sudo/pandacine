@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Moon, Feather, Film, Wine, Check } from "lucide-react";
 import { annivTitle, daysTogetherFrom, todayKey, type AnnivDay } from "@/lib/anniversary-mode";
+import { lockBodyScroll } from "@/lib/scroll-lock";
 
 /**
  * AnniversaryWorld — a wholly separate interface that replaces the app for a day.
@@ -71,10 +72,9 @@ export function AnniversaryWorld({
   );
 
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const unlock = lockBodyScroll();
     return () => {
-      document.body.style.overflow = prev;
+      unlock();
     };
   }, []);
 
