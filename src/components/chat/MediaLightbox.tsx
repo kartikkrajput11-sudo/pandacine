@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { X, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import { signMedia } from "@/lib/chat";
 import { saveMediaToGallery } from "@/lib/save-media";
+import { lockBodyScroll } from "@/lib/scroll-lock";
 
 type Props = {
   /** Ordered storage paths for the gallery. */
@@ -67,8 +68,7 @@ export function MediaLightbox({ paths, index, onIndex, onClose }: Props) {
   );
 
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const unlock = lockBodyScroll();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
       if (e.key === "ArrowRight") go(1);
@@ -76,7 +76,7 @@ export function MediaLightbox({ paths, index, onIndex, onClose }: Props) {
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
+      unlock();
       window.removeEventListener("keydown", onKey);
     };
   }, [onClose, go]);
