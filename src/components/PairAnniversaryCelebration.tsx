@@ -189,6 +189,10 @@ export default function PairAnniversaryCelebration() {
   const [milestone, setMilestone] = useState<Milestone | null>(null);
   const [partnerName, setPartnerName] = useState<string>("");
   const [open, setOpen] = useState(false);
+  // Never stack this on top of a full-screen takeover (Nocturne / Golden Hour /
+  // founders' story) — it would swallow every click meant for that surface.
+  const takeover = useTakeoverActive();
+
 
   useEffect(() => {
     let alive = true;
