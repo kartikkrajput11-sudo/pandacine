@@ -233,7 +233,7 @@ export function PandaStage({
           state.chaos ? { duration: 1.6, repeat: Infinity } : { type: "spring", stiffness: 90, damping: 16 }
         }
         className={cn(
-          "relative z-10 mx-auto flex h-full w-full max-w-[420px] items-center justify-center cursor-grab active:cursor-grabbing",
+          "relative z-10 mx-auto flex h-full w-full max-w-[420px] items-center justify-center py-3 cursor-grab active:cursor-grabbing",
           dragging && "z-20",
         )}
 

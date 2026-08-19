@@ -362,7 +362,7 @@ export const PandaCharacter = memo(function PandaCharacter({
           rx="98"
           ry="15"
           fill="url(#shadow)"
-          animate={lite ? undefined : { rx: [98, 90, 98], opacity: [0.9, 0.72, 0.9] }}
+          animate={lite ? { rx: 98, opacity: 0.9 } : { rx: [98, 90, 98], opacity: [0.9, 0.72, 0.9] }}
           transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
         />
 
@@ -636,7 +636,8 @@ export const PandaCharacter = memo(function PandaCharacter({
                     rx="13"
                     ry="14"
                     fill="#fffdf9"
-                    animate={{ ry: 14 * eyeOpen }}
+                    initial={{ ry: 14 }}
+                    animate={{ ry: Math.max(0.4, 14 * eyeOpen) }}
                     transition={{ duration: 0.09 }}
                   />
                   <motion.g animate={{ opacity: eyeOpen > 0.2 ? 1 : 0 }} transition={{ duration: 0.1 }}>
