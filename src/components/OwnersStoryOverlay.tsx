@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { X, Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 import StoryScene from "@/components/story/StoryScene";
 import { lockBodyScroll } from "@/lib/scroll-lock";
+import { registerTakeover } from "@/lib/takeover";
 
 
 // Slide-based cinematic retelling: one chapter at a time, with big stickers
@@ -84,7 +85,11 @@ export default function OwnersStoryOverlay({
     setI(0);
     setAutoPlay(false);
     const unlock = lockBodyScroll();
-    return unlock;
+    const unregister = registerTakeover();
+    return () => {
+      unlock();
+      unregister();
+    };
   }, [open]);
 
   const next = useCallback(() => setI((v) => Math.min(slides.length - 1, v + 1)), [slides.length]);
@@ -125,7 +130,8 @@ export default function OwnersStoryOverlay({
 
   return (
     <div
-      className="fixed inset-0 z-[110]"
+      data-overlay-open="true"
+      className="fixed inset-0 z-[1100]"
       style={{
         background: "radial-gradient(ellipse at 50% -10%, #17101c 0%, #0a060e 55%, #060309 100%)",
         ["--gold" as any]: GOLD,

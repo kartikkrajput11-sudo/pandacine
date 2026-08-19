@@ -200,7 +200,10 @@ export const PandaCharacter = memo(function PandaCharacter({
   const a = state.action;
   const crossed = state.emotion === "crossEyed";
   const sleeping = state.emotion === "asleep" || state.emotion === "dreaming";
-  const eyeOpen = blink || sleeping ? 0.03 : face.eye;
+  const eyeOpen = Number.isFinite(blink || sleeping ? 0.03 : face.eye)
+    ? (blink || sleeping ? 0.03 : face.eye)
+    : 1;
+
 
   const baseLook = ignoring ? -0.85 : state.look.x;
   const px = crossed ? 4 : baseLook * 6;
@@ -299,10 +302,11 @@ export const PandaCharacter = memo(function PandaCharacter({
   return (
     <svg
       viewBox="0 0 300 380"
+      preserveAspectRatio="xMidYMid meet"
       className={className}
       role="img"
       aria-label="PandaCine mascot"
-      style={{ overflow: "visible", touchAction: "manipulation", shapeRendering: "geometricPrecision" }}
+      style={{ overflow: "visible", touchAction: "manipulation", shapeRendering: "geometricPrecision", maxHeight: "100%", maxWidth: "100%" }}
     >
       <defs>
         {/* white fur — light from upper-left, occlusion lower-right */}
@@ -358,7 +362,8 @@ export const PandaCharacter = memo(function PandaCharacter({
           rx="98"
           ry="15"
           fill="url(#shadow)"
-          animate={lite ? undefined : { rx: [98, 90, 98], opacity: [0.9, 0.72, 0.9] }}
+          initial={{ rx: 98, opacity: 0.9 }}
+          animate={lite ? { rx: 98, opacity: 0.9 } : { rx: [98, 90, 98], opacity: [0.9, 0.72, 0.9] }}
           transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
         />
 
@@ -632,7 +637,8 @@ export const PandaCharacter = memo(function PandaCharacter({
                     rx="13"
                     ry="14"
                     fill="#fffdf9"
-                    animate={{ ry: 14 * eyeOpen }}
+                    initial={{ ry: 14 }}
+                    animate={{ ry: Math.max(0.4, 14 * eyeOpen) }}
                     transition={{ duration: 0.09 }}
                   />
                   <motion.g animate={{ opacity: eyeOpen > 0.2 ? 1 : 0 }} transition={{ duration: 0.1 }}>

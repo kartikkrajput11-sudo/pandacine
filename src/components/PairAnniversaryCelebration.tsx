@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useScrollLock } from "@/lib/scroll-lock";
 import { Heart, Sparkles, Star, Crown, Flame, X } from "lucide-react";
+import { useTakeover, useTakeoverActive } from "@/lib/takeover";
 
 export type Milestone =
   | { kind: "year"; count: number; anchor: Date }
@@ -189,6 +191,10 @@ export default function PairAnniversaryCelebration() {
   const [milestone, setMilestone] = useState<Milestone | null>(null);
   const [partnerName, setPartnerName] = useState<string>("");
   const [open, setOpen] = useState(false);
+  // Never stack this on top of a full-screen takeover (Nocturne / Golden Hour /
+  // founders' story) — it would swallow every click meant for that surface.
+  const takeover = useTakeoverActive();
+
 
   useEffect(() => {
     let alive = true;
@@ -223,7 +229,7 @@ export default function PairAnniversaryCelebration() {
     return () => { alive = false; };
   }, []);
 
-  if (!open || !milestone) return null;
+  if (!open || takeover || !milestone) return null;
 
   return (
     <MilestoneOverlay milestone={milestone} partnerName={partnerName} onClose={() => setOpen(false)} />
@@ -290,11 +296,22 @@ function MilestoneOverlay({
 
   const Icon = theme.Icon;
 
+  useTakeover(true);
+  useScrollLock(true);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center px-6"
       role="dialog"
       aria-modal="true"
+      data-overlay-open="true"
     >
       {/* Backdrop with themed bloom */}
       <div
