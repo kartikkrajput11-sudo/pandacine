@@ -200,7 +200,10 @@ export const PandaCharacter = memo(function PandaCharacter({
   const a = state.action;
   const crossed = state.emotion === "crossEyed";
   const sleeping = state.emotion === "asleep" || state.emotion === "dreaming";
-  const eyeOpen = blink || sleeping ? 0.03 : face.eye;
+  const eyeOpen = Number.isFinite(blink || sleeping ? 0.03 : face.eye)
+    ? (blink || sleeping ? 0.03 : face.eye)
+    : 1;
+
 
   const baseLook = ignoring ? -0.85 : state.look.x;
   const px = crossed ? 4 : baseLook * 6;
