@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { X, Moon, Feather, Film, Wine, Check } from "lucide-react";
 import { annivTitle, daysTogetherFrom, todayKey, type AnnivDay } from "@/lib/anniversary-mode";
 import { lockBodyScroll } from "@/lib/scroll-lock";
+import { registerTakeover } from "@/lib/takeover";
 
 /**
  * AnniversaryWorld — a wholly separate interface that replaces the app for a day.
@@ -73,15 +74,17 @@ export function AnniversaryWorld({
 
   useEffect(() => {
     const unlock = lockBodyScroll();
+    const unregister = registerTakeover();
     return () => {
       unlock();
+      unregister();
     };
   }, []);
 
   if (typeof document === "undefined") return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[1000] overflow-hidden text-[#f7ecd2] select-none">
+    <div data-overlay-open="true" className="fixed inset-0 z-[1000] overflow-hidden text-[#f7ecd2] select-none">
       {/* Night stage */}
       <div
         className="absolute inset-0"

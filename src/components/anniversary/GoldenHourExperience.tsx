@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Feather, Sparkles, Heart, Gem, ChevronRight, ChevronLeft } from "lucide-react";
 import { annivTitle, daysTogetherFrom, todayKey, type AnnivDay } from "@/lib/anniversary-mode";
+import { useTakeover } from "@/lib/takeover";
+import { useScrollLock } from "@/lib/scroll-lock";
 
 /**
  * GoldenHourExperience — the once-a-year (or once-a-month) takeover.
@@ -32,6 +34,9 @@ export function GoldenHourExperience({
   const [lit, setLit] = useState(false);
   const together = daysTogetherFrom(day.anchor);
   const dkey = todayKey();
+
+  useTakeover(true);
+  useScrollLock(true);
 
   const acts: Act[] = useMemo(
     () => [
@@ -113,7 +118,7 @@ export function GoldenHourExperience({
   );
 
   const body = (
-    <div className="fixed inset-0 z-[10000] overflow-y-auto golden-scope" role="dialog" aria-modal="true">
+    <div data-overlay-open="true" className="fixed inset-0 z-[10000] overflow-y-auto golden-scope" role="dialog" aria-modal="true">
       {/* Deep gilded ground */}
       <div className="fixed inset-0 bg-[#0b0705]" />
       <div
