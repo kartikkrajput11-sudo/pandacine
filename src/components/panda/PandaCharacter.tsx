@@ -299,10 +299,11 @@ export const PandaCharacter = memo(function PandaCharacter({
   return (
     <svg
       viewBox="0 0 300 380"
+      preserveAspectRatio="xMidYMid meet"
       className={className}
       role="img"
       aria-label="PandaCine mascot"
-      style={{ overflow: "visible", touchAction: "manipulation", shapeRendering: "geometricPrecision" }}
+      style={{ overflow: "visible", touchAction: "manipulation", shapeRendering: "geometricPrecision", maxHeight: "100%", maxWidth: "100%" }}
     >
       <defs>
         {/* white fur — light from upper-left, occlusion lower-right */}

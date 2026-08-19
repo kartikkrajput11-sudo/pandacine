@@ -19,6 +19,7 @@ import PartnerMessageNotifier from "@/components/PartnerMessageNotifier";
 import OwnersMonthiversary from "@/components/OwnersMonthiversary";
 import PairAnniversaryCelebration from "@/components/PairAnniversaryCelebration";
 import { BroadcastListener } from "@/components/BroadcastListener";
+import OverlayHygiene from "@/components/OverlayHygiene";
 
 
 function NotFoundComponent() {
@@ -161,6 +162,7 @@ function RootComponent() {
         <OwnersMonthiversary />
         <PairAnniversaryCelebration />
         <BroadcastListener />
+        <OverlayHygiene />
         
         <Toaster
           theme="dark"
