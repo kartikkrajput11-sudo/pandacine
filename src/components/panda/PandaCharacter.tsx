@@ -362,6 +362,7 @@ export const PandaCharacter = memo(function PandaCharacter({
           rx="98"
           ry="15"
           fill="url(#shadow)"
+          initial={{ rx: 98, opacity: 0.9 }}
           animate={lite ? { rx: 98, opacity: 0.9 } : { rx: [98, 90, 98], opacity: [0.9, 0.72, 0.9] }}
           transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
         />
