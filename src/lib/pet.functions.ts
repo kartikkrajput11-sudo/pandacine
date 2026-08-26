@@ -3,8 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
 import { COSTUME_BY_KEY, costumeUnlocked } from "@/lib/pet-wardrobe";
 import { REBIRTH_COST, pandaLifecycle } from "@/lib/panda-lifecycle";
-
-export const PET_COST = 250;
+import { PET_COST, todayUtc, uniqueLedgerRef } from "@/lib/pet-purchases.server";
 
 export type Pet = {
   user_id: string;
@@ -24,11 +23,6 @@ export type Pet = {
   unlocked_costumes: string[];
 };
 
-function today() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-
 /** Reads (and lazily creates) the caller's pet row, updating the daily streak. */
 export const getPet = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -47,20 +41,20 @@ export const getPet = createServerFn({ method: "POST" })
     if (!pet) {
       const { data: created } = await supabaseAdmin
         .from("pet_pandas" as any)
-        .insert({ user_id: ownerId, last_visit: today() })
+        .insert({ user_id: ownerId, last_visit: todayUtc() })
         .select("*")
         .maybeSingle();
       pet = created;
     } else {
       const p = pet as any;
       const last = p.last_visit as string | null;
-      if (last !== today()) {
+      if (last !== todayUtc()) {
         const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
         const streak = last === yesterday ? (p.streak ?? 0) + 1 : 1;
         const { data: updated } = await supabaseAdmin
           .from("pet_pandas" as any)
           .update({
-            last_visit: today(),
+            last_visit: todayUtc(),
             streak,
             costume: streak >= 7 ? "golden" : p.costume,
             updated_at: new Date().toISOString(),
@@ -132,7 +126,7 @@ export const unlockPet = createServerFn({ method: "POST" })
     const { error: uErr } = await supabaseAdmin
       .from("pet_pandas" as any)
       .upsert(
-        { user_id: ownerId, unlocked: true, name, last_visit: today(), streak: 1, updated_at: new Date().toISOString() },
+        { user_id: ownerId, unlocked: true, name, last_visit: todayUtc(), streak: 1, updated_at: new Date().toISOString() },
         { onConflict: "user_id" },
       );
     if (uErr) {
@@ -209,11 +203,13 @@ export const buyPetFood = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!(pet as any)?.unlocked) throw new Error("Adopt your panda first");
 
+    const purchaseRef = uniqueLedgerRef("food", food.key);
+
     const { data: remaining, error: sErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
       _user: context.userId,
       _amount: cost,
       _reason: "panda_food",
-      _ref: `food:${food.key}`,
+      _ref: purchaseRef,
     } as any);
     if (sErr) throw new Error(sErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
 
@@ -229,7 +225,7 @@ export const buyPetFood = createServerFn({ method: "POST" })
         _user: context.userId,
         _amount: cost,
         _reason: "refund",
-        _ref: `food:${food.key}`,
+        _ref: purchaseRef,
       } as any);
       throw error;
     }
@@ -258,8 +254,9 @@ export const feedPet = createServerFn({ method: "POST" })
     if (p.alive === false) throw new Error("Your panda is gone. Feeding can't bring them back.");
 
     const pantry = { ...((p.pantry ?? {}) as Record<string, number>) };
-    if ((pantry[food.key] ?? 0) < 1) throw new Error("You don't have that in the pantry");
-    pantry[food.key] = pantry[food.key]! - 1;
+    const currentQty = pantry[food.key] ?? 0;
+    if (currentQty < 1) throw new Error("You don't have that in the pantry");
+    pantry[food.key] = currentQty - 1;
     if (pantry[food.key] === 0) delete pantry[food.key];
 
     const current = fullnessNow(p.fullness ?? 100, p.last_fed_at);
@@ -398,7 +395,7 @@ export const birthNewPanda = createServerFn({ method: "POST" })
         death_reason: null,
         born_at: now,
         last_fed_at: now,
-        last_visit: today(),
+        last_visit: todayUtc(),
         fullness: 100,
         affection: 0,
         interactions: 0,

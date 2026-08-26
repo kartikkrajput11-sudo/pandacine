@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AnimatePresence, motion } from "framer-motion";
@@ -17,6 +17,7 @@ import {
   ShoppingBag,
   Sparkles,
   Wallet,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PandaStage, type PandaActions } from "@/components/panda/PandaStage";
@@ -24,7 +25,6 @@ import { PandaAdornments } from "@/components/panda/PandaAdornments";
 import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
 import { LuvieCoin, LuviesAmount } from "@/components/luvies/LuviesAmount";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useEquippedLook, useLuviesWallet, usePandaEquip, usePandaInventory, usePandaShop } from "@/hooks/useLuvies";
 import { useProfile } from "@/hooks/useProfile";
 import { usePetLifeActions } from "@/hooks/usePandaLife";
@@ -110,6 +110,65 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
       </div>
       {children}
     </section>
+  );
+}
+
+function PetDockOverlay({
+  dock,
+  title,
+  onClose,
+  children,
+}: {
+  dock: Dock | null;
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+}) {
+  useEffect(() => {
+    if (!dock) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dock, onClose]);
+
+  return (
+    <AnimatePresence>
+      {dock && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-ink/45 px-3 pb-3 backdrop-blur-md"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) onClose();
+          }}
+        >
+          <motion.section
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
+            className="w-full max-w-3xl overflow-hidden rounded-[2rem] border border-border bg-ink/95 shadow-2xl"
+            initial={{ y: 36, scale: 0.98 }}
+            animate={{ y: 0, scale: 1 }}
+            exit={{ y: 28, scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 260, damping: 28 }}
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-ink/95 px-5 py-4 backdrop-blur-xl">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Panda care</p>
+                <h2 className="font-display text-xl capitalize">{title}</h2>
+              </div>
+              <Button size="icon" variant="quiet" aria-label="Close pet panel" onClick={onClose}>
+                <X className="size-4" />
+              </Button>
+            </div>
+            <div className="max-h-[76dvh] overflow-y-auto px-5 py-4 overscroll-contain">{children}</div>
+          </motion.section>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -258,11 +317,11 @@ function PetRoute() {
       {lifecycle === "ACTIVE_PANDA" && (
         <>
           {/* hero */}
-          <section className="overflow-hidden rounded-[2rem] glass">
+          <section className="overflow-visible rounded-[2rem] border border-border/70 bg-surface/45 shadow-2xl shadow-ink/30 backdrop-blur-xl">
             <div className="relative">
               <PandaStage
                 name={name}
-                className="h-[340px] w-full"
+                className="h-[min(64vh,520px)] min-h-[430px] w-full sm:min-h-[500px]"
                 costume={(pet?.costume ?? "classic") as Costume}
                 hideActions
                 onReady={(a) => {
@@ -332,10 +391,10 @@ function PetRoute() {
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-6">
+              <div className="grid gap-3 sm:grid-cols-[1fr_1fr_.8fr]">
                 <Ring value={fullness} label="Fullness" tone="hsl(45 90% 62%)" />
                 <Ring value={affection} label="Affection" tone="hsl(340 80% 66%)" />
-                <div className="text-sm">
+                <div className="rounded-2xl border border-border bg-surface/55 p-3 text-sm">
                   <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Streak</p>
                   <p className="text-lg font-semibold">{pet?.streak ?? 0} days</p>
                 </div>
@@ -362,19 +421,26 @@ function PetRoute() {
           </section>
 
           {/* today */}
-          <Section title="Today" hint={`${pantryList.reduce((s, r) => s + r.qty, 0)} items in pantry`}>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl glass p-4">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Goal</p>
-                <p className="mt-1 text-sm">{hungry ? `Feed ${name}` : `Play with ${name} 3 times`}</p>
+          <Section title="Companion rhythm" hint={`${pantryList.reduce((s, r) => s + r.qty, 0)} pantry items`}>
+            <div className="grid gap-3 sm:grid-cols-[1.2fr_.8fr]">
+              <div className="rounded-[1.75rem] border border-petal/25 bg-petal/10 p-5">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Today’s priority</p>
+                <p className="mt-2 font-display text-2xl leading-tight">
+                  {hungry ? `Feed ${name} before the grove goes quiet.` : `Keep ${name} playful with three gentle touches.`}
+                </p>
+                <p className="mt-3 text-xs text-candle-muted">
+                  {hungry ? `${Math.round(hoursLeft)} hours of safety left` : `${pet?.interactions ?? 0} lifetime interactions recorded`}
+                </p>
               </div>
-              <div className="rounded-2xl glass p-4">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Interactions</p>
-                <p className="mt-1 text-sm">{pet?.interactions ?? 0} touches</p>
-              </div>
-              <div className="rounded-2xl glass p-4">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Wearing</p>
-                <p className="mt-1 text-sm">{COSTUME_BY_KEY[pet?.costume ?? "classic"]?.name ?? "Classic coat"}</p>
+              <div className="grid gap-3">
+                <div className="rounded-2xl border border-border bg-surface/60 p-4">
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Wearing</p>
+                  <p className="mt-1 text-sm">{COSTUME_BY_KEY[pet?.costume ?? "classic"]?.name ?? "Classic coat"}</p>
+                </div>
+                <div className="rounded-2xl border border-border bg-surface/60 p-4">
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Bond</p>
+                  <p className="mt-1 text-sm">{partner ? `Shared with ${partner.display_name}` : "Waiting for a partner bond"}</p>
+                </div>
               </div>
             </div>
           </Section>
@@ -402,14 +468,13 @@ function PetRoute() {
         </nav>
       )}
 
-      {/* sheets over the screen */}
-      <Sheet open={!!dock} onOpenChange={(o) => !o && setDock(null)}>
-        <SheetContent side="bottom" className="max-h-[82vh] overflow-y-auto rounded-t-3xl border-border bg-ink/95">
-          <SheetHeader>
-            <SheetTitle className="capitalize">{dock === "boutique" ? "Boutique" : dock}</SheetTitle>
-          </SheetHeader>
-
-          <div className="mt-4 space-y-4 pb-6">
+      {/* panels over the screen — custom, no body scroll-lock side effects */}
+      <PetDockOverlay
+        dock={dock}
+        title={dock === "boutique" ? "Boutique" : (dock ?? "Panda")}
+        onClose={() => setDock(null)}
+      >
+          <div className="space-y-4 pb-6">
             {dock === "care" && (
               <>
                 {pantryList.length === 0 ? (
@@ -504,6 +569,7 @@ function PetRoute() {
               <>
                 <Link
                   to="/app/mart"
+                  onClick={() => setDock(null)}
                   className="flex items-center justify-between rounded-2xl border border-petal/40 bg-petal/10 p-3 text-sm"
                 >
                   <span>Open PandaMart — departments, cart & split bills</span>
@@ -548,6 +614,7 @@ function PetRoute() {
               <>
                 <Link
                   to="/app/panda-shop"
+                  onClick={() => setDock(null)}
                   className="flex items-center justify-between rounded-2xl border border-petal/40 bg-petal/10 p-3 text-sm"
                 >
                   <span>Browse the Panda Shop</span>
@@ -596,8 +663,7 @@ function PetRoute() {
               />
             )}
           </div>
-        </SheetContent>
-      </Sheet>
+      </PetDockOverlay>
     </div>
   );
 }
