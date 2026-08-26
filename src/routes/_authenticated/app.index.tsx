@@ -3,6 +3,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Petals } from "@/components/Petals";
 import { CountdownCard } from "@/components/CountdownCard";
 import { StreakBadge } from "@/components/StreakBadge";
+import { StreakRecoveryCard } from "@/components/StreakRecoveryCard";
 import { DailyQuestionCard } from "@/components/DailyQuestionCard";
 import { PartnerPresenceCard } from "@/components/PartnerPresenceCard";
 
@@ -177,8 +178,9 @@ function Home() {
 
       {/* Couple streak */}
       {profile && (
-        <div className="relative z-10">
+        <div className="relative z-10 space-y-4">
           <StreakBadge meId={profile.id} partnerId={profile.partner_id} />
+          <StreakRecoveryCard />
         </div>
       )}
 
