@@ -7,16 +7,12 @@ import {
   ArrowLeft,
   Check,
   ChevronRight,
-  Crown,
-  Hand,
   Heart,
-  Leaf,
   Lock,
   Pencil,
   Shirt,
   ShoppingBag,
   Sparkles,
-  Wallet,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -38,7 +34,7 @@ import {
   setPetCostume,
   unlockPet,
 } from "@/lib/pet.functions";
-import { FOOD_BY_KEY, PET_AISLES, PET_FOODS, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
+import { FOOD_BY_KEY, STARVE_HOURS, fullnessNow, hoursSinceFed } from "@/lib/pet-foods";
 import {
   COSTUME_BY_KEY,
   PET_COSTUMES,
@@ -72,48 +68,42 @@ const UNLOCKS = [
   { level: 12, label: "Legacy album" },
 ];
 
-type Dock = "care" | "wardrobe" | "market" | "boutique" | "legacy";
+type Dock = "care" | "wardrobe" | "legacy";
 
 const DOCK: { key: Dock; label: string; Icon: typeof Heart }[] = [
   { key: "care", label: "Care", Icon: Heart },
   { key: "wardrobe", label: "Wardrobe", Icon: Shirt },
-  { key: "market", label: "Market", Icon: ShoppingBag },
-  { key: "boutique", label: "Boutique", Icon: Crown },
   { key: "legacy", label: "Legacy", Icon: Sparkles },
 ];
 
-/* ────────────────────────── small pieces ────────────────────────── */
+/* ────────────────────────── quiet primitives ────────────────────────── */
 
-function Ring({ value, label, tone }: { value: number; label: string; tone: string }) {
+/** A hairline arc. No labels until the value matters. */
+function Arc({ value, label, tone }: { value: number; label: string; tone: string }) {
   const v = Math.max(0, Math.min(100, Math.round(value)));
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex flex-col items-center gap-1.5">
       <div
-        className="relative grid size-14 place-items-center rounded-full"
-        style={{ background: `conic-gradient(${tone} ${v * 3.6}deg, hsl(var(--border)/0.5) 0deg)` }}
+        className="relative grid size-12 place-items-center rounded-full"
+        style={{
+          background: `conic-gradient(${tone} ${v * 3.6}deg, color-mix(in oklab, var(--foreground) 9%, transparent) 0deg)`,
+        }}
       >
-        <div className="grid size-11 place-items-center rounded-full bg-ink/90 text-xs font-semibold tabular-nums">
-          {v}%
+        <div className="grid size-[2.35rem] place-items-center rounded-full bg-background text-[11px] font-medium tabular-nums">
+          {v}
         </div>
       </div>
-      <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">{label}</p>
+      <p className="text-[9px] uppercase tracking-[0.26em] text-muted-foreground">{label}</p>
     </div>
   );
 }
 
-function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
-  return (
-    <section className="space-y-3">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 className="text-sm font-semibold tracking-wide">{title}</h2>
-        {hint && <span className="text-[11px] text-candle-muted">{hint}</span>}
-      </div>
-      {children}
-    </section>
-  );
+function Eyebrow({ children }: { children: ReactNode }) {
+  return <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">{children}</p>;
 }
 
-function PetDockOverlay({
+/** Single-column sheet — one focus at a time, no nested grids. */
+function PetSheet({
   dock,
   title,
   onClose,
@@ -137,10 +127,11 @@ function PetDockOverlay({
     <AnimatePresence>
       {dock && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-ink/45 px-3 pb-3 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-background/55 px-3 pb-3 backdrop-blur-xl"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) onClose();
           }}
@@ -150,26 +141,67 @@ function PetDockOverlay({
             data-state="open"
             aria-modal="true"
             aria-label={title}
-            className="w-full max-w-3xl overflow-hidden rounded-[2rem] border border-border bg-ink/95 shadow-2xl"
-            initial={{ y: 36, scale: 0.98 }}
-            animate={{ y: 0, scale: 1 }}
-            exit={{ y: 28, scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 260, damping: 28 }}
+            className="w-full max-w-xl overflow-hidden rounded-[28px] bg-card shadow-[0_-2px_60px_-12px_hsl(var(--foreground)/0.35),0_0_0_1px_hsl(var(--foreground)/0.06)]"
+            initial={{ y: 24, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 18, opacity: 0 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
           >
-            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-ink/95 px-5 py-4 backdrop-blur-xl">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Panda care</p>
-                <h2 className="font-display text-xl capitalize">{title}</h2>
-              </div>
-              <Button size="icon" variant="quiet" aria-label="Close pet panel" onClick={onClose}>
+            <div className="flex items-center justify-between gap-3 px-6 pt-5">
+              <h2 className="font-display text-2xl capitalize leading-none">{title}</h2>
+              <button
+                onClick={onClose}
+                aria-label="Close panel"
+                className="grid size-8 place-items-center rounded-full text-muted-foreground transition hover:text-foreground"
+              >
                 <X className="size-4" />
-              </Button>
+              </button>
             </div>
-            <div className="max-h-[76dvh] overflow-y-auto px-5 py-4 overscroll-contain">{children}</div>
+            <div className="max-h-[70dvh] overflow-y-auto overscroll-contain px-6 pb-7 pt-5">{children}</div>
           </motion.section>
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+/** One quiet row — the only list primitive on the page. */
+function Row({
+  leading,
+  title,
+  note,
+  trailing,
+  onClick,
+  active,
+  disabled,
+}: {
+  leading?: ReactNode;
+  title: string;
+  note?: ReactNode;
+  trailing?: ReactNode;
+  onClick?: () => void;
+  active?: boolean;
+  disabled?: boolean;
+}) {
+  const Tag = onClick ? "button" : "div";
+  return (
+    <Tag
+      onClick={onClick}
+      disabled={onClick ? disabled : undefined}
+      className={cn(
+        "flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-3 text-left transition",
+        onClick && "hover:bg-foreground/[0.04] active:scale-[0.995]",
+        active && "bg-primary/10",
+        disabled && "opacity-45",
+      )}
+    >
+      {leading && <span className="grid size-9 shrink-0 place-items-center text-xl">{leading}</span>}
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[15px] leading-tight">{title}</span>
+        {note && <span className="mt-0.5 block truncate text-[11px] text-muted-foreground">{note}</span>}
+      </span>
+      {trailing}
+    </Tag>
   );
 }
 
@@ -226,6 +258,7 @@ function PetRoute() {
   const pantryList = Object.entries(pantry)
     .map(([key, qty]) => ({ food: FOOD_BY_KEY[key], qty }))
     .filter((r) => !!r.food);
+  const pantryCount = pantryList.reduce((s, r) => s + r.qty, 0);
 
   const ownedShopItems = useMemo(() => {
     const byKey = new Map(shopItems.map((i) => [i.item_key, i]));
@@ -265,28 +298,34 @@ function PetRoute() {
     save({ data: next }).then(() => qc.invalidateQueries({ queryKey: ["pet"] })).catch(() => {});
   }
 
+  const stateLine = hungry
+    ? `hungry · ${Math.round(hoursLeft)}h of food left`
+    : fullness > 80
+      ? `content · fed recently`
+      : `settled · ${Math.round(fullness)}% full`;
+
   if (isLoading) {
     return (
-      <div className="mx-auto w-full max-w-3xl px-4 py-16 text-center text-sm text-candle-muted">
+      <div className="mx-auto w-full max-w-3xl px-6 py-24 text-center text-sm text-muted-foreground">
         Waking the grove…
       </div>
     );
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 pb-32 pt-4 space-y-6">
-      {/* header */}
-      <header className="flex items-center justify-between gap-3">
-        <Link to="/app" className="inline-flex items-center gap-2 text-sm text-candle-muted hover:text-foreground">
-          <ArrowLeft className="size-4" /> Home
-        </Link>
+    <div className="mx-auto w-full max-w-2xl px-5 pb-40 pt-4">
+      {/* header — two anchors, nothing else */}
+      <header className="flex items-center justify-between">
         <Link
-          to="/app/wallet"
-          className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/70 px-3 py-1.5"
+          to="/app"
+          aria-label="Home"
+          className="grid size-9 place-items-center rounded-full text-muted-foreground transition hover:text-foreground"
         >
+          <ArrowLeft className="size-4" />
+        </Link>
+        <Link to="/app/wallet" className="flex items-center gap-2 rounded-full px-2 py-1.5 transition hover:opacity-80">
           <LuvieCoin className="size-4" />
-          <span className="text-sm font-semibold tabular-nums">{coins.toLocaleString()}</span>
-          <Wallet className="size-3.5 text-candle-muted" />
+          <span className="text-sm tabular-nums">{coins.toLocaleString()}</span>
         </Link>
       </header>
 
@@ -294,19 +333,21 @@ function PetRoute() {
         <AdoptCard
           coins={coins}
           cost={(data as any)?.cost ?? 250}
-          onAdopt={(n) => run("Adoption", async () => {
-            await adopt({ data: { name: n } });
-            toast.success("Your panda is home 🐼");
-          })}
+          onAdopt={(n) =>
+            run("Adoption", async () => {
+              await adopt({ data: { name: n } });
+              toast.success("Your panda is home 🐼");
+            })
+          }
           busy={busy}
         />
       )}
 
       {lifecycle === "DEAD_PANDA" && (
-        <div className="rounded-3xl glass p-6 text-center space-y-3">
+        <div className="mt-16 space-y-4 text-center">
           <p className="text-4xl">🕯️</p>
-          <h1 className="font-display text-2xl">{name} is at rest</h1>
-          <p className="text-sm text-candle-muted">
+          <h1 className="font-display text-3xl">{name} is at rest</h1>
+          <p className="mx-auto max-w-sm text-sm text-muted-foreground">
             Their story stays with you in the legacy album. When you're ready, a new panda can open their eyes.
           </p>
           <Button onClick={() => birth.mutate(undefined)} disabled={birth.isPending}>
@@ -317,354 +358,303 @@ function PetRoute() {
 
       {lifecycle === "ACTIVE_PANDA" && (
         <>
-          {/* hero */}
-          <section className="overflow-visible rounded-[2rem] border border-border/70 bg-surface/45 shadow-2xl shadow-ink/30 backdrop-blur-xl">
-            <div className="relative">
-              <PandaStage
-                name={name}
-                className="h-[min(64vh,520px)] min-h-[430px] w-full sm:min-h-[500px]"
-                costume={(pet?.costume ?? "classic") as Costume}
-                hideActions
-                onReady={(a) => {
-                  actionsRef.current = a;
-                  forceReady((n) => (n === 0 ? 1 : n));
+          {/* stage — the only hero. no border, no card. */}
+          <section className="relative -mx-2 mt-2">
+            <PandaStage
+              name={name}
+              className="h-[min(58vh,480px)] min-h-[380px] w-full"
+              costume={(pet?.costume ?? "classic") as Costume}
+              hideActions
+              playful={false}
+              onReady={(a) => {
+                actionsRef.current = a;
+                forceReady((n) => (n === 0 ? 1 : n));
+              }}
+            />
+            <PandaAdornments look={look} />
+          </section>
+
+          {/* identity */}
+          <div className="mt-6 text-center">
+            {editing ? (
+              <div className="flex items-center justify-center gap-2">
+                <input
+                  autoFocus
+                  value={draft}
+                  maxLength={20}
+                  onChange={(e) => setDraft(e.target.value)}
+                  className="w-48 rounded-xl bg-foreground/[0.05] px-3 py-1.5 text-center font-display text-2xl outline-none"
+                />
+                <Button
+                  size="icon"
+                  onClick={() =>
+                    run("Rename", async () => {
+                      await rename({ data: { name: draft } });
+                      setEditing(false);
+                    })
+                  }
+                >
+                  <Check className="size-4" />
+                </Button>
+              </div>
+            ) : (
+              <button
+                className="group inline-flex items-center gap-2"
+                onClick={() => {
+                  setDraft(name);
+                  setEditing(true);
                 }}
-              />
-              <PandaAdornments look={look} />
-              {hungry && (
-                <div className="absolute left-1/2 top-3 -translate-x-1/2 rounded-full border border-amber-400/40 bg-amber-500/15 px-3 py-1 text-[11px] text-amber-200">
-                  {name} is hungry — {Math.round(hoursLeft)}h of food left
+              >
+                <h1 className="font-display text-[2.6rem] italic leading-none">{name}</h1>
+                <Pencil className="size-3.5 text-muted-foreground opacity-0 transition group-hover:opacity-100" />
+              </button>
+            )}
+            <p className={cn("mt-2 text-[11px] tracking-wide", hungry ? "text-primary" : "text-muted-foreground")}>
+              {stateLine}
+            </p>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              Level {String(level).padStart(2, "0")}
+              {partner ? ` · shared with ${partner.display_name}` : ""}
+            </p>
+          </div>
+
+          {/* vitals — three arcs, nothing framed */}
+          <div className="mt-7 flex items-start justify-center gap-10">
+            <Arc value={fullness} label="Fullness" tone="hsl(45 90% 62%)" />
+            <Arc value={affection} label="Affection" tone="hsl(340 80% 66%)" />
+            <Arc value={levelPct} label="Level" tone="hsl(var(--primary))" />
+          </div>
+
+          {/* touch — four verbs, text only */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-7 gap-y-3">
+            {([
+              ["headpat", "Pat"],
+              ["bellyRub", "Belly rub"],
+              ["boop", "Boop"],
+              ["tailPull", "Tail"],
+            ] as const).map(([k, label]) => (
+              <button
+                key={k}
+                onClick={() => touch(k)}
+                className="text-[11px] uppercase tracking-[0.26em] text-muted-foreground transition hover:text-primary"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* one quiet line of context */}
+          <p className="mt-8 text-center text-[11px] text-muted-foreground">
+            {nextUnlock ? `Next unlock · ${nextUnlock.label} at level ${nextUnlock.level}` : "Everything unlocked"}
+            {" · "}
+            {pantryCount} pantry {pantryCount === 1 ? "item" : "items"}
+            {" · "}
+            {pet?.streak ?? 0}-day streak
+          </p>
+        </>
+      )}
+
+      {/* rail — three glyphs plus the mart */}
+      {lifecycle !== "NO_PANDA_YET" && (
+        <nav className="fixed inset-x-0 bottom-20 z-30 mx-auto w-full max-w-md px-6">
+          <div className="flex items-center justify-around rounded-full bg-card/90 px-2 py-2 shadow-[0_10px_40px_-12px_hsl(var(--foreground)/0.4),0_0_0_1px_hsl(var(--foreground)/0.06)] backdrop-blur-xl">
+            {DOCK.map(({ key, label, Icon }) => (
+              <button
+                key={key}
+                onClick={() => setDock(key)}
+                aria-label={label}
+                className={cn(
+                  "grid size-10 place-items-center rounded-full transition",
+                  dock === key ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <Icon className="size-[1.1rem]" />
+              </button>
+            ))}
+            <Link
+              to="/app/mart"
+              aria-label="PandaMart"
+              className="grid size-10 place-items-center rounded-full text-muted-foreground transition hover:text-foreground"
+            >
+              <ShoppingBag className="size-[1.1rem]" />
+            </Link>
+          </div>
+        </nav>
+      )}
+
+      <PetSheet dock={dock} title={dock ?? "Panda"} onClose={() => setDock(null)}>
+        {dock === "care" && (
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <Eyebrow>Pantry</Eyebrow>
+              {pantryList.length === 0 ? (
+                <Link
+                  to="/app/mart"
+                  onClick={() => setDock(null)}
+                  className="flex items-center justify-between rounded-2xl px-3.5 py-3 text-sm transition hover:bg-foreground/[0.04]"
+                >
+                  <span className="text-muted-foreground">Empty — stock up at PandaMart</span>
+                  <ChevronRight className="size-4 text-muted-foreground" />
+                </Link>
+              ) : (
+                <div className="-mx-1">
+                  {pantryList.map(({ food, qty }) => (
+                    <Row
+                      key={food.key}
+                      leading={food.emoji}
+                      title={food.name}
+                      note={`+${food.fullness} fullness`}
+                      trailing={<span className="text-xs tabular-nums text-muted-foreground">×{qty}</span>}
+                      disabled={busy}
+                      onClick={() =>
+                        run("Feeding", async () => {
+                          const res = await feed({ data: { key: food.key } });
+                          toast.success(res.unlocked ? `Unlocked ${res.unlocked}!` : `${name} loved the ${food.name}`);
+                        })
+                      }
+                    />
+                  ))}
                 </div>
               )}
             </div>
 
-            <div className="space-y-4 p-5">
-              <div className="flex flex-wrap items-center gap-3">
-                {editing ? (
-                  <div className="flex items-center gap-2">
-                    <input
-                      autoFocus
-                      value={draft}
-                      maxLength={20}
-                      onChange={(e) => setDraft(e.target.value)}
-                      className="w-40 rounded-xl border border-border bg-ink/50 px-3 py-1.5 text-lg"
-                    />
-                    <Button
-                      size="icon"
-                      onClick={() =>
-                        run("Rename", async () => {
-                          await rename({ data: { name: draft } });
-                          setEditing(false);
-                        })
-                      }
-                    >
-                      <Check className="size-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <button
-                    className="group inline-flex items-center gap-2"
-                    onClick={() => {
-                      setDraft(name);
-                      setEditing(true);
-                    }}
-                  >
-                    <h1 className="font-display text-3xl leading-none">{name}</h1>
-                    <Pencil className="size-3.5 text-candle-muted opacity-0 transition group-hover:opacity-100" />
-                  </button>
-                )}
-                <span className="rounded-full border border-petal/40 bg-petal/10 px-2.5 py-1 text-[11px] text-petal">
-                  Level {String(level).padStart(2, "0")}
-                </span>
-                {partner && (
-                  <span className="rounded-full border border-border px-2.5 py-1 text-[11px] text-candle-muted">
-                    Shared with {partner.display_name}
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-border/60">
-                  <div className="h-full rounded-full bg-petal transition-all" style={{ width: `${levelPct}%` }} />
-                </div>
-                <p className="mt-1.5 text-[11px] text-candle-muted">
-                  {nextUnlock ? `Next unlock · ${nextUnlock.label} at level ${nextUnlock.level}` : "Everything unlocked"}
-                </p>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-[1fr_1fr_.8fr]">
-                <Ring value={fullness} label="Fullness" tone="hsl(45 90% 62%)" />
-                <Ring value={affection} label="Affection" tone="hsl(340 80% 66%)" />
-                <div className="rounded-2xl border border-border bg-surface/55 p-3 text-sm">
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Streak</p>
-                  <p className="text-lg font-semibold">{pet?.streak ?? 0} days</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="space-y-1">
+              <Eyebrow>Play</Eyebrow>
+              <div className="flex flex-wrap gap-x-7 gap-y-3 px-3.5 pt-2">
                 {([
-                  ["headpat", "Pat head", "🖐️"],
-                  ["bellyRub", "Belly rub", "🫧"],
-                  ["boop", "Boop nose", "👉"],
-                  ["tailPull", "Pull tail", "🌀"],
-                ] as const).map(([k, label, emoji]) => (
+                  ["bamboo", "Bamboo"],
+                  ["paw", "High five"],
+                  ["dance", "Dance"],
+                ] as const).map(([k, label]) => (
                   <button
                     key={k}
-                    onClick={() => touch(k)}
-                    className="rounded-2xl border border-border bg-surface/60 px-3 py-3 text-xs transition hover:border-petal/50 hover:bg-petal/10"
+                    onClick={() => touch(k as keyof PandaActions)}
+                    className="text-[11px] uppercase tracking-[0.26em] text-muted-foreground transition hover:text-primary"
                   >
-                    <span className="mr-1.5">{emoji}</span>
                     {label}
                   </button>
                 ))}
               </div>
             </div>
-          </section>
 
-          {/* today */}
-          <Section title="Companion rhythm" hint={`${pantryList.reduce((s, r) => s + r.qty, 0)} pantry items`}>
-            <div className="grid gap-3 sm:grid-cols-[1.2fr_.8fr]">
-              <div className="rounded-[1.75rem] border border-petal/25 bg-petal/10 p-5">
-                <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Today’s priority</p>
-                <p className="mt-2 font-display text-2xl leading-tight">
-                  {hungry ? `Feed ${name} before the grove goes quiet.` : `Keep ${name} playful with three gentle touches.`}
-                </p>
-                <p className="mt-3 text-xs text-candle-muted">
-                  {hungry ? `${Math.round(hoursLeft)} hours of safety left` : `${pet?.interactions ?? 0} lifetime interactions recorded`}
-                </p>
-              </div>
-              <div className="grid gap-3">
-                <div className="rounded-2xl border border-border bg-surface/60 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Wearing</p>
-                  <p className="mt-1 text-sm">{COSTUME_BY_KEY[pet?.costume ?? "classic"]?.name ?? "Classic coat"}</p>
-                </div>
-                <div className="rounded-2xl border border-border bg-surface/60 p-4">
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">Bond</p>
-                  <p className="mt-1 text-sm">{partner ? `Shared with ${partner.display_name}` : "Waiting for a partner bond"}</p>
-                </div>
+            <div className="space-y-1">
+              <Eyebrow>Quick restock</Eyebrow>
+              <div className="-mx-1">
+                {["bamboo", "apple", "cookie"]
+                  .map((k) => FOOD_BY_KEY[k])
+                  .filter(Boolean)
+                  .map((f) => (
+                    <Row
+                      key={f.key}
+                      leading={f.emoji}
+                      title={f.name}
+                      note={f.note}
+                      disabled={busy || coins < f.price}
+                      trailing={<LuviesAmount value={f.price} size="sm" />}
+                      onClick={() =>
+                        run("Purchase", async () => {
+                          await buy({ data: { key: f.key, qty: 1 } });
+                          toast.success(`${f.name} added to the pantry`);
+                        })
+                      }
+                    />
+                  ))}
               </div>
             </div>
-          </Section>
-        </>
-      )}
-
-      {/* dock */}
-      {lifecycle !== "NO_PANDA_YET" && (
-        <nav className="fixed inset-x-0 bottom-20 z-30 mx-auto w-full max-w-3xl px-4">
-          <div className="flex items-center justify-between gap-1 rounded-full border border-border bg-ink/85 p-1.5 backdrop-blur-xl">
-            {DOCK.map(({ key, label, Icon }) => (
-              <button
-                key={key}
-                onClick={() => setDock(key)}
-                className={cn(
-                  "flex flex-1 flex-col items-center gap-0.5 rounded-full px-2 py-2 text-[10px] transition",
-                  dock === key ? "bg-petal/20 text-petal" : "text-candle-muted hover:text-foreground",
-                )}
-              >
-                <Icon className="size-4" />
-                {label}
-              </button>
-            ))}
           </div>
-        </nav>
-      )}
+        )}
 
-      {/* panels over the screen — custom, no body scroll-lock side effects */}
-      <PetDockOverlay
-        dock={dock}
-        title={dock === "boutique" ? "Boutique" : (dock ?? "Panda")}
-        onClose={() => setDock(null)}
-      >
-          <div className="space-y-4 pb-6">
-            {dock === "care" && (
-              <>
-                {pantryList.length === 0 ? (
-                  <p className="text-sm text-candle-muted">
-                    Your pantry is empty. Visit the Market to stock up on bamboo and treats.
-                  </p>
-                ) : (
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {pantryList.map(({ food, qty }) => (
-                      <button
-                        key={food.key}
-                        disabled={busy}
-                        onClick={() =>
-                          run("Feeding", async () => {
-                            const res = await feed({ data: { key: food.key } });
-                            toast.success(res.unlocked ? `Unlocked ${res.unlocked}!` : `${name} loved the ${food.name}`);
-                          })
-                        }
-                        className="flex items-center gap-3 rounded-2xl border border-border bg-surface/60 p-3 text-left transition hover:border-petal/50"
-                      >
-                        <span className="text-2xl">{food.emoji}</span>
-                        <span className="flex-1">
-                          <span className="block text-sm">{food.name}</span>
-                          <span className="block text-[11px] text-candle-muted">+{food.fullness} fullness</span>
-                        </span>
-                        <span className="text-xs text-candle-muted">×{qty}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div className="grid grid-cols-3 gap-2">
-                  {([
-                    ["bamboo", "Bamboo", <Leaf key="l" className="size-4" />],
-                    ["paw", "High five", <Hand key="h" className="size-4" />],
-                    ["dance", "Dance", <Sparkles key="s" className="size-4" />],
-                  ] as const).map(([k, label, icon]) => (
-                    <button
-                      key={k}
-                      onClick={() => touch(k as keyof PandaActions)}
-                      className="flex flex-col items-center gap-1 rounded-2xl border border-border bg-surface/60 py-3 text-[11px] hover:border-petal/50"
-                    >
-                      {icon}
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-
-            {dock === "wardrobe" && (
-              <div className="grid gap-2 sm:grid-cols-2">
+        {dock === "wardrobe" && (
+          <div className="space-y-6">
+            <div className="space-y-1">
+              <Eyebrow>Wearing · {COSTUME_BY_KEY[pet?.costume ?? "classic"]?.name ?? "Classic coat"}</Eyebrow>
+              <div className="-mx-1">
                 {PET_COSTUMES.map((def) => {
                   const unlocked = costumeUnlocked(def, pet);
                   const worn = (pet?.costume ?? "classic") === def.key;
                   return (
-                    <button
+                    <Row
                       key={def.key}
+                      leading={def.emoji}
+                      title={def.name}
+                      note={
+                        unlocked ? (
+                          def.blurb
+                        ) : (
+                          <span className="inline-flex items-center gap-2">
+                            {costumeRequirementText(def)}
+                            <span className="inline-block h-[2px] w-14 overflow-hidden rounded-full bg-foreground/10 align-middle">
+                              <span
+                                className="block h-full bg-primary/70"
+                                style={{ width: `${costumeProgress(def, pet)}%` }}
+                              />
+                            </span>
+                          </span>
+                        )
+                      }
+                      active={worn}
                       disabled={!unlocked || busy}
+                      trailing={
+                        worn ? (
+                          <Check className="size-4 text-primary" />
+                        ) : !unlocked ? (
+                          <Lock className="size-3.5 text-muted-foreground" />
+                        ) : undefined
+                      }
                       onClick={() =>
                         run("Outfit", async () => {
                           await wear({ data: { costume: def.key } });
                           toast.success(`${name} is wearing ${def.name}`);
                         })
                       }
-                      className={cn(
-                        "rounded-2xl border p-3 text-left transition",
-                        worn ? "border-petal bg-petal/10" : "border-border bg-surface/60",
-                        !unlocked && "opacity-60",
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{def.emoji}</span>
-                        <span className="flex-1 text-sm">{def.name}</span>
-                        {!unlocked && <Lock className="size-3.5 text-candle-muted" />}
-                        {worn && <Check className="size-4 text-petal" />}
-                      </div>
-                      <p className="mt-1 text-[11px] text-candle-muted">
-                        {unlocked ? def.blurb : costumeRequirementText(def)}
-                      </p>
-                      {!unlocked && (
-                        <div className="mt-2 h-1 overflow-hidden rounded-full bg-border/60">
-                          <div className="h-full bg-petal/70" style={{ width: `${costumeProgress(def, pet)}%` }} />
-                        </div>
-                      )}
-                    </button>
+                    />
                   );
                 })}
               </div>
-            )}
+            </div>
 
-            {dock === "market" && (
-              <>
+            <div className="space-y-1">
+              <Eyebrow>Boutique closet</Eyebrow>
+              {ownedShopItems.length === 0 ? (
                 <Link
                   to="/app/mart"
                   onClick={() => setDock(null)}
-                  className="flex items-center justify-between rounded-2xl border border-petal/40 bg-petal/10 p-3 text-sm"
+                  className="flex items-center justify-between rounded-2xl px-3.5 py-3 text-sm transition hover:bg-foreground/[0.04]"
                 >
-                  <span>Open PandaMart — departments, cart & split bills</span>
-                  <ChevronRight className="size-4" />
+                  <span className="text-muted-foreground">Nothing bought yet — browse the boutique</span>
+                  <ChevronRight className="size-4 text-muted-foreground" />
                 </Link>
-                {PET_AISLES.map((aisle) => (
-                  <div key={aisle} className="space-y-2">
-                    <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">{aisle}</p>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {PET_FOODS.filter((f) => f.aisle === aisle).map((f) => (
-                        <div
-                          key={f.key}
-                          className="flex items-center gap-3 rounded-2xl border border-border bg-surface/60 p-3"
-                        >
-                          <span className="text-2xl">{f.emoji}</span>
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm">{f.name}</p>
-                            <p className="truncate text-[11px] text-candle-muted">{f.note}</p>
-                          </div>
-                          <Button
-                            size="sm"
-                            variant="secondary"
-                            disabled={busy || coins < f.price}
-                            onClick={() =>
-                              run("Purchase", async () => {
-                                await buy({ data: { key: f.key, qty: 1 } });
-                                toast.success(`${f.name} added to the pantry`);
-                              })
-                            }
-                          >
-                            <LuviesAmount value={f.price} size="sm" />
-                          </Button>
-                        </div>
+              ) : (
+                PANDA_CATEGORIES.map((cat) => {
+                  const rows = ownedShopItems.filter((r) => r.item.category === cat.key);
+                  if (!rows.length) return null;
+                  return (
+                    <div key={cat.key} className="-mx-1 pt-2">
+                      <p className="px-4 pb-1 text-[10px] uppercase tracking-[0.26em] text-muted-foreground/70">
+                        {cat.label}
+                      </p>
+                      {rows.map(({ inv, item }) => (
+                        <Row
+                          key={item.item_key}
+                          leading={item.emoji}
+                          title={item.name}
+                          active={inv.equipped}
+                          trailing={inv.equipped ? <Check className="size-4 text-primary" /> : undefined}
+                          onClick={() => equipShopItem.mutate({ itemKey: item.item_key, equip: !inv.equipped })}
+                        />
                       ))}
                     </div>
-                  </div>
-                ))}
-              </>
-            )}
-
-            {dock === "boutique" && (
-              <>
-                <Link
-                  to="/app/panda-shop"
-                  onClick={() => setDock(null)}
-                  className="flex items-center justify-between rounded-2xl border border-petal/40 bg-petal/10 p-3 text-sm"
-                >
-                  <span>Browse the Panda Shop</span>
-                  <ChevronRight className="size-4" />
-                </Link>
-                {ownedShopItems.length === 0 ? (
-                  <p className="text-sm text-candle-muted">Nothing bought yet — outfits and effects show up here.</p>
-                ) : (
-                  PANDA_CATEGORIES.map((cat) => {
-                    const rows = ownedShopItems.filter((r) => r.item.category === cat.key);
-                    if (!rows.length) return null;
-                    return (
-                      <div key={cat.key} className="space-y-2">
-                        <p className="text-[10px] uppercase tracking-[0.28em] text-candle-muted">{cat.label}</p>
-                        <div className="grid gap-2 sm:grid-cols-2">
-                          {rows.map(({ inv, item }) => (
-                            <button
-                              key={item.item_key}
-                              onClick={() =>
-                                equipShopItem.mutate({ itemKey: item.item_key, equip: !inv.equipped })
-                              }
-                              className={cn(
-                                "flex items-center gap-3 rounded-2xl border p-3 text-left transition",
-                                inv.equipped ? "border-petal bg-petal/10" : "border-border bg-surface/60",
-                              )}
-                            >
-                              <span className="text-xl">{item.emoji}</span>
-                              <span className="flex-1 text-sm">{item.name}</span>
-                              {inv.equipped && <Check className="size-4 text-petal" />}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </>
-            )}
-
-            {dock === "legacy" && (
-              <PandaLifePanel
-                pet={pet}
-                balance={coins}
-                partnerName={partner?.display_name}
-                hasPartner={!!partner}
-              />
-            )}
+                  );
+                })
+              )}
+            </div>
           </div>
-      </PetDockOverlay>
+        )}
+
+        {dock === "legacy" && (
+          <PandaLifePanel pet={pet} balance={coins} partnerName={partner?.display_name} hasPartner={!!partner} />
+        )}
+      </PetSheet>
     </div>
   );
 }
@@ -685,31 +675,30 @@ function AdoptCard({
   const [name, setName] = useState("");
   const short = coins < cost;
   return (
-    <AnimatePresence>
-      <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="rounded-[2rem] glass p-6 text-center space-y-4"
-      >
-        <p className="text-5xl">🐼</p>
-        <h1 className="font-display text-3xl">Adopt your panda</h1>
-        <p className="mx-auto max-w-sm text-sm text-candle-muted">
-          One panda, shared by the two of you. Feed them, dress them, and they'll grow with your streak.
-        </p>
-        <input
-          value={name}
-          maxLength={20}
-          placeholder="Name your panda"
-          onChange={(e) => setName(e.target.value)}
-          className="mx-auto block w-56 rounded-xl border border-border bg-ink/50 px-3 py-2 text-center"
-        />
-        <div className="flex items-center justify-center gap-2 text-sm text-candle-muted">
-          Adoption fee <LuviesAmount value={cost} size="sm" />
-        </div>
-        <Button disabled={busy || short} onClick={() => onAdopt(name)}>
-          {short ? "Not enough Luvies" : "Bring them home"}
-        </Button>
-      </motion.section>
-    </AnimatePresence>
+    <motion.section
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.15 }}
+      className="mt-16 space-y-5 text-center"
+    >
+      <p className="text-5xl">🐼</p>
+      <h1 className="font-display text-4xl italic leading-none">Adopt your panda</h1>
+      <p className="mx-auto max-w-xs text-sm text-muted-foreground">
+        One panda, shared by the two of you. Feed them, dress them, and they'll grow with your streak.
+      </p>
+      <input
+        value={name}
+        maxLength={20}
+        placeholder="Name your panda"
+        onChange={(e) => setName(e.target.value)}
+        className="mx-auto block w-56 rounded-xl bg-foreground/[0.05] px-3 py-2 text-center outline-none placeholder:text-muted-foreground"
+      />
+      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+        Adoption fee <LuviesAmount value={cost} size="sm" />
+      </div>
+      <Button disabled={busy || short} onClick={() => onAdopt(name)}>
+        {short ? "Not enough Luvies" : "Bring them home"}
+      </Button>
+    </motion.section>
   );
 }
