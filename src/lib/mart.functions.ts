@@ -1,20 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { FOOD_BY_KEY } from "@/lib/pet-foods";
+import { receiptNo, uniqueLedgerRef } from "@/lib/pet-purchases.server";
 
 export type CheckoutInput = {
   items: { kind: "food" | "boutique"; key: string; qty: number }[];
   split: boolean;
   note?: string;
 };
-
-function receiptNo(): string {
-  const n = Math.floor(Math.random() * 1e6)
-    .toString()
-    .padStart(6, "0");
-  const d = new Date();
-  return `PM-${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}-${n}`;
-}
 
 /**
  * Authoritative PandaMart checkout. Prices come from the server catalogue,
@@ -75,6 +68,7 @@ export const martCheckout = createServerFn({ method: "POST" })
           skipped.push(s.name);
           continue;
         }
+        owned.add(item.key);
         lines.push({
           kind: "boutique",
           key: item.key,
@@ -89,6 +83,7 @@ export const martCheckout = createServerFn({ method: "POST" })
     if (!lines.length) throw new Error(skipped.length ? "You already own everything in the cart" : "Nothing to buy");
 
     const total = lines.reduce((sum, l) => sum + l.price * l.qty, 0);
+    const checkoutRef = uniqueLedgerRef("mart", String(lines.length));
 
     const { data: profile } = await supabaseAdmin
       .from("profiles")
@@ -106,7 +101,7 @@ export const martCheckout = createServerFn({ method: "POST" })
       _user: userId,
       _amount: total,
       _reason: "pandamart",
-      _ref: `mart:${lines.length}`,
+      _ref: checkoutRef,
     } as any);
     if (sErr) throw new Error(String(sErr.message).replace(/^.*Not enough Luvies/, "Not enough Luvies"));
 
@@ -127,14 +122,14 @@ export const martCheckout = createServerFn({ method: "POST" })
         const { error } = await supabaseAdmin
           .from("panda_inventory" as any)
           .insert(boutique.map((b) => ({ user_id: userId, item_key: b.key })));
-        if (error && !String(error.message).includes("duplicate key")) throw error;
+        if (error) throw error;
       }
     } catch (e) {
       await supabaseAdmin.rpc("credit_luvies" as any, {
         _user: userId,
         _amount: total,
         _reason: "refund",
-        _ref: "mart:failed",
+        _ref: checkoutRef,
       } as any);
       throw e;
     }
@@ -201,7 +196,7 @@ export const respondToSplit = createServerFn({ method: "POST" })
       _user: context.userId,
       _amount: o.partner_share,
       _reason: "pandamart_split",
-      _ref: o.receipt_no,
+      _ref: uniqueLedgerRef("split", o.receipt_no),
     } as any);
     if (sErr) throw new Error(String(sErr.message).replace(/^.*Not enough Luvies/, "Not enough Luvies"));
 
@@ -209,14 +204,14 @@ export const respondToSplit = createServerFn({ method: "POST" })
       _user: o.buyer_id,
       _amount: o.partner_share,
       _reason: "pandamart_split_settled",
-      _ref: o.receipt_no,
+      _ref: uniqueLedgerRef("split-settled", o.receipt_no),
     } as any);
     if (cErr) {
       await supabaseAdmin.rpc("credit_luvies" as any, {
         _user: context.userId,
         _amount: o.partner_share,
         _reason: "refund",
-        _ref: o.receipt_no,
+        _ref: uniqueLedgerRef("split-refund", o.receipt_no),
       } as any);
       throw cErr;
     }

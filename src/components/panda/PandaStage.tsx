@@ -146,7 +146,7 @@ export function PandaStage({
   return (
     <div
       ref={ref}
-      className={cn("relative select-none", className)}
+      className={cn("relative select-none overflow-visible", className)}
       onDoubleClick={() => interact("camera")}
       onContextMenu={(e) => {
         e.preventDefault();
@@ -233,7 +233,7 @@ export function PandaStage({
           state.chaos ? { duration: 1.6, repeat: Infinity } : { type: "spring", stiffness: 90, damping: 16 }
         }
         className={cn(
-          "relative z-10 mx-auto flex h-full w-full max-w-[420px] items-center justify-center py-3 cursor-grab active:cursor-grabbing",
+          "relative z-10 mx-auto flex h-full max-h-[94%] w-full max-w-[480px] items-center justify-center py-3 cursor-grab active:cursor-grabbing",
           dragging && "z-20",
         )}
 
@@ -293,7 +293,7 @@ export function PandaStage({
       </motion.div>
 
       {/* foreground bamboo grove — the panda can slip behind it */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-[70%] overflow-hidden rounded-b-[3rem]">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-[46%] overflow-hidden rounded-b-[3rem]">
         {[6, 16, 78, 90].map((left, i) => (
           <motion.div
             key={left}
