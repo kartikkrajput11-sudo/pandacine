@@ -166,11 +166,11 @@ function RootComponent() {
         
         <Toaster
           theme="dark"
-          position="bottom-right"
-          expand
-          visibleToasts={3}
-          gap={10}
-          offset={24}
+          position="bottom-left"
+          expand={false}
+          visibleToasts={2}
+          gap={14}
+          offset={20}
           toastOptions={{
             duration: 4200,
             className: "lux-toast",
