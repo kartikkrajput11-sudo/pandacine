@@ -202,7 +202,15 @@ function MartRoute() {
                 </div>
                 <div className="mt-5 -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {products.map((p) => (
-                    <Product key={p.key} {...p} onAdd={p.add} />
+                    <Product
+                      key={p.key}
+                      emoji={p.emoji}
+                      name={p.name}
+                      note={p.note}
+                      price={p.price}
+                      disabled={p.disabled}
+                      onAdd={p.add}
+                    />
                   ))}
                 </div>
               </section>
