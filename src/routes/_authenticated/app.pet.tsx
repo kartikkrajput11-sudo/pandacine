@@ -540,7 +540,7 @@ function PetRoute() {
             <div className="space-y-1">
               <Eyebrow>Quick restock</Eyebrow>
               <div className="-mx-1">
-                {["bamboo", "apple", "cookie"]
+                {["bamboo-shoot", "apple", "cookie"]
                   .map((k) => FOOD_BY_KEY[k])
                   .filter(Boolean)
                   .map((f) => (
