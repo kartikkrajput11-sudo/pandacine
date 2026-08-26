@@ -1399,161 +1399,163 @@ html.theme-anim * {
   --lux-rose-deep: #C97E6A;
   --lux-rose-glow: #FFD4C8;
   --lux-gold: #f4d58a;
+  --lux-bg: #171218;
+  --lux-hairline: rgba(230, 160, 138, 0.14);
 }
 
+/* Capsule — clean velvet glass, no gradient borders */
 [data-sonner-toast].lux-toast {
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   border: none !important;
   border-radius: 999px !important;
-  padding: 12px 18px 12px 16px !important;
-  min-height: 52px !important;
-  background:
-    linear-gradient(135deg,
-      color-mix(in oklab, var(--surface-elevated) 92%, #fff 4%) 0%,
-      color-mix(in oklab, var(--surface) 96%, #000 2%) 100%) !important;
-  color: var(--candle) !important;
+  padding: 13px 20px 13px 15px !important;
+  min-height: 54px !important;
+  gap: 12px !important;
+  background: color-mix(in oklab, var(--lux-bg) 88%, transparent) !important;
+  color: #F4EDE9 !important;
   font-family: var(--font-sans);
   letter-spacing: 0.01em;
-  backdrop-filter: blur(22px) saturate(1.25);
-  -webkit-backdrop-filter: blur(22px) saturate(1.25);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
   box-shadow:
-    0 14px 44px -14px oklch(0 0 0 / 0.45),
-    0 0 0 1px color-mix(in oklab, var(--lux-rose) 22%, transparent),
-    inset 0 1px 0 color-mix(in oklab, var(--lux-rose-glow) 18%, transparent),
-    inset 0 -1px 0 color-mix(in oklab, #000 18%, transparent);
+    0 1px 0 0 var(--lux-hairline),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 18px 50px -16px rgba(0, 0, 0, 0.65),
+    0 4px 14px -6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
   animation: lux-toast-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 [data-sonner-toast].lux-toast[data-removed="true"] {
   animation: lux-toast-out 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
-[data-sonner-toast].lux-toast::before {
-  content: "";
-  position: absolute; inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(160deg,
-    color-mix(in oklab, var(--lux-rose-glow) 70%, transparent) 0%,
-    color-mix(in oklab, var(--lux-rose) 45%, transparent) 40%,
-    color-mix(in oklab, var(--lux-rose-deep) 18%, transparent) 70%,
-    color-mix(in oklab, var(--lux-rose-glow) 55%, transparent) 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  pointer-events: none;
-}
 
-/* Status gem */
+/* Status dot — small, perfectly round, single source of color */
 [data-sonner-toast].lux-toast [data-icon] {
   position: relative;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin: 0 !important;
   color: var(--lux-rose-glow);
-  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--lux-rose) 55%, transparent));
+}
+[data-sonner-toast].lux-toast [data-icon] svg {
+  width: 15px;
+  height: 15px;
+}
+[data-sonner-toast].lux-toast [data-icon]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--lux-rose) 14%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--lux-rose) 26%, transparent);
 }
 [data-sonner-toast].lux-toast [data-icon]::after {
   content: "";
   position: absolute;
-  left: 50%; top: 50%;
-  width: 6px; height: 6px;
-  margin: -3px 0 0 -3px;
+  inset: 0;
   border-radius: 50%;
-  background: var(--lux-rose);
-  box-shadow: 0 0 10px 2px color-mix(in oklab, var(--lux-rose) 55%, transparent);
-  animation: lux-toast-ping 2.2s ease-out infinite;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--lux-rose) 45%, transparent);
+  animation: lux-toast-ping 2.4s ease-out infinite;
   pointer-events: none;
 }
 
 [data-sonner-toast].lux-toast [data-title] {
   font-family: var(--font-sans);
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   letter-spacing: 0.01em;
-  color: var(--candle);
+  color: #F4EDE9;
 }
 [data-sonner-toast].lux-toast [data-description] {
-  color: color-mix(in oklab, var(--candle-muted) 92%, transparent) !important;
-  font-size: 0.8rem;
+  color: rgba(226, 210, 203, 0.62) !important;
+  font-size: 0.78rem;
   margin-top: 1px;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 [data-sonner-toast].lux-toast [data-button] {
-  background:
-    linear-gradient(135deg,
-      color-mix(in oklab, var(--lux-rose) 88%, #fff 8%) 0%,
-      color-mix(in oklab, var(--lux-rose-deep) 92%, #000 4%) 100%) !important;
-  color: #1F1010 !important;
+  background: linear-gradient(135deg, #EFB49E 0%, #D28B74 100%) !important;
+  color: #231217 !important;
+  border: none !important;
   border-radius: 999px !important;
   font-weight: 600;
   font-size: 0.78rem;
   padding: 7px 14px !important;
   box-shadow:
-    0 6px 18px -8px color-mix(in oklab, var(--lux-rose) 55%, transparent),
-    inset 0 1px 0 color-mix(in oklab, #fff 35%, transparent);
+    0 6px 18px -8px rgba(210, 139, 116, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 [data-sonner-toast].lux-toast [data-cancel] {
-  background: transparent !important;
-  color: var(--candle-muted) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(226, 210, 203, 0.7) !important;
+  border: none !important;
   border-radius: 999px !important;
-  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent) !important;
 }
 
-/* Variants */
+/* Variants — only the icon chip changes color */
 [data-sonner-toast].lux-toast[data-type="success"] [data-icon] {
-  color: #a7f0c1;
-  filter: drop-shadow(0 0 8px color-mix(in oklab, #a7f0c1 55%, transparent));
+  color: #9CE8BE;
+}
+[data-sonner-toast].lux-toast[data-type="success"] [data-icon]::before {
+  background: rgba(80, 190, 130, 0.14);
+  box-shadow: 0 0 0 1px rgba(120, 220, 160, 0.26);
 }
 [data-sonner-toast].lux-toast[data-type="success"] [data-icon]::after {
-  background: #a7f0c1;
-  box-shadow: 0 0 10px 2px color-mix(in oklab, #a7f0c1 55%, transparent);
+  box-shadow: 0 0 0 1px rgba(120, 220, 160, 0.45);
 }
 [data-sonner-toast].lux-toast[data-type="error"] [data-icon] {
-  color: #ffb4a8;
-  filter: drop-shadow(0 0 8px color-mix(in oklab, #ffb4a8 55%, transparent));
+  color: #FF9C8D;
+}
+[data-sonner-toast].lux-toast[data-type="error"] [data-icon]::before {
+  background: rgba(220, 90, 70, 0.15);
+  box-shadow: 0 0 0 1px rgba(255, 140, 120, 0.28);
 }
 [data-sonner-toast].lux-toast[data-type="error"] [data-icon]::after {
-  background: #ffb4a8;
-  box-shadow: 0 0 10px 2px color-mix(in oklab, #ffb4a8 55%, transparent);
-}
-[data-sonner-toast].lux-toast[data-type="error"]::before {
-  background: linear-gradient(160deg,
-    color-mix(in oklab, #ffd0c6 70%, transparent) 0%,
-    color-mix(in oklab, #ff8672 45%, transparent) 40%,
-    color-mix(in oklab, #ff8672 18%, transparent) 70%,
-    color-mix(in oklab, #ffd0c6 55%, transparent) 100%);
+  box-shadow: 0 0 0 1px rgba(255, 140, 120, 0.48);
 }
 [data-sonner-toast].lux-toast[data-type="warning"] [data-icon] {
-  color: var(--lux-gold);
-  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--lux-gold) 55%, transparent));
+  color: #F2CE8F;
+}
+[data-sonner-toast].lux-toast[data-type="warning"] [data-icon]::before {
+  background: rgba(220, 175, 95, 0.14);
+  box-shadow: 0 0 0 1px rgba(240, 200, 125, 0.26);
 }
 [data-sonner-toast].lux-toast[data-type="warning"] [data-icon]::after {
-  background: var(--lux-gold);
-  box-shadow: 0 0 10px 2px color-mix(in oklab, var(--lux-gold) 55%, transparent);
+  box-shadow: 0 0 0 1px rgba(240, 200, 125, 0.45);
 }
 [data-sonner-toast].lux-toast[data-type="info"] [data-icon] {
-  color: #cdb6ff;
-  filter: drop-shadow(0 0 8px color-mix(in oklab, #cdb6ff 55%, transparent));
+  color: #C9B8F5;
+}
+[data-sonner-toast].lux-toast[data-type="info"] [data-icon]::before {
+  background: rgba(150, 125, 230, 0.15);
+  box-shadow: 0 0 0 1px rgba(185, 160, 245, 0.28);
 }
 [data-sonner-toast].lux-toast[data-type="info"] [data-icon]::after {
-  background: #cdb6ff;
-  box-shadow: 0 0 10px 2px color-mix(in oklab, #cdb6ff 55%, transparent);
+  box-shadow: 0 0 0 1px rgba(185, 160, 245, 0.46);
 }
 
-/* Light theme adjustments */
+/* Light theme — porcelain capsule */
 .light [data-sonner-toast].lux-toast {
-  background:
-    linear-gradient(135deg,
-      color-mix(in oklab, #ffffff 96%, var(--lux-rose)) 0%,
-      color-mix(in oklab, var(--surface-elevated) 98%, var(--lux-rose)) 100%) !important;
+  background: color-mix(in oklab, #ffffff 92%, transparent) !important;
+  color: #2A1E22 !important;
   box-shadow:
-    0 14px 44px -14px color-mix(in oklab, var(--plum) 22%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--lux-rose-deep) 24%, transparent),
-    inset 0 1px 0 rgba(255,255,255,0.85),
-    inset 0 -1px 0 color-mix(in oklab, #000 8%, transparent);
+    0 1px 0 0 rgba(180, 110, 92, 0.1),
+    0 0 0 1px rgba(42, 30, 34, 0.06),
+    0 18px 50px -18px rgba(90, 50, 60, 0.28),
+    0 4px 14px -8px rgba(90, 50, 60, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 .light [data-sonner-toast].lux-toast [data-title] {
-  color: var(--candle);
+  color: #2A1E22;
 }
 .light [data-sonner-toast].lux-toast [data-description] {
-  color: color-mix(in oklab, var(--candle-muted) 95%, transparent) !important;
+  color: rgba(74, 54, 60, 0.62) !important;
+}
+.light [data-sonner-toast].lux-toast [data-cancel] {
+  background: rgba(42, 30, 34, 0.05) !important;
+  color: rgba(74, 54, 60, 0.7) !important;
 }
 
 /* ============ Auth page luxury animations ============ */
