@@ -68,6 +68,7 @@ export const martCheckout = createServerFn({ method: "POST" })
           skipped.push(s.name);
           continue;
         }
+        owned.add(item.key);
         lines.push({
           kind: "boutique",
           key: item.key,
