@@ -114,11 +114,13 @@ export const unlockPet = createServerFn({ method: "POST" })
       .maybeSingle();
     if ((pet as any)?.unlocked) throw new Error("You already adopted your panda");
 
+    const adoptionRef = uniqueLedgerRef("pet-adopt", ownerId);
+
     const { data: remaining, error: dErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
       _user: userId,
       _amount: PET_COST,
       _reason: "panda_adoption",
-      _ref: "pet:adopt",
+      _ref: adoptionRef,
     } as any);
     if (dErr) throw new Error(dErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
 
@@ -134,7 +136,7 @@ export const unlockPet = createServerFn({ method: "POST" })
         _user: userId,
         _amount: PET_COST,
         _reason: "refund",
-        _ref: "pet:adopt",
+        _ref: adoptionRef,
       } as any);
       throw uErr;
     }
@@ -347,11 +349,13 @@ export const birthNewPanda = createServerFn({ method: "POST" })
       throw new Error("This is only for a panda that has passed away");
     }
 
+    const birthRef = uniqueLedgerRef("pet-birth", ownerId);
+
     const { data: remaining, error: sErr } = await supabaseAdmin.rpc("spend_luvies" as any, {
       _user: userId,
       _amount: REBIRTH_COST,
       _reason: "panda_birth",
-      _ref: "pet:birth",
+      _ref: birthRef,
     } as any);
     if (sErr) throw new Error(sErr.message.replace(/^.*Not enough Luvies/, "Not enough Luvies"));
 
@@ -412,7 +416,7 @@ export const birthNewPanda = createServerFn({ method: "POST" })
         _user: userId,
         _amount: REBIRTH_COST,
         _reason: "refund",
-        _ref: "pet:birth",
+        _ref: birthRef,
       } as any);
       throw error;
     }

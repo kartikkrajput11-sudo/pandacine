@@ -210,7 +210,7 @@ export const respondToSplit = createServerFn({ method: "POST" })
         _user: context.userId,
         _amount: o.partner_share,
         _reason: "refund",
-          _ref: uniqueLedgerRef("split-refund", o.receipt_no),
+        _ref: uniqueLedgerRef("split-refund", o.receipt_no),
       } as any);
       throw cErr;
     }

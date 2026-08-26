@@ -147,6 +147,7 @@ function PetDockOverlay({
         >
           <motion.section
             role="dialog"
+            data-state="open"
             aria-modal="true"
             aria-label={title}
             className="w-full max-w-3xl overflow-hidden rounded-[2rem] border border-border bg-ink/95 shadow-2xl"
