@@ -76,6 +76,27 @@ const DOCK: { key: Dock; label: string; Icon: typeof Heart }[] = [
   { key: "legacy", label: "Legacy", Icon: Sparkles },
 ];
 
+/* ────────────────────────── daily care quests ────────────────────────── */
+
+type Quests = { fed: boolean; plays: number; dressed: boolean };
+const QUEST_GOAL = 5;
+
+function questKey() {
+  return `pet-quests:${new Date().toISOString().slice(0, 10)}`;
+}
+function loadQuests(): Quests {
+  try {
+    const raw = localStorage.getItem(questKey());
+    if (raw) return { fed: false, plays: 0, dressed: false, ...JSON.parse(raw) };
+  } catch {}
+  return { fed: false, plays: 0, dressed: false };
+}
+function saveQuests(q: Quests) {
+  try {
+    localStorage.setItem(questKey(), JSON.stringify(q));
+  } catch {}
+}
+
 /* ────────────────────────── quiet primitives ────────────────────────── */
 
 /** A hairline arc. No labels until the value matters. */
@@ -286,10 +307,26 @@ function PetRoute() {
     }
   }
 
+  // Daily care quests — reset every midnight, kept on the device.
+  const [quests, setQuests] = useState<Quests>(() => loadQuests());
+  function markQuest(patch: Partial<Quests>) {
+    setQuests((q) => {
+      const next = { ...q, ...patch };
+      saveQuests(next);
+      const doneNow =
+        (next.fed ? 1 : 0) + (next.plays >= QUEST_GOAL ? 1 : 0) + (next.dressed ? 1 : 0);
+      const doneBefore =
+        (q.fed ? 1 : 0) + (q.plays >= QUEST_GOAL ? 1 : 0) + (q.dressed ? 1 : 0);
+      if (doneNow === 3 && doneBefore < 3) toast.success(`All of today's care done — ${name} is glowing ✨`);
+      return next;
+    });
+  }
+
   function touch(kind: keyof PandaActions) {
     const a = actionsRef.current;
     if (!a) return;
     a[kind]();
+    markQuest({ plays: quests.plays + 1 });
     const next = {
       interactions: pending.current.interactions + 1,
       affection: Math.min(100, pending.current.affection + 1),
@@ -297,6 +334,9 @@ function PetRoute() {
     pending.current = next;
     save({ data: next }).then(() => qc.invalidateQueries({ queryKey: ["pet"] })).catch(() => {});
   }
+
+  const firstPantry = pantryList.find((r) => r.qty > 0) ?? null;
+  const questsDone = (quests.fed ? 1 : 0) + (quests.plays >= QUEST_GOAL ? 1 : 0) + (quests.dressed ? 1 : 0);
 
   const stateLine = hungry
     ? `hungry · ${Math.round(hoursLeft)}h of food left`
@@ -441,6 +481,54 @@ function PetRoute() {
                 {label}
               </button>
             ))}
+          </div>
+
+          {/* quick feed — one tap when the pantry has something */}
+          {firstPantry && (
+            <div className="mt-6 flex justify-center">
+              <button
+                disabled={busy}
+                onClick={() =>
+                  run("Feeding", async () => {
+                    const res = await feed({ data: { key: firstPantry.food.key } });
+                    markQuest({ fed: true });
+                    toast.success(res.unlocked ? `Unlocked ${res.unlocked}!` : `${name} loved the ${firstPantry.food.name}`);
+                  })
+                }
+                className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-5 py-2 text-[11px] uppercase tracking-[0.26em] text-primary transition hover:bg-primary/15 active:scale-95 disabled:opacity-50"
+              >
+                Feed {firstPantry.food.emoji}
+              </button>
+            </div>
+          )}
+
+          {/* today's care — three quiet ticks */}
+          <div className="mx-auto mt-8 w-full max-w-xs">
+            <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+              <span>Today's care</span>
+              <span className="tabular-nums">{questsDone}/3</span>
+            </div>
+            <div className="mt-3 space-y-1">
+              <Row
+                leading={quests.fed ? "✅" : "🍎"}
+                title="Fed something"
+                note={quests.fed ? "done" : "from the pantry or quick feed"}
+                active={quests.fed}
+              />
+              <Row
+                leading={quests.plays >= QUEST_GOAL ? "✅" : "🐾"}
+                title={`Play ${QUEST_GOAL} times`}
+                note={`${Math.min(quests.plays, QUEST_GOAL)}/${QUEST_GOAL} pats, boops and dances`}
+                active={quests.plays >= QUEST_GOAL}
+              />
+              <Row
+                leading={quests.dressed ? "✅" : "👕"}
+                title="Dress up"
+                note={quests.dressed ? "done" : "try a look from the wardrobe"}
+                active={quests.dressed}
+                onClick={() => setDock("wardrobe")}
+              />
+            </div>
           </div>
 
           {/* one quiet line of context */}
