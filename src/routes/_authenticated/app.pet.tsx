@@ -597,6 +597,7 @@ function PetRoute() {
                       onClick={() =>
                         run("Feeding", async () => {
                           const res = await feed({ data: { key: food.key } });
+                          markQuest({ fed: true });
                           toast.success(res.unlocked ? `Unlocked ${res.unlocked}!` : `${name} loved the ${food.name}`);
                         })
                       }
@@ -692,6 +693,7 @@ function PetRoute() {
                       onClick={() =>
                         run("Outfit", async () => {
                           await wear({ data: { costume: def.key } });
+                          markQuest({ dressed: true });
                           toast.success(`${name} is wearing ${def.name}`);
                         })
                       }
