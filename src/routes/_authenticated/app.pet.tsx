@@ -406,6 +406,11 @@ function PetRoute() {
               costume={(pet?.costume ?? "classic") as Costume}
               hideActions
               playful={false}
+              wear={{
+                outfit: look.outfit?.item_key ?? null,
+                accessory: look.accessory?.item_key ?? null,
+                prop: look.prop?.item_key ?? null,
+              }}
               onReady={(a) => {
                 actionsRef.current = a;
                 forceReady((n) => (n === 0 ? 1 : n));
