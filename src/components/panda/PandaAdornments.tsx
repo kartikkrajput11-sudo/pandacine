@@ -26,7 +26,7 @@ const ENV_TINT: Record<string, string> = {
 export function PandaAdornments({ look }: { look: PandaLook }) {
   const effect = EFFECT_EMOJI[look.effect?.item_key ?? ""] ?? null;
   const tint = ENV_TINT[look.environment?.item_key ?? ""] ?? null;
-  const nothing = !look.accessory && !look.outfit && !look.prop && !effect && !tint && !look.expression;
+  const nothing = !effect && !tint && !look.expression;
   if (nothing) return null;
 
   return (
@@ -47,35 +47,10 @@ export function PandaAdornments({ look }: { look: PandaLook }) {
           </motion.span>
         ))}
 
-      {look.accessory && (
-        <motion.span
-          className="absolute left-1/2 top-[16%] -translate-x-1/2 text-4xl drop-shadow"
-          animate={{ y: [0, -4, 0] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {look.accessory.emoji}
-        </motion.span>
-      )}
-
-      {look.outfit && (
-        <span className="absolute bottom-[22%] left-1/2 -translate-x-1/2 text-4xl drop-shadow">
-          {look.outfit.emoji}
-        </span>
-      )}
-
       {look.expression && (
         <span className="absolute bottom-[38%] left-1/2 -translate-x-1/2 text-2xl">{look.expression.emoji}</span>
       )}
 
-      {look.prop && (
-        <motion.span
-          className="absolute bottom-[20%] right-[16%] text-4xl"
-          animate={{ rotate: [-8, 8, -8] }}
-          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {look.prop.emoji}
-        </motion.span>
-      )}
     </div>
   );
 }

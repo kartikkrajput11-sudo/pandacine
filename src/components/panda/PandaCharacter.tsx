@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useState } from "react";
 import { motion, useSpring } from "framer-motion";
 import type { Costume, Emotion, PandaState, Zone } from "./usePandaBrain";
+import { PandaHeadwear, PandaOutfit, PandaProp } from "./PandaGarments";
 
 type Face = {
   eye: number; // 0 closed -> 1 wide
@@ -152,6 +153,8 @@ export type PandaCharacterProps = {
   className?: string;
   /** Reduce secondary motion on low-power devices. */
   lite?: boolean;
+  /** Real (non-emoji) shop garments the panda is wearing. */
+  wear?: { outfit?: string | null; accessory?: string | null; prop?: string | null };
 };
 
 /**
@@ -164,6 +167,7 @@ export const PandaCharacter = memo(function PandaCharacter({
   onZone,
   className,
   lite = false,
+  wear,
 }: PandaCharacterProps) {
   const face = FACES[state.emotion] ?? FACES.idle;
   const [blink, setBlink] = useState(false);
@@ -457,7 +461,9 @@ export const PandaCharacter = memo(function PandaCharacter({
             fill="none"
             strokeLinecap="round"
           />
-          {state.costume === "tycoon" && <TycoonSuit />}
+          {state.costume === "tycoon" && !wear?.outfit && <TycoonSuit />}
+          <PandaOutfit itemKey={wear?.outfit} energy={lite ? 0 : 1} />
+          <PandaProp itemKey={wear?.prop} energy={lite ? 0 : 1} />
 
 
 
@@ -729,7 +735,8 @@ export const PandaCharacter = memo(function PandaCharacter({
               </motion.g>
 
               {/* costume flair */}
-              {state.costume !== "classic" && state.costume !== "tycoon" && (
+              <PandaHeadwear itemKey={wear?.accessory} outfitKey={wear?.outfit} energy={lite ? 0 : 1} />
+              {!wear?.accessory && !wear?.outfit && state.costume !== "classic" && state.costume !== "tycoon" && (
                 <text x="150" y="50" textAnchor="middle" fontSize="40" pointerEvents="none">
                   {COSTUME_LABEL[state.costume]}
                 </text>
@@ -737,7 +744,7 @@ export const PandaCharacter = memo(function PandaCharacter({
               {state.costume === "golden" && (
                 <ellipse cx="150" cy="140" rx="94" ry="82" fill="none" stroke="#f0d78c" strokeWidth="3" opacity=".8" pointerEvents="none" />
               )}
-              {state.costume === "tycoon" && (
+              {state.costume === "tycoon" && !wear?.accessory && !wear?.outfit && (
                 <text x="150" y="52" textAnchor="middle" fontSize="26" pointerEvents="none">
                   🎩
                 </text>

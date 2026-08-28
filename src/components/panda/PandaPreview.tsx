@@ -1,5 +1,8 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import type { PandaShopItem } from "@/lib/luvies";
+import { PandaCharacter } from "./PandaCharacter";
+import type { Emotion, PandaState } from "./usePandaBrain";
 
 const ENV_BG: Record<string, string> = {
   "env-bedroom": "from-[#2a1d33] via-[#1b1424] to-[#120d19]",
@@ -18,15 +21,15 @@ const EFFECT_EMOJI: Record<string, string> = {
   "effect-fireflies": "🪄",
 };
 
-const EXPRESSION_FACE: Record<string, string> = {
-  "expr-happy": "😊",
-  "expr-sleepy": "😴",
-  "expr-excited": "🤩",
-  "expr-angrycute": "😾",
-  "expr-dancing": "💃",
-  "expr-crying": "🥺",
-  "expr-blushing": "☺️",
-  "expr-love": "😍",
+const EXPRESSION_EMOTION: Record<string, Emotion> = {
+  "expr-happy": "happy",
+  "expr-sleepy": "sleepy",
+  "expr-excited": "excited",
+  "expr-angrycute": "angry",
+  "expr-dancing": "celebrating",
+  "expr-crying": "disappointed",
+  "expr-blushing": "shy",
+  "expr-love": "happy",
 };
 
 export type PandaLook = {
@@ -39,20 +42,44 @@ export type PandaLook = {
 };
 
 /**
- * Live look preview — the panda wearing whatever is equipped or being previewed.
- * Purely presentational; ownership always comes from the backend.
+ * Live try-on — the actual mascot rig wearing real, hand-drawn garments
+ * (with cloth physics), not emoji stickers.
  */
 export function PandaPreview({ look, className = "" }: { look: PandaLook; className?: string }) {
   const envKey = look.environment?.item_key ?? "";
   const bg = ENV_BG[envKey] ?? "from-[#1a1420] via-[#141019] to-[#0d0a12]";
   const effect = EFFECT_EMOJI[look.effect?.item_key ?? ""] ?? null;
-  const face = EXPRESSION_FACE[look.expression?.item_key ?? ""] ?? null;
+  const emotion = EXPRESSION_EMOTION[look.expression?.item_key ?? ""] ?? "happy";
   const dancing = look.expression?.item_key === "expr-dancing";
 
+  const state = useMemo<PandaState>(
+    () => ({
+      emotion,
+      action: null,
+      look: { x: 0, y: 0 },
+      position: { x: 0, y: 0 },
+      tickle: 0,
+      interactions: 0,
+      chaos: false,
+      costume: "classic",
+      thought: null,
+      hearts: 0,
+      confetti: 0,
+      says: null,
+      ignoring: false,
+      hunger: 0,
+    }),
+    [emotion],
+  );
+
+  const wear = {
+    outfit: look.outfit?.item_key ?? null,
+    accessory: look.accessory?.item_key ?? null,
+    prop: look.prop?.item_key ?? null,
+  };
+
   return (
-    <div
-      className={`relative overflow-hidden rounded-3xl border border-border bg-gradient-to-b ${bg} ${className}`}
-    >
+    <div className={`relative overflow-hidden rounded-3xl border border-border bg-gradient-to-b ${bg} ${className}`}>
       <div className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 size-56 rounded-full bg-petal/15 blur-3xl" />
 
       {effect &&
@@ -69,49 +96,13 @@ export function PandaPreview({ look, className = "" }: { look: PandaLook; classN
           </motion.span>
         ))}
 
-      <div className="relative flex flex-col items-center justify-end h-full py-8">
-        <motion.div
-          className="relative"
-          animate={dancing ? { rotate: [-7, 7, -7], y: [0, -6, 0] } : { y: [0, -5, 0] }}
-          transition={{ duration: dancing ? 1.1 : 3.4, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {/* Accessory sits on the head */}
-          {look.accessory && (
-            <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-3xl drop-shadow">
-              {look.accessory.emoji}
-            </span>
-          )}
-
-          <span className="block text-[86px] leading-none select-none drop-shadow-[0_10px_24px_rgba(0,0,0,0.5)]">
-            🐼
-          </span>
-
-          {/* Expression overlays the muzzle */}
-          {face && (
-            <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-2xl">{face}</span>
-          )}
-
-          {/* Outfit across the body */}
-          {look.outfit && (
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-3xl drop-shadow">
-              {look.outfit.emoji}
-            </span>
-          )}
-
-          {/* Prop held to the side */}
-          {look.prop && (
-            <motion.span
-              className="absolute -right-7 bottom-3 text-3xl"
-              animate={{ rotate: [-8, 8, -8] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              {look.prop.emoji}
-            </motion.span>
-          )}
-        </motion.div>
-
-        <div className="mt-4 h-3 w-24 rounded-full bg-black/40 blur-md" />
-      </div>
+      <motion.div
+        className="relative flex h-full w-full items-center justify-center py-3"
+        animate={dancing ? { rotate: [-5, 5, -5] } : { y: [0, -4, 0] }}
+        transition={{ duration: dancing ? 1.2 : 3.6, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <PandaCharacter state={state} wear={wear} className="h-full max-h-full w-full max-w-full" />
+      </motion.div>
     </div>
   );
 }
