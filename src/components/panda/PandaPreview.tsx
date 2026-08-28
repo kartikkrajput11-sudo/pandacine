@@ -55,7 +55,7 @@ export function PandaPreview({ look, className = "" }: { look: PandaLook; classN
   const state = useMemo<PandaState>(
     () => ({
       emotion,
-      action: "idle",
+      action: null,
       look: { x: 0, y: 0 },
       position: { x: 0, y: 0 },
       tickle: 0,
