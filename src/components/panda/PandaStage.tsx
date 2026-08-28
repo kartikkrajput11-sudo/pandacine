@@ -33,6 +33,8 @@ type Props = {
   costume?: Costume;
   /** Hide the built-in chip rail so the host page can render its own. */
   hideActions?: boolean;
+  /** Real shop garments (item keys) rendered on the rig instead of emoji. */
+  wear?: { outfit?: string | null; accessory?: string | null; prop?: string | null };
   /** Receive the interaction handlers so they can be rendered elsewhere. */
   onReady?: (actions: PandaActions) => void;
 };
@@ -51,6 +53,7 @@ export function PandaStage({
   lite = false,
   costume,
   hideActions = false,
+  wear,
   onReady,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -238,7 +241,7 @@ export function PandaStage({
         )}
 
       >
-        <PandaCharacter state={state} onZone={onZone} lite={lite} className="h-full max-h-full w-full max-w-full" />
+        <PandaCharacter state={state} onZone={onZone} lite={lite} wear={wear} className="h-full max-h-full w-full max-w-full" />
 
 
 
