@@ -388,7 +388,10 @@ function ChatPeer() {
   const peerDisplay = (isPartner && me.partner_nickname) ? me.partner_nickname : peer.display_name;
 
   return (
-    <div className={`relative flex flex-col h-screen ${shake ? "animate-chat-shake" : ""}`}>
+    <div
+      data-group-theme={chatTheme}
+      className={`relative flex flex-col h-screen bg-velvet ${shake ? "animate-chat-shake" : ""}`}
+    >
       <header className="relative px-5 pt-7 pb-4 flex items-center gap-4 border-b border-border bg-velvet/90 backdrop-blur-md sticky top-0 z-10">
         <Link to="/app/chat" className="text-candle/60 hover:text-candle transition-colors shrink-0">
           <ArrowLeft className="size-5" strokeWidth={1.5} />
