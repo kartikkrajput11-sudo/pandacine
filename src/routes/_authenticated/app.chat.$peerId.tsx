@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Phone, Video, Pin, ChevronDown, Lock, Flame, MoreVertical, Trash2, Images } from "lucide-react";
+import { ArrowLeft, Phone, Video, Pin, ChevronDown, Lock, Flame, MoreVertical, Trash2, Images, Palette } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useQuery } from "@tanstack/react-query";
@@ -37,6 +37,7 @@ import { typeMeta } from "@/lib/punishment";
 import { UserAvatar } from "@/components/UserAvatar";
 import { ForwardDialog, canForward } from "@/components/chat/ForwardDialog";
 import { SharedMediaDrawer } from "@/components/chat/SharedMediaDrawer";
+import { ChatThemePicker, useChatTheme } from "@/components/chat/ChatThemePicker";
 import { ScheduleDialog } from "@/components/chat/ScheduleDialog";
 import { Chat3DPhoneDemo } from "@/components/chat/Chat3DPhoneDemo";
 import { markDmReadNow } from "@/lib/dmRead";
@@ -94,6 +95,8 @@ function ChatPeer() {
   const [verifyOpen, setVerifyOpen] = useState(false);
   const [forwardMsg, setForwardMsg] = useState<MessageRow | null>(null);
   const [mediaDrawerOpen, setMediaDrawerOpen] = useState(false);
+  const [themePickerOpen, setThemePickerOpen] = useState(false);
+  const chatTheme = useChatTheme(peerId);
   const scrollRef = useRef<HTMLDivElement>(null);
   const bubbleRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -388,7 +391,10 @@ function ChatPeer() {
   const peerDisplay = (isPartner && me.partner_nickname) ? me.partner_nickname : peer.display_name;
 
   return (
-    <div className={`relative flex flex-col h-screen ${shake ? "animate-chat-shake" : ""}`}>
+    <div
+      data-group-theme={chatTheme}
+      className={`relative flex flex-col h-screen bg-velvet ${shake ? "animate-chat-shake" : ""}`}
+    >
       <header className="relative px-5 pt-7 pb-4 flex items-center gap-4 border-b border-border bg-velvet/90 backdrop-blur-md sticky top-0 z-10">
         <Link to="/app/chat" className="text-candle/60 hover:text-candle transition-colors shrink-0">
           <ArrowLeft className="size-5" strokeWidth={1.5} />
@@ -485,6 +491,12 @@ function ChatPeer() {
                 <Images className="size-4" /> Shared media
               </DropdownMenuItem>
               <DropdownMenuItem
+                onSelect={(e) => { e.preventDefault(); setThemePickerOpen(true); }}
+                className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
+              >
+                <Palette className="size-4" /> Chat theme
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onSelect={(e) => { e.preventDefault(); setClearConfirmOpen(true); }}
                 className="text-petal focus:text-petal focus:bg-petal/10 gap-2"
               >
@@ -535,6 +547,8 @@ function ChatPeer() {
           </button>
         </div>
       )}
+
+      <ChatThemePicker peerId={peerId} open={themePickerOpen} onOpenChange={setThemePickerOpen} />
 
       <SharedMediaDrawer
         open={mediaDrawerOpen}

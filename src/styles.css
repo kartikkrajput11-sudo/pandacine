@@ -364,6 +364,26 @@
   --lavender: oklch(0.75 0 0);
   --border: oklch(1 0 0 / 0.10);
 }
+[data-group-theme="ocean"] {
+  --velvet: oklch(0.16 0.035 210);
+  --background: oklch(0.16 0.035 210);
+  --surface: oklch(0.22 0.045 210);
+  --surface-elevated: oklch(0.27 0.05 210);
+  --petal: oklch(0.80 0.12 195);
+  --petal-soft: oklch(0.80 0.12 195 / 0.18);
+  --lavender: oklch(0.82 0.07 210);
+  --border: oklch(1 0 0 / 0.09);
+}
+[data-group-theme="gilded"] {
+  --velvet: oklch(0.17 0.025 75);
+  --background: oklch(0.17 0.025 75);
+  --surface: oklch(0.23 0.035 75);
+  --surface-elevated: oklch(0.28 0.04 75);
+  --petal: oklch(0.83 0.11 85);
+  --petal-soft: oklch(0.83 0.11 85 / 0.18);
+  --lavender: oklch(0.86 0.06 80);
+  --border: oklch(1 0 0 / 0.10);
+}
 
 
 /* Light theme — bump weight for stronger contrast on soft pastel bg */
