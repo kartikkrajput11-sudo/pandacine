@@ -374,6 +374,54 @@
   --lavender: oklch(0.82 0.07 210);
   --border: oklch(1 0 0 / 0.09);
 }
+[data-group-theme="romance"] {
+  --velvet: oklch(0.18 0.06 350);
+  --background: oklch(0.18 0.06 350);
+  --surface: oklch(0.24 0.075 350);
+  --surface-elevated: oklch(0.29 0.085 348);
+  --petal: oklch(0.80 0.16 355);
+  --petal-soft: oklch(0.80 0.16 355 / 0.22);
+  --lavender: oklch(0.84 0.09 340);
+  --border: oklch(1 0 0 / 0.10);
+}
+[data-group-theme="photo"] {
+  --border: oklch(1 0 0 / 0.12);
+}
+
+/* Live romantic ambience — warm breathing bloom + drifting hearts */
+@keyframes chat-love-bloom {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.06); }
+}
+@keyframes chat-love-rise {
+  0% { transform: translate3d(0, 105%, 0) scale(var(--s, 1)) rotate(-8deg); opacity: 0; }
+  12% { opacity: 0.55; }
+  85% { opacity: 0.35; }
+  100% { transform: translate3d(var(--drift, 0px), -20%, 0) scale(var(--s, 1)) rotate(10deg); opacity: 0; }
+}
+.chat-love-bloom {
+  background:
+    radial-gradient(45% 32% at 22% 12%, color-mix(in oklab, var(--petal) 22%, transparent) 0%, transparent 70%),
+    radial-gradient(50% 38% at 82% 82%, color-mix(in oklab, var(--lavender) 18%, transparent) 0%, transparent 72%);
+  animation: chat-love-bloom 11s ease-in-out infinite;
+}
+.chat-love-heart {
+  position: absolute;
+  bottom: -10%;
+  width: 18px;
+  height: 18px;
+  color: color-mix(in oklab, var(--petal) 75%, white 25%);
+  filter: drop-shadow(0 0 6px color-mix(in oklab, var(--petal) 45%, transparent));
+  animation-name: chat-love-rise;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.5, 1);
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-love-heart { display: none; }
+  .chat-love-bloom { animation: none; }
+}
+
 [data-group-theme="gilded"] {
   --velvet: oklch(0.17 0.025 75);
   --background: oklch(0.17 0.025 75);
