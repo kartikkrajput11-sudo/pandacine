@@ -37,6 +37,7 @@ import { typeMeta } from "@/lib/punishment";
 import { UserAvatar } from "@/components/UserAvatar";
 import { ForwardDialog, canForward } from "@/components/chat/ForwardDialog";
 import { SharedMediaDrawer } from "@/components/chat/SharedMediaDrawer";
+import { ChatThemePicker, useChatTheme } from "@/components/chat/ChatThemePicker";
 import { ScheduleDialog } from "@/components/chat/ScheduleDialog";
 import { Chat3DPhoneDemo } from "@/components/chat/Chat3DPhoneDemo";
 import { markDmReadNow } from "@/lib/dmRead";
@@ -94,6 +95,8 @@ function ChatPeer() {
   const [verifyOpen, setVerifyOpen] = useState(false);
   const [forwardMsg, setForwardMsg] = useState<MessageRow | null>(null);
   const [mediaDrawerOpen, setMediaDrawerOpen] = useState(false);
+  const [themePickerOpen, setThemePickerOpen] = useState(false);
+  const chatTheme = useChatTheme(peerId);
   const scrollRef = useRef<HTMLDivElement>(null);
   const bubbleRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -488,6 +491,12 @@ function ChatPeer() {
                 <Images className="size-4" /> Shared media
               </DropdownMenuItem>
               <DropdownMenuItem
+                onSelect={(e) => { e.preventDefault(); setThemePickerOpen(true); }}
+                className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
+              >
+                <Palette className="size-4" /> Chat theme
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onSelect={(e) => { e.preventDefault(); setClearConfirmOpen(true); }}
                 className="text-petal focus:text-petal focus:bg-petal/10 gap-2"
               >
@@ -538,6 +547,8 @@ function ChatPeer() {
           </button>
         </div>
       )}
+
+      <ChatThemePicker peerId={peerId} open={themePickerOpen} onOpenChange={setThemePickerOpen} />
 
       <SharedMediaDrawer
         open={mediaDrawerOpen}
