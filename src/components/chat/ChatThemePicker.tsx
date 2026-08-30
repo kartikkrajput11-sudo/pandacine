@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react";
-import { Check, Palette } from "lucide-react";
+import { useRef, useState } from "react";
+import { Check, ImagePlus, Loader2, Palette, Sparkles, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { CHAT_THEMES, type ChatThemeId, getChatTheme, setChatTheme } from "@/lib/chatTheme";
+import { Switch } from "@/components/ui/switch";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  CHAT_THEMES,
+  CHAT_WALLPAPER_BUCKET,
+  setChatPhotoGlow,
+  setChatPhotoPath,
+  setChatTheme,
+} from "@/lib/chatTheme";
+import { ChatAmbience, useChatThemeState, useWallpaperUrl } from "@/components/chat/ChatAmbience";
 
-/** Reads the per-chat theme for a peer/room and keeps it in sync across the tab. */
-export function useChatTheme(peerId: string): ChatThemeId {
-  const [theme, setTheme] = useState<ChatThemeId>("velvet");
-
-  useEffect(() => {
-    setTheme(getChatTheme(peerId));
-    const onChange = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { peerId?: string; theme?: ChatThemeId } | undefined;
-      if (detail?.peerId === peerId && detail.theme) setTheme(detail.theme);
-    };
-    window.addEventListener("pandacine:chat-theme", onChange);
-    return () => window.removeEventListener("pandacine:chat-theme", onChange);
-  }, [peerId]);
-
-  return theme;
-}
+export { useChatThemeState } from "@/components/chat/ChatAmbience";
 
 export function ChatThemePicker({
   peerId,
@@ -29,47 +24,178 @@ export function ChatThemePicker({
   open: boolean;
   onOpenChange: (v: boolean) => void;
 }) {
-  const active = useChatTheme(peerId);
+  const state = useChatThemeState(peerId);
+  const previewUrl = useWallpaperUrl(state.photoPath);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  async function upload(file: File) {
+    if (!file.type.startsWith("image/")) return toast.error("Please pick an image");
+    if (file.size > 10 * 1024 * 1024) return toast.error("Image must be under 10 MB");
+    setUploading(true);
+    try {
+      const { data: auth } = await supabase.auth.getUser();
+      const uid = auth.user?.id;
+      if (!uid) throw new Error("Not signed in");
+      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `${uid}/${peerId}-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage
+        .from(CHAT_WALLPAPER_BUCKET)
+        .upload(path, file, { upsert: true, contentType: file.type });
+      if (error) throw error;
+      const old = state.photoPath;
+      setChatPhotoPath(peerId, path);
+      setChatTheme(peerId, "photo");
+      if (old && old !== path) {
+        await supabase.storage.from(CHAT_WALLPAPER_BUCKET).remove([old]).catch(() => {});
+      }
+      toast.success("Wallpaper set");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Upload failed");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  async function removePhoto() {
+    const old = state.photoPath;
+    setChatPhotoPath(peerId, null);
+    if (state.theme === "photo") setChatTheme(peerId, "romance");
+    if (old) await supabase.storage.from(CHAT_WALLPAPER_BUCKET).remove([old]).catch(() => {});
+    toast.success("Wallpaper removed");
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-velvet border-candle/15 max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-serif italic text-[22px] text-candle flex items-center gap-2">
-            <Palette className="size-4 text-petal" strokeWidth={1.5} /> Chat theme
-          </DialogTitle>
-        </DialogHeader>
-        <p className="text-[11px] uppercase tracking-[0.18em] text-candle/40 -mt-2">
-          Applies to this conversation only
-        </p>
-        <div className="grid grid-cols-2 gap-3 pt-2">
-          {CHAT_THEMES.map((t) => {
-            const isActive = t.id === active;
-            return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setChatTheme(peerId, t.id)}
-                className={`group relative flex items-center gap-3 rounded-2xl px-3 py-3 text-left transition-all ${
-                  isActive
-                    ? "bg-petal/12 ring-1 ring-petal/50"
-                    : "bg-candle/[0.04] hover:bg-candle/[0.08] ring-1 ring-transparent"
-                }`}
+      <DialogContent
+        data-group-theme={state.theme}
+        className="bg-velvet border-candle/15 max-w-md p-0 overflow-hidden"
+      >
+        <div className="relative">
+          <div className="absolute inset-0 opacity-70">
+            <ChatAmbience state={state} />
+          </div>
+          <div className="relative px-6 pt-6 pb-5">
+            <DialogHeader>
+              <DialogTitle className="font-serif italic text-[23px] text-candle flex items-center gap-2">
+                <Palette className="size-4 text-petal" strokeWidth={1.5} /> Chat atmosphere
+              </DialogTitle>
+            </DialogHeader>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-candle/40">
+              This conversation only
+            </p>
+          </div>
+        </div>
+
+        <div className="px-6 pb-6 space-y-5 max-h-[62vh] overflow-y-auto no-scrollbar">
+          {/* Custom photo */}
+          <section className="space-y-3">
+            <h3 className="text-[10px] uppercase tracking-[0.22em] text-candle/40">Your photo</h3>
+            <div className="rounded-2xl overflow-hidden ring-1 ring-candle/10">
+              <div
+                className="relative h-28 bg-cover bg-center bg-surface/60"
+                style={previewUrl ? { backgroundImage: `url(${previewUrl})` } : undefined}
               >
-                <span className="flex -space-x-2 shrink-0">
-                  {t.swatch.map((c, i) => (
-                    <span
-                      key={i}
-                      className="size-6 rounded-full ring-1 ring-black/30"
-                      style={{ backgroundColor: c }}
-                    />
-                  ))}
+                {!previewUrl && (
+                  <div className="absolute inset-0 grid place-items-center text-[11px] text-candle/35">
+                    No photo yet
+                  </div>
+                )}
+                {state.theme === "photo" && (
+                  <span className="absolute top-2 left-2 rounded-full bg-black/45 backdrop-blur px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-candle">
+                    Active
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2 p-2 bg-candle/[0.04]">
+                <button
+                  type="button"
+                  disabled={uploading}
+                  onClick={() => fileRef.current?.click()}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-petal/15 hover:bg-petal/25 text-petal text-[12px] py-2 transition-colors disabled:opacity-60"
+                >
+                  {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <ImagePlus className="size-3.5" />}
+                  {previewUrl ? "Replace photo" : "Upload photo"}
+                </button>
+                {previewUrl && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setChatTheme(peerId, "photo")}
+                      className="rounded-xl px-3 py-2 text-[12px] text-candle/70 hover:text-candle bg-candle/[0.05] transition-colors"
+                    >
+                      Use
+                    </button>
+                    <button
+                      type="button"
+                      onClick={removePhoto}
+                      aria-label="Remove wallpaper"
+                      className="rounded-xl p-2 text-candle/50 hover:text-petal bg-candle/[0.05] transition-colors"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+            <label className="flex items-center justify-between gap-3 rounded-2xl bg-candle/[0.04] px-3.5 py-3">
+              <span className="min-w-0">
+                <span className="flex items-center gap-1.5 text-[13px] text-candle">
+                  <Sparkles className="size-3.5 text-petal" /> Live love layer
                 </span>
-                <span className="flex-1 min-w-0 text-[13px] text-candle truncate">{t.name}</span>
-                {isActive && <Check className="size-4 text-petal shrink-0" strokeWidth={2} />}
-              </button>
-            );
-          })}
+                <span className="block text-[10.5px] text-candle/40 mt-0.5">
+                  Drifting hearts &amp; warm bloom over your photo
+                </span>
+              </span>
+              <Switch checked={state.glow} onCheckedChange={(v) => setChatPhotoGlow(peerId, v)} />
+            </label>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void upload(f);
+              }}
+            />
+          </section>
+
+          {/* Palettes */}
+          <section className="space-y-3">
+            <h3 className="text-[10px] uppercase tracking-[0.22em] text-candle/40">Palettes</h3>
+            <div className="grid grid-cols-2 gap-2.5">
+              {CHAT_THEMES.map((t) => {
+                const isActive = t.id === state.theme;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setChatTheme(peerId, t.id)}
+                    className={`group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left transition-all ${
+                      isActive
+                        ? "bg-petal/12 ring-1 ring-petal/50"
+                        : "bg-candle/[0.04] hover:bg-candle/[0.08] ring-1 ring-transparent"
+                    }`}
+                  >
+                    <span className="flex -space-x-2 shrink-0">
+                      {t.swatch.map((c, i) => (
+                        <span key={i} className="size-5 rounded-full ring-1 ring-black/30" style={{ backgroundColor: c }} />
+                      ))}
+                    </span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-[12.5px] text-candle truncate">{t.name}</span>
+                      {t.note && (
+                        <span className="block text-[9px] uppercase tracking-[0.18em] text-petal/80">{t.note}</span>
+                      )}
+                    </span>
+                    {isActive && <Check className="size-4 text-petal shrink-0" strokeWidth={2} />}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
         </div>
       </DialogContent>
     </Dialog>
