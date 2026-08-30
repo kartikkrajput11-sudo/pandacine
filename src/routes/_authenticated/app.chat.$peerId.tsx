@@ -395,107 +395,127 @@ function ChatPeer() {
       data-group-theme={chatTheme}
       className={`relative flex flex-col h-screen bg-velvet ${shake ? "animate-chat-shake" : ""}`}
     >
-      <header className="relative px-5 pt-7 pb-4 flex items-center gap-4 border-b border-border bg-velvet/90 backdrop-blur-md sticky top-0 z-10">
-        <Link to="/app/chat" className="text-candle/60 hover:text-candle transition-colors shrink-0">
-          <ArrowLeft className="size-5" strokeWidth={1.5} />
-        </Link>
-        <Link
-          to="/app/user/$userId"
-          params={{ userId: peer.id }}
-          className="flex items-center gap-3 flex-1 min-w-0 hover:opacity-90 transition-opacity"
+      <ChatAmbience state={themeState} />
+
+      <header className="relative z-10 sticky top-0 px-3 pt-[max(0.9rem,env(safe-area-inset-top))] pb-3">
+        <div
+          className="flex items-center gap-2.5 rounded-[26px] pl-2 pr-2.5 py-2 ring-1 ring-candle/[0.09] shadow-[0_18px_40px_-28px_rgba(0,0,0,0.9)]"
+          style={{
+            background: "color-mix(in oklab, var(--velvet) 72%, transparent)",
+            backdropFilter: "blur(18px) saturate(150%)",
+            WebkitBackdropFilter: "blur(18px) saturate(150%)" as any,
+          }}
         >
-          <div className="size-10 rounded-full bg-gradient-to-tr from-petal to-candle/90 p-[1.5px] shrink-0">
-            <UserAvatar src={peer.avatar_url} name={peerDisplay} className="size-full" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h1 className="font-serif italic text-[19px] leading-none text-candle truncate">{peerDisplay}</h1>
-            <div className="mt-1 flex items-center gap-1.5 min-w-0">
+          <Link
+            to="/app/chat"
+            aria-label="Back to chats"
+            className="grid place-items-center size-9 rounded-full text-candle/60 hover:text-candle hover:bg-candle/[0.06] transition-colors shrink-0"
+          >
+            <ArrowLeft className="size-[18px]" strokeWidth={1.5} />
+          </Link>
+
+          <Link
+            to="/app/user/$userId"
+            params={{ userId: peer.id }}
+            className="flex items-center gap-3 flex-1 min-w-0 group"
+          >
+            <span className="relative shrink-0">
+              <span className="block size-10 rounded-full bg-gradient-to-tr from-petal via-lavender/70 to-candle/80 p-[1.5px] transition-transform duration-300 group-hover:scale-[1.04]">
+                <UserAvatar src={peer.avatar_url} name={peerDisplay} className="size-full" />
+              </span>
               {(() => {
                 const peerHidden = (peer as any).activity_visible === false;
-                const showOnline = !peerHidden && partnerOnline;
-                const statusText = partnerTyping
-                  ? "typing…"
-                  : peerHidden
-                    ? "activity hidden"
-                    : formatLastSeen(peer.last_seen_at, partnerOnline);
+                if (peerHidden || !partnerOnline) return null;
                 return (
-                  <>
-                    <span className={`size-1.5 rounded-full shrink-0 ${showOnline ? "bg-petal" : "bg-candle/25"}`} />
-                    <span className="text-[9px] uppercase tracking-[0.15em] text-candle/40 font-medium truncate">
-                      {statusText}
-                    </span>
-                  </>
+                  <span className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-petal ring-2 ring-velvet shadow-[0_0_8px_var(--petal)]" />
                 );
               })()}
-              {isPartner && (
-                <>
-                  <span className="text-[9px] text-candle/20">·</span>
-                  <span className="text-[9px] uppercase tracking-[0.15em] text-petal font-semibold shrink-0">Partner</span>
-                </>
-              )}
-              {isPartner && streakDays > 0 && (
-                <>
-                  <span className="text-[9px] text-candle/20">·</span>
-                  <span className="shrink-0 inline-flex items-center gap-0.5 text-[9px] uppercase tracking-[0.15em] text-petal font-semibold">
-                    <Flame className="size-2.5" strokeWidth={2} />
+            </span>
+
+            <span className="flex-1 min-w-0">
+              <span className="flex items-baseline gap-2 min-w-0">
+                <h1 className="font-serif italic text-[19px] leading-none text-candle truncate">{peerDisplay}</h1>
+                {isPartner && (
+                  <span className="shrink-0 rounded-full bg-petal/12 px-1.5 py-0.5 text-[8px] uppercase tracking-[0.2em] text-petal font-semibold">
+                    Partner
+                  </span>
+                )}
+                {isPartner && streakDays > 0 && (
+                  <span className="shrink-0 inline-flex items-center gap-0.5 rounded-full bg-candle/[0.06] px-1.5 py-0.5 text-[8px] uppercase tracking-[0.16em] text-candle/70 font-semibold">
+                    <Flame className="size-2.5 text-petal" strokeWidth={2} />
                     {streakDays}
                   </span>
-                </>
-              )}
+                )}
+              </span>
+              <span className="mt-1.5 block text-[9px] uppercase tracking-[0.2em] text-candle/40 font-medium truncate">
+                {(() => {
+                  const peerHidden = (peer as any).activity_visible === false;
+                  if (partnerTyping) return "typing…";
+                  if (peerHidden) return "activity hidden";
+                  return formatLastSeen(peer.last_seen_at, partnerOnline);
+                })()}
+              </span>
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-1 shrink-0 text-candle/55">
+            <div className="[&_button]:size-9 [&_button]:grid [&_button]:place-items-center [&_button]:rounded-full [&_button]:hover:bg-candle/[0.06] [&_button]:transition-colors">
+              <ChatSearch messages={messages} onJump={jumpTo} />
             </div>
-          </div>
-        </Link>
-        <div className="flex items-center gap-4 text-candle/55 shrink-0">
-          <ChatSearch messages={messages} onJump={jumpTo} />
-          <Chat3DPhoneDemo meName={me.display_name} peerName={peerDisplay} />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="hover:text-petal transition-colors" aria-label="Call">
-                <Phone className="size-[18px]" strokeWidth={1.5} />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-velvet border-candle/20">
-              <DropdownMenuItem asChild className="gap-2 focus:bg-petal/10 focus:text-petal">
-                <Link to="/app/call/$peerId" params={{ peerId: peer.id }} search={{ role: "caller", mode: "audio" }}>
-                  <Phone className="size-4" /> Voice call
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="gap-2 focus:bg-petal/10 focus:text-petal">
-                <Link to="/app/call/$peerId" params={{ peerId: peer.id }} search={{ role: "caller", mode: "video" }}>
-                  <Video className="size-4" /> Video call
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {isPartner && !activeLock && (me as any).punishment_lock_enabled !== false && (peer as any).punishment_lock_enabled !== false && (
-            <button
-              onClick={() => setLockDialogOpen(true)}
-              className="hover:text-petal transition-colors"
-              title="Lock chat as punishment"
-              aria-label="Lock chat as punishment"
-            >
-              <Lock className="size-[18px]" strokeWidth={1.5} />
-            </button>
-          )}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="hover:text-petal transition-colors" aria-label="Chat options">
-                <MoreVertical className="size-[18px]" strokeWidth={1.5} />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-velvet border-candle/20">
-              <DropdownMenuItem
-                onSelect={(e) => { e.preventDefault(); setMediaDrawerOpen(true); }}
-                className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
-              >
-                <Images className="size-4" /> Shared media
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={(e) => { e.preventDefault(); setThemePickerOpen(true); }}
-                className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
-              >
-                <Palette className="size-4" /> Chat theme
-              </DropdownMenuItem>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="ml-0.5 inline-flex items-center justify-center size-9 rounded-full bg-petal/14 text-petal hover:bg-petal/24 transition-colors"
+                  aria-label="Call"
+                >
+                  <Phone className="size-[17px]" strokeWidth={1.6} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-velvet border-candle/20">
+                <DropdownMenuItem asChild className="gap-2 focus:bg-petal/10 focus:text-petal">
+                  <Link to="/app/call/$peerId" params={{ peerId: peer.id }} search={{ role: "caller", mode: "audio" }}>
+                    <Phone className="size-4" /> Voice call
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="gap-2 focus:bg-petal/10 focus:text-petal">
+                  <Link to="/app/call/$peerId" params={{ peerId: peer.id }} search={{ role: "caller", mode: "video" }}>
+                    <Video className="size-4" /> Video call
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="size-9 grid place-items-center rounded-full hover:bg-candle/[0.06] hover:text-candle transition-colors"
+                  aria-label="Chat options"
+                >
+                  <MoreVertical className="size-[18px]" strokeWidth={1.5} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-velvet border-candle/20 min-w-52">
+                <DropdownMenuItem
+                  onSelect={(e) => { e.preventDefault(); setThemePickerOpen(true); }}
+                  className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
+                >
+                  <Palette className="size-4" /> Chat atmosphere
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={(e) => { e.preventDefault(); setMediaDrawerOpen(true); }}
+                  className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
+                >
+                  <Images className="size-4" /> Shared media
+                </DropdownMenuItem>
+                {isPartner && !activeLock && (me as any).punishment_lock_enabled !== false && (peer as any).punishment_lock_enabled !== false && (
+                  <DropdownMenuItem
+                    onSelect={(e) => { e.preventDefault(); setLockDialogOpen(true); }}
+                    className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
+                  >
+                    <Lock className="size-4" /> Lock chat
+                  </DropdownMenuItem>
+                )}
               <DropdownMenuItem
                 onSelect={(e) => { e.preventDefault(); setClearConfirmOpen(true); }}
                 className="text-petal focus:text-petal focus:bg-petal/10 gap-2"
