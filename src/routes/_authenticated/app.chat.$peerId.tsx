@@ -40,7 +40,6 @@ import { SharedMediaDrawer } from "@/components/chat/SharedMediaDrawer";
 import { ChatThemePicker } from "@/components/chat/ChatThemePicker";
 import { ChatAmbience, useChatThemeState } from "@/components/chat/ChatAmbience";
 import { ScheduleDialog } from "@/components/chat/ScheduleDialog";
-import { Chat3DPhoneDemo } from "@/components/chat/Chat3DPhoneDemo";
 import { markDmReadNow } from "@/lib/dmRead";
 
 
@@ -620,7 +619,7 @@ function ChatPeer() {
         </div>
       )}
 
-      <div ref={scrollRef} className="smooth-scroll flex-1 overflow-y-auto px-2 py-4">
+      <div ref={scrollRef} className="relative z-10 smooth-scroll flex-1 overflow-y-auto px-2 py-4">
         {loading && <div className="text-center py-8 text-sm text-candle-muted">Loading messages…</div>}
         {!loading && hasMore && (
           <div className="flex justify-center pb-3">
