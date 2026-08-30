@@ -37,7 +37,8 @@ import { typeMeta } from "@/lib/punishment";
 import { UserAvatar } from "@/components/UserAvatar";
 import { ForwardDialog, canForward } from "@/components/chat/ForwardDialog";
 import { SharedMediaDrawer } from "@/components/chat/SharedMediaDrawer";
-import { ChatThemePicker, useChatTheme } from "@/components/chat/ChatThemePicker";
+import { ChatThemePicker } from "@/components/chat/ChatThemePicker";
+import { ChatAmbience, useChatThemeState } from "@/components/chat/ChatAmbience";
 import { ScheduleDialog } from "@/components/chat/ScheduleDialog";
 import { Chat3DPhoneDemo } from "@/components/chat/Chat3DPhoneDemo";
 import { markDmReadNow } from "@/lib/dmRead";
@@ -96,7 +97,8 @@ function ChatPeer() {
   const [forwardMsg, setForwardMsg] = useState<MessageRow | null>(null);
   const [mediaDrawerOpen, setMediaDrawerOpen] = useState(false);
   const [themePickerOpen, setThemePickerOpen] = useState(false);
-  const chatTheme = useChatTheme(peerId);
+  const themeState = useChatThemeState(peerId);
+  const chatTheme = themeState.theme;
   const scrollRef = useRef<HTMLDivElement>(null);
   const bubbleRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
