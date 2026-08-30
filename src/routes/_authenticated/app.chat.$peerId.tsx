@@ -700,6 +700,7 @@ function ChatPeer() {
 
 
 
+      <div className="relative z-10">
       <ChatComposer
         meId={me.id}
         partnerName={peerDisplay}
@@ -711,6 +712,7 @@ function ChatPeer() {
         lockedHint={null}
         onSchedule={(draft) => { setScheduleDraft(draft); setScheduleOpen(true); }}
       />
+      </div>
       <ScheduleDialog
         open={scheduleOpen}
         onClose={() => setScheduleOpen(false)}
