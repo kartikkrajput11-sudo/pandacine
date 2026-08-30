@@ -516,14 +516,15 @@ function ChatPeer() {
                     <Lock className="size-4" /> Lock chat
                   </DropdownMenuItem>
                 )}
-              <DropdownMenuItem
-                onSelect={(e) => { e.preventDefault(); setClearConfirmOpen(true); }}
-                className="text-petal focus:text-petal focus:bg-petal/10 gap-2"
-              >
-                <Trash2 className="size-4" /> Clear chat
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem
+                  onSelect={(e) => { e.preventDefault(); setClearConfirmOpen(true); }}
+                  className="text-petal focus:text-petal focus:bg-petal/10 gap-2"
+                >
+                  <Trash2 className="size-4" /> Clear chat
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </header>
 
