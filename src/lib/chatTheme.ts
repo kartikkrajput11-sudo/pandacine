@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export type ChatThemeId =
   | "velvet"
   | "sunset"
@@ -27,73 +29,103 @@ export const CHAT_THEMES: {
   { id: "mono", name: "Mono", swatch: ["#141414", "#2b2b2b", "#d9d9d9"] },
 ];
 
-const themeKey = (peerId: string) => `pandacine:chat-theme:${peerId}`;
-const photoKey = (peerId: string) => `pandacine:chat-photo:${peerId}`;
-const glowKey = (peerId: string) => `pandacine:chat-photo-glow:${peerId}`;
-
 export const CHAT_THEME_EVENT = "pandacine:chat-theme";
 export const CHAT_WALLPAPER_BUCKET = "chat-wallpapers";
 
-function emit(peerId: string) {
+export type ChatThemeRecord = {
+  theme: ChatThemeId;
+  photoPath: string | null;
+  glow: boolean;
+};
+
+export const DEFAULT_CHAT_THEME: ChatThemeRecord = { theme: "velvet", photoPath: null, glow: true };
+
+/** Deterministic key shared by both participants of a DM. */
+export function pairKey(a: string, b: string) {
+  return a < b ? `${a}__${b}` : `${b}__${a}`;
+}
+
+const cacheKey = (peerId: string) => `pandacine:chat-theme-v2:${peerId}`;
+
+export function emitChatTheme(peerId: string) {
+  if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent(CHAT_THEME_EVENT, { detail: { peerId } }));
 }
 
-export function getChatTheme(peerId: string): ChatThemeId {
-  if (typeof window === "undefined") return "velvet";
+/** Last known theme for instant paint before the shared record loads. */
+export function readCachedChatTheme(peerId: string): ChatThemeRecord {
+  if (typeof window === "undefined") return DEFAULT_CHAT_THEME;
   try {
-    const v = window.localStorage.getItem(themeKey(peerId));
-    if (v === "photo") return "photo";
-    if (v && CHAT_THEMES.some((t) => t.id === v)) return v as ChatThemeId;
+    const raw = window.localStorage.getItem(cacheKey(peerId));
+    if (!raw) return DEFAULT_CHAT_THEME;
+    const parsed = JSON.parse(raw) as Partial<ChatThemeRecord>;
+    return {
+      theme: (parsed.theme as ChatThemeId) ?? "velvet",
+      photoPath: parsed.photoPath ?? null,
+      glow: parsed.glow !== false,
+    };
+  } catch {
+    return DEFAULT_CHAT_THEME;
+  }
+}
+
+export function writeCachedChatTheme(peerId: string, rec: ChatThemeRecord) {
+  try {
+    window.localStorage.setItem(cacheKey(peerId), JSON.stringify(rec));
   } catch {
     /* storage unavailable */
   }
-  return "velvet";
 }
 
-export function setChatTheme(peerId: string, theme: ChatThemeId) {
-  try {
-    window.localStorage.setItem(themeKey(peerId), theme);
-  } catch {
-    /* storage unavailable */
-  }
-  emit(peerId);
+/** Fetch the shared, cross-device theme for this conversation. */
+export async function fetchChatTheme(peerId: string): Promise<ChatThemeRecord | null> {
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) return null;
+  const { data, error } = await supabase
+    .from("dm_chat_themes")
+    .select("theme, photo_path, glow")
+    .eq("pair_key", pairKey(uid, peerId))
+    .maybeSingle();
+  if (error || !data) return null;
+  return {
+    theme: (data.theme as ChatThemeId) ?? "velvet",
+    photoPath: data.photo_path ?? null,
+    glow: data.glow !== false,
+  };
 }
 
-/** Storage path (inside the chat-wallpapers bucket) of the custom photo for this chat. */
-export function getChatPhotoPath(peerId: string): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return window.localStorage.getItem(photoKey(peerId));
-  } catch {
-    return null;
-  }
+/** Upsert the shared theme so both people (and every device) see the same chat. */
+export async function saveChatTheme(peerId: string, patch: Partial<ChatThemeRecord>) {
+  const { data: auth } = await supabase.auth.getUser();
+  const uid = auth.user?.id;
+  if (!uid) throw new Error("Not signed in");
+  const current = (await fetchChatTheme(peerId)) ?? readCachedChatTheme(peerId);
+  const next: ChatThemeRecord = { ...current, ...patch };
+
+  writeCachedChatTheme(peerId, next);
+  emitChatTheme(peerId);
+
+  const a = uid < peerId ? uid : peerId;
+  const b = uid < peerId ? peerId : uid;
+  const { error } = await supabase.from("dm_chat_themes").upsert(
+    {
+      pair_key: pairKey(uid, peerId),
+      user_a: a,
+      user_b: b,
+      theme: next.theme,
+      photo_path: next.photoPath,
+      glow: next.glow,
+      updated_by: uid,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "pair_key" },
+  );
+  if (error) throw error;
+  return next;
 }
 
-export function setChatPhotoPath(peerId: string, path: string | null) {
-  try {
-    if (path) window.localStorage.setItem(photoKey(peerId), path);
-    else window.localStorage.removeItem(photoKey(peerId));
-  } catch {
-    /* storage unavailable */
-  }
-  emit(peerId);
-}
-
-/** Whether the live romantic overlay (drifting hearts + warm bloom) rides on top of the photo. */
-export function getChatPhotoGlow(peerId: string): boolean {
-  if (typeof window === "undefined") return true;
-  try {
-    return window.localStorage.getItem(glowKey(peerId)) !== "0";
-  } catch {
-    return true;
-  }
-}
-
-export function setChatPhotoGlow(peerId: string, on: boolean) {
-  try {
-    window.localStorage.setItem(glowKey(peerId), on ? "1" : "0");
-  } catch {
-    /* storage unavailable */
-  }
-  emit(peerId);
-}
+export const setChatTheme = (peerId: string, theme: ChatThemeId) => saveChatTheme(peerId, { theme });
+export const setChatPhotoPath = (peerId: string, photoPath: string | null) =>
+  saveChatTheme(peerId, { photoPath });
+export const setChatPhotoGlow = (peerId: string, glow: boolean) => saveChatTheme(peerId, { glow });
