@@ -7,8 +7,8 @@ import {
   fetchChatTheme,
   readCachedChatTheme,
   writeCachedChatTheme,
-  type ChatThemeId,
   type ChatThemeRecord,
+
 } from "@/lib/chatTheme";
 
 export type ChatThemeState = ChatThemeRecord;
