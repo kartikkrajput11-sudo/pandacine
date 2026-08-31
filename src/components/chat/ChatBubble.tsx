@@ -22,6 +22,7 @@ import pandaSlap from "@/assets/panda-slap-sticker.png";
 import pandaAnger from "@/assets/panda-anger-sticker.png";
 import pandaTickle from "@/assets/panda-tickle-sticker.png";
 import pandaWink from "@/assets/panda-wink-sticker.png";
+import { ReactionBurst } from "./ReactionBurst";
 import { LoveLetterCard, TimeCapsuleCard, ConfessionCard } from "./MomentCards";
 
 
@@ -197,6 +198,16 @@ function ChatBubbleImpl({
   // ---- Gestures: long-press for actions, swipe for reply, double-tap for heart ----
   const [dragX, setDragX] = useState(0);
   const [heartPop, setHeartPop] = useState(0);
+  const [burst, setBurst] = useState(0);
+  const [burstTheme, setBurstTheme] = useState<string | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const fireReact = (msg: MessageRow, emoji: string) => {
+    onReact(msg, emoji);
+    setBurstTheme(
+      rootRef.current?.closest("[data-group-theme]")?.getAttribute("data-group-theme") ?? null,
+    );
+    setBurst((n) => n + 1);
+  };
   const gesture = useRef({ startX: 0, startY: 0, moved: false, longPressed: false, lastTapAt: 0, singleTapTimer: 0, pointerId: -1 });
   const longPressTimer = useRef<number | null>(null);
   const dragFrame = useRef<number | null>(null);
@@ -277,7 +288,7 @@ function ChatBubbleImpl({
       if (gesture.current.singleTapTimer) window.clearTimeout(gesture.current.singleTapTimer);
       gesture.current.singleTapTimer = 0;
       gesture.current.lastTapAt = 0;
-      onReact(m, "❤️");
+      fireReact(m, "❤️");
       setHeartPop((n) => n + 1);
       if ("vibrate" in navigator) navigator.vibrate?.(15);
     } else {
@@ -300,7 +311,8 @@ function ChatBubbleImpl({
   };
 
   return (
-    <div className={`group flex ${isKiss || isHug || isHeadpat || isHandhold || isBoop || isNudge || affectionFx ? "justify-center" : mine ? "justify-end" : "justify-start"} mt-1.5 px-1 relative`}>
+    <div ref={rootRef} className={`group flex ${isKiss || isHug || isHeadpat || isHandhold || isBoop || isNudge || affectionFx ? "justify-center" : mine ? "justify-end" : "justify-start"} mt-1.5 px-1 relative`}>
+      <ReactionBurst trigger={burst} theme={burstTheme} mine={mine} />
       {dragX > 0 && (
         <div
           className="absolute top-1/2 -translate-y-1/2 left-3 size-8 rounded-full bg-petal/20 border border-petal/40 flex items-center justify-center text-petal pointer-events-none"
@@ -694,7 +706,7 @@ function ChatBubbleImpl({
             {reactionsEntries.map(([e, ids]) => (
               <button
                 key={e}
-                onClick={() => onReact(m, e)}
+                onClick={() => fireReact(m, e)}
                 className="text-xs px-2 py-0.5 rounded-full bg-surface border border-border"
               >
                 {e} {ids.length > 1 && ids.length}
@@ -747,7 +759,7 @@ function ChatBubbleImpl({
               {QUICK_REACTIONS.map((e) => (
                 <button
                   key={e}
-                  onClick={() => { onReact(m, e); closeActions(); }}
+                  onClick={() => { fireReact(m, e); closeActions(); }}
                   className="size-10 rounded-full hover:bg-muted flex items-center justify-center text-xl transition hover:scale-125"
                 >
                   {e}
@@ -855,7 +867,7 @@ function ChatBubbleImpl({
                 <span>{m.pinned ? "Unpin" : "Pin"}</span><Pin className="size-4 text-candle-muted" />
               </button>
               <button
-                onClick={() => { onReact(m, "❤️"); closeActions(); }}
+                onClick={() => { fireReact(m, "❤️"); closeActions(); }}
                 className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted text-sm text-candle border-t border-border"
               >
                 <span>Love</span><Heart className="size-4 text-petal" />
