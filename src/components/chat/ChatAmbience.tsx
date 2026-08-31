@@ -3,40 +3,60 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   CHAT_THEME_EVENT,
   CHAT_WALLPAPER_BUCKET,
-  getChatPhotoGlow,
-  getChatPhotoPath,
-  getChatTheme,
-  type ChatThemeId,
+  DEFAULT_CHAT_THEME,
+  fetchChatTheme,
+  readCachedChatTheme,
+  writeCachedChatTheme,
+  type ChatThemeRecord,
+
 } from "@/lib/chatTheme";
 
-export type ChatThemeState = {
-  theme: ChatThemeId;
-  photoPath: string | null;
-  glow: boolean;
-};
+export type ChatThemeState = ChatThemeRecord;
 
-/** Per-conversation theme state, kept in sync across the tab. */
+/**
+ * Shared per-conversation theme. Reads the cached value for instant paint, then
+ * syncs the record both participants share (and every device they sign in on).
+ */
 export function useChatThemeState(peerId: string): ChatThemeState {
-  const [state, setState] = useState<ChatThemeState>({ theme: "velvet", photoPath: null, glow: true });
+  const [state, setState] = useState<ChatThemeState>(DEFAULT_CHAT_THEME);
 
   useEffect(() => {
-    const read = () =>
-      setState({
-        theme: getChatTheme(peerId),
-        photoPath: getChatPhotoPath(peerId),
-        glow: getChatPhotoGlow(peerId),
-      });
-    read();
+    let alive = true;
+    setState(readCachedChatTheme(peerId));
+
+    const pull = async () => {
+      const rec = await fetchChatTheme(peerId);
+      if (!alive || !rec) return;
+      writeCachedChatTheme(peerId, rec);
+      setState(rec);
+    };
+    void pull();
+
     const onChange = (e: Event) => {
       const detail = (e as CustomEvent).detail as { peerId?: string } | undefined;
-      if (!detail?.peerId || detail.peerId === peerId) read();
+      if (!detail?.peerId || detail.peerId === peerId) setState(readCachedChatTheme(peerId));
     };
     window.addEventListener(CHAT_THEME_EVENT, onChange);
-    return () => window.removeEventListener(CHAT_THEME_EVENT, onChange);
+
+    const channel = supabase
+      .channel(`dm-theme-${peerId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "dm_chat_themes" },
+        () => void pull(),
+      )
+      .subscribe();
+
+    return () => {
+      alive = false;
+      window.removeEventListener(CHAT_THEME_EVENT, onChange);
+      void supabase.removeChannel(channel);
+    };
   }, [peerId]);
 
   return state;
 }
+
 
 /** Signed URL for a wallpaper stored in the private bucket. */
 export function useWallpaperUrl(path: string | null) {

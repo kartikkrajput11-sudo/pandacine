@@ -829,6 +829,39 @@ export type Database = {
         }
         Relationships: []
       }
+      dm_chat_themes: {
+        Row: {
+          glow: boolean
+          pair_key: string
+          photo_path: string | null
+          theme: string
+          updated_at: string
+          updated_by: string | null
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          glow?: boolean
+          pair_key: string
+          photo_path?: string | null
+          theme?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          glow?: boolean
+          pair_key?: string
+          photo_path?: string | null
+          theme?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
