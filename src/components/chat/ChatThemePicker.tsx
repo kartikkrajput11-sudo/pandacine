@@ -7,11 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   CHAT_THEMES,
   CHAT_WALLPAPER_BUCKET,
+  pairKey,
+  saveChatTheme,
   setChatPhotoGlow,
-  setChatPhotoPath,
   setChatTheme,
 } from "@/lib/chatTheme";
 import { ChatAmbience, useChatThemeState, useWallpaperUrl } from "@/components/chat/ChatAmbience";
+import { WallpaperCropper } from "@/components/chat/WallpaperCropper";
 
 export { useChatThemeState } from "@/components/chat/ChatAmbience";
 
@@ -27,29 +29,34 @@ export function ChatThemePicker({
   const state = useChatThemeState(peerId);
   const previewUrl = useWallpaperUrl(state.photoPath);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [pending, setPending] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  async function upload(file: File) {
+  function pick(file: File) {
     if (!file.type.startsWith("image/")) return toast.error("Please pick an image");
     if (file.size > 10 * 1024 * 1024) return toast.error("Image must be under 10 MB");
+    setPending(file);
+  }
+
+  async function upload(blob: Blob) {
     setUploading(true);
     try {
       const { data: auth } = await supabase.auth.getUser();
       const uid = auth.user?.id;
       if (!uid) throw new Error("Not signed in");
-      const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-      const path = `${uid}/${peerId}-${Date.now()}.${ext}`;
+      // Shared folder so both people in the chat can read the same wallpaper.
+      const path = `${pairKey(uid, peerId)}/${Date.now()}.jpg`;
       const { error } = await supabase.storage
         .from(CHAT_WALLPAPER_BUCKET)
-        .upload(path, file, { upsert: true, contentType: file.type });
+        .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
       if (error) throw error;
       const old = state.photoPath;
-      setChatPhotoPath(peerId, path);
-      setChatTheme(peerId, "photo");
+      await saveChatTheme(peerId, { photoPath: path, theme: "photo" });
       if (old && old !== path) {
-        await supabase.storage.from(CHAT_WALLPAPER_BUCKET).remove([old]).catch(() => {});
+        await supabase.storage.from(CHAT_WALLPAPER_BUCKET).remove([old]);
       }
-      toast.success("Wallpaper set");
+      setPending(null);
+      toast.success("Wallpaper set for both of you");
     } catch (e: any) {
       toast.error(e?.message ?? "Upload failed");
     } finally {
@@ -60,11 +67,18 @@ export function ChatThemePicker({
 
   async function removePhoto() {
     const old = state.photoPath;
-    setChatPhotoPath(peerId, null);
-    if (state.theme === "photo") setChatTheme(peerId, "romance");
-    if (old) await supabase.storage.from(CHAT_WALLPAPER_BUCKET).remove([old]).catch(() => {});
-    toast.success("Wallpaper removed");
+    try {
+      await saveChatTheme(peerId, {
+        photoPath: null,
+        ...(state.theme === "photo" ? { theme: "romance" as const } : {}),
+      });
+      if (old) await supabase.storage.from(CHAT_WALLPAPER_BUCKET).remove([old]);
+      toast.success("Wallpaper removed");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Couldn't remove wallpaper");
+    }
   }
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
