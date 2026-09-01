@@ -13,6 +13,8 @@ import {
 
 export type ChatThemeState = ChatThemeRecord;
 
+let themeChannelSeq = 0;
+
 /**
  * Shared per-conversation theme. Reads the cached value for instant paint, then
  * syncs the record both participants share (and every device they sign in on).
