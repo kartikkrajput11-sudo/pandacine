@@ -81,6 +81,7 @@ export function ChatThemePicker({
 
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         data-group-theme={state.theme}
@@ -212,6 +213,7 @@ export function ChatThemePicker({
           </section>
         </div>
       </DialogContent>
+    </Dialog>
       <WallpaperCropper
         file={pending}
         busy={uploading}
@@ -221,6 +223,6 @@ export function ChatThemePicker({
         }}
         onConfirm={(blob) => upload(blob)}
       />
-    </Dialog>
+    </>
   );
 }
