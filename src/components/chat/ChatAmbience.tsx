@@ -38,8 +38,10 @@ export function useChatThemeState(peerId: string): ChatThemeState {
     };
     window.addEventListener(CHAT_THEME_EVENT, onChange);
 
+    // Unique per hook instance — several components subscribe to the same chat,
+    // and reusing a channel name throws once the first one has subscribed.
     const channel = supabase
-      .channel(`dm-theme-${peerId}`)
+      .channel(`dm-theme-${peerId}-${++themeChannelSeq}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "dm_chat_themes" },
