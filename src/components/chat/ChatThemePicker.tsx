@@ -97,7 +97,7 @@ export function ChatThemePicker({
               </DialogTitle>
             </DialogHeader>
             <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-candle/40">
-              This conversation only
+              Shared with them — synced on every device
             </p>
           </div>
         </div>
@@ -136,14 +136,14 @@ export function ChatThemePicker({
                   <>
                     <button
                       type="button"
-                      onClick={() => setChatTheme(peerId, "photo")}
+                      onClick={() => void setChatTheme(peerId, "photo").catch(() => {})}
                       className="rounded-xl px-3 py-2 text-[12px] text-candle/70 hover:text-candle bg-candle/[0.05] transition-colors"
                     >
                       Use
                     </button>
                     <button
                       type="button"
-                      onClick={removePhoto}
+                      onClick={() => void removePhoto()}
                       aria-label="Remove wallpaper"
                       className="rounded-xl p-2 text-candle/50 hover:text-petal bg-candle/[0.05] transition-colors"
                     >
@@ -162,7 +162,7 @@ export function ChatThemePicker({
                   Drifting hearts &amp; warm bloom over your photo
                 </span>
               </span>
-              <Switch checked={state.glow} onCheckedChange={(v) => setChatPhotoGlow(peerId, v)} />
+              <Switch checked={state.glow} onCheckedChange={(v) => void setChatPhotoGlow(peerId, v).catch(() => {})} />
             </label>
             <input
               ref={fileRef}
@@ -171,7 +171,7 @@ export function ChatThemePicker({
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) void upload(f);
+                if (f) pick(f);
               }}
             />
           </section>
@@ -186,7 +186,7 @@ export function ChatThemePicker({
                   <button
                     key={t.id}
                     type="button"
-                    onClick={() => setChatTheme(peerId, t.id)}
+                    onClick={() => void setChatTheme(peerId, t.id).catch(() => {})}
                     className={`group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left transition-all ${
                       isActive
                         ? "bg-petal/12 ring-1 ring-petal/50"
@@ -212,6 +212,15 @@ export function ChatThemePicker({
           </section>
         </div>
       </DialogContent>
+      <WallpaperCropper
+        file={pending}
+        busy={uploading}
+        onCancel={() => {
+          setPending(null);
+          if (fileRef.current) fileRef.current.value = "";
+        }}
+        onConfirm={(blob) => upload(blob)}
+      />
     </Dialog>
   );
 }
