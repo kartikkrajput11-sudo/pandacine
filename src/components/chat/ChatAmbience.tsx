@@ -13,6 +13,8 @@ import {
 
 export type ChatThemeState = ChatThemeRecord;
 
+let themeChannelSeq = 0;
+
 /**
  * Shared per-conversation theme. Reads the cached value for instant paint, then
  * syncs the record both participants share (and every device they sign in on).
@@ -38,8 +40,10 @@ export function useChatThemeState(peerId: string): ChatThemeState {
     };
     window.addEventListener(CHAT_THEME_EVENT, onChange);
 
+    // Unique per hook instance — several components subscribe to the same chat,
+    // and reusing a channel name throws once the first one has subscribed.
     const channel = supabase
-      .channel(`dm-theme-${peerId}`)
+      .channel(`dm-theme-${peerId}-${++themeChannelSeq}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "dm_chat_themes" },
