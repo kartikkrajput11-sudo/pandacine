@@ -94,8 +94,8 @@ export function WallpaperCropper({ file, onCancel, onConfirm, busy }: Props) {
 
   return (
     <Dialog open={!!file} onOpenChange={(v) => !v && onCancel()}>
-      <DialogContent className="bg-velvet border-candle/15 max-w-md p-0 overflow-hidden">
-        <div className="px-6 pt-6">
+      <DialogContent className="bg-velvet border-candle/15 max-w-md p-0 overflow-hidden flex flex-col max-h-[92dvh]">
+        <div className="px-6 pt-6 shrink-0">
           <DialogHeader>
             <DialogTitle className="font-serif italic text-[22px] text-candle flex items-center gap-2">
               <Maximize2 className="size-4 text-petal" strokeWidth={1.5} /> Frame your wallpaper
