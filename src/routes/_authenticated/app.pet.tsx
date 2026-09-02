@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PandaStage, type PandaActions } from "@/components/panda/PandaStage";
+import { PandaDiner } from "@/components/panda/PandaDiner";
+import { PandaVoiceMic } from "@/components/panda/PandaVoiceMic";
 import { PandaAdornments } from "@/components/panda/PandaAdornments";
 import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
 import { LuvieCoin, LuviesAmount } from "@/components/luvies/LuviesAmount";
@@ -253,6 +255,7 @@ function PetRoute() {
 
   const [dock, setDock] = useState<Dock | null>(null);
   const [editing, setEditing] = useState(false);
+  const [mode, setMode] = useState<"stage" | "diner">("stage");
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const actionsRef = useRef<PandaActions | null>(null);
@@ -400,24 +403,76 @@ function PetRoute() {
         <>
           {/* stage — the only hero. no border, no card. */}
           <section className="relative -mx-2 mt-2">
-            <PandaStage
-              name={name}
-              className="h-[min(58vh,480px)] min-h-[380px] w-full"
-              costume={(pet?.costume ?? "classic") as Costume}
-              hideActions
-              playful={false}
-              wear={{
-                outfit: look.outfit?.item_key ?? null,
-                accessory: look.accessory?.item_key ?? null,
-                prop: look.prop?.item_key ?? null,
-              }}
-              onReady={(a) => {
-                actionsRef.current = a;
-                forceReady((n) => (n === 0 ? 1 : n));
-              }}
-            />
-            <PandaAdornments look={look} />
+            {mode === "diner" ? (
+              <PandaDiner
+                name={name}
+                className="h-[min(58vh,480px)] min-h-[380px] w-full"
+                costume={(pet?.costume ?? "classic") as Costume}
+                wear={{
+                  outfit: look.outfit?.item_key ?? null,
+                  accessory: look.accessory?.item_key ?? null,
+                  prop: look.prop?.item_key ?? null,
+                }}
+                foods={pantryList.map(({ food, qty }) => ({
+                  key: food.key,
+                  name: food.name,
+                  emoji: food.emoji,
+                  qty,
+                }))}
+                onEat={(key) => {
+                  markQuest({ fed: true });
+                  feed({ data: { key } })
+                    .then(() => refresh())
+                    .catch(() => {});
+                }}
+              />
+            ) : (
+              <>
+                <PandaStage
+                  name={name}
+                  className="h-[min(58vh,480px)] min-h-[380px] w-full"
+                  costume={(pet?.costume ?? "classic") as Costume}
+                  hideActions
+                  playful={false}
+                  wear={{
+                    outfit: look.outfit?.item_key ?? null,
+                    accessory: look.accessory?.item_key ?? null,
+                    prop: look.prop?.item_key ?? null,
+                  }}
+                  onReady={(a) => {
+                    actionsRef.current = a;
+                    forceReady((n) => (n === 0 ? 1 : n));
+                  }}
+                />
+                <PandaAdornments look={look} />
+              </>
+            )}
           </section>
+
+          {/* stage / dinner table */}
+          <div className="mt-4 flex items-center justify-center gap-2">
+            {([
+              ["stage", "Grove"],
+              ["diner", "Dinner table"],
+            ] as const).map(([k, label]) => (
+              <button
+                key={k}
+                onClick={() => setMode(k)}
+                className={cn(
+                  "rounded-full px-4 py-1.5 text-[10px] uppercase tracking-[0.26em] transition",
+                  mode === k ? "bg-primary/12 text-primary" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* voice repeat — the mic is off until you switch it on */}
+          <div className="mt-5">
+            <PandaVoiceMic name={name} />
+          </div>
+
 
           {/* identity */}
           <div className="mt-6 text-center">
