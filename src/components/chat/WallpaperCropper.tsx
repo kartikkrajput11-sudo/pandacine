@@ -106,8 +106,9 @@ export function WallpaperCropper({ file, onCancel, onConfirm, busy }: Props) {
           </p>
         </div>
 
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
         <div className="px-6 pt-4">
-          <div className="mx-auto w-full max-w-[260px]">
+          <div className="mx-auto w-full max-w-[220px]">
             <div
               ref={frameRef}
               onPointerDown={onPointerDown}
