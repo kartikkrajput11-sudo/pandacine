@@ -94,8 +94,8 @@ export function WallpaperCropper({ file, onCancel, onConfirm, busy }: Props) {
 
   return (
     <Dialog open={!!file} onOpenChange={(v) => !v && onCancel()}>
-      <DialogContent className="bg-velvet border-candle/15 max-w-md p-0 overflow-hidden">
-        <div className="px-6 pt-6">
+      <DialogContent className="bg-velvet border-candle/15 max-w-md p-0 overflow-hidden flex flex-col max-h-[92dvh]">
+        <div className="px-6 pt-6 shrink-0">
           <DialogHeader>
             <DialogTitle className="font-serif italic text-[22px] text-candle flex items-center gap-2">
               <Maximize2 className="size-4 text-petal" strokeWidth={1.5} /> Frame your wallpaper
@@ -106,8 +106,9 @@ export function WallpaperCropper({ file, onCancel, onConfirm, busy }: Props) {
           </p>
         </div>
 
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
         <div className="px-6 pt-4">
-          <div className="mx-auto w-full max-w-[260px]">
+          <div className="mx-auto w-full max-w-[220px]">
             <div
               ref={frameRef}
               onPointerDown={onPointerDown}
@@ -177,7 +178,8 @@ export function WallpaperCropper({ file, onCancel, onConfirm, busy }: Props) {
           </div>
         </div>
 
-        <div className="flex gap-2 p-6 pt-5">
+        </div>
+        <div className="flex gap-2 p-6 pt-5 shrink-0 border-t border-candle/10 bg-velvet">
           <button
             type="button"
             onClick={onCancel}
