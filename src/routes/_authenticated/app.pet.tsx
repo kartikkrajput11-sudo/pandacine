@@ -255,6 +255,7 @@ function PetRoute() {
 
   const [dock, setDock] = useState<Dock | null>(null);
   const [editing, setEditing] = useState(false);
+  const [mode, setMode] = useState<"stage" | "diner">("stage");
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const actionsRef = useRef<PandaActions | null>(null);
