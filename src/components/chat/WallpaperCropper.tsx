@@ -178,7 +178,8 @@ export function WallpaperCropper({ file, onCancel, onConfirm, busy }: Props) {
           </div>
         </div>
 
-        <div className="flex gap-2 p-6 pt-5">
+        </div>
+        <div className="flex gap-2 p-6 pt-5 shrink-0 border-t border-candle/10 bg-velvet">
           <button
             type="button"
             onClick={onCancel}
