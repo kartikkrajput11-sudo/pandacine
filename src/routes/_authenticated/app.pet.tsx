@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PandaStage, type PandaActions } from "@/components/panda/PandaStage";
+import { PandaDiner } from "@/components/panda/PandaDiner";
+import { PandaVoiceMic } from "@/components/panda/PandaVoiceMic";
 import { PandaAdornments } from "@/components/panda/PandaAdornments";
 import { PandaLifePanel } from "@/components/panda/PandaLifePanel";
 import { LuvieCoin, LuviesAmount } from "@/components/luvies/LuviesAmount";
