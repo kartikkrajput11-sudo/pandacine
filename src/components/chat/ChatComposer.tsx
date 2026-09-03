@@ -27,6 +27,17 @@ import { Camera } from "lucide-react";
 
 const KISS_EMOJIS = ["💋", "💜", "🌸", "🫧", "💫", "🐼", "🌷", "🫶"];
 
+/**
+ * One button language for the whole composer: quiet glass circles that light
+ * up on hover. The only filled, glowing element is the send button — a single
+ * accent keeps the bar feeling composed instead of noisy.
+ */
+const iconBtn =
+  "size-10 rounded-full grid place-items-center shrink-0 transition-all duration-200 active:scale-95 " +
+  "bg-candle/[0.05] ring-1 ring-candle/10 text-candle/65 " +
+  "hover:bg-candle/[0.1] hover:ring-candle/20 hover:text-candle";
+const iconBtnActive = "bg-petal/12 text-petal ring-petal/40 hover:bg-petal/[0.18] hover:ring-petal/50 hover:text-petal";
+
 
 type Props = {
   meId: string;
