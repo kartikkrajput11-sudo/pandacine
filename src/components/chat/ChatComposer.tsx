@@ -656,17 +656,19 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
           <button
             type="button"
             onClick={() => { setMenuOpen((m) => !m); setStickersOpen(false); }}
-            className="size-11 rounded-full bg-surface border border-border flex items-center justify-center text-petal shrink-0"
+            className={`${iconBtn} ${menuOpen ? iconBtnActive : ""}`}
+            title="Studio — media, stickers & more"
+            aria-label="Open studio"
           >
-            <Plus className={`size-4 transition-transform ${menuOpen ? "rotate-45" : ""}`} />
+            <Plus className={`size-[18px] transition-transform duration-300 ${menuOpen ? "rotate-45" : ""}`} strokeWidth={1.6} />
           </button>
           <button
             type="button"
             onClick={() => { setPandaOpen(true); setStickersOpen(false); setMenuOpen(false); }}
-            className="size-11 rounded-full bg-surface border border-border flex items-center justify-center text-petal shrink-0"
+            className={iconBtn}
             title="Stickers"
           >
-            <Smile className="size-4" />
+            <Smile className="size-[18px]" strokeWidth={1.6} />
           </button>
 
           <button
