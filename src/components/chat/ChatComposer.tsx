@@ -714,14 +714,14 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
           <button
             type="button"
             onClick={() => { setFocused(false); inputRef.current?.blur(); }}
-            className={`size-11 rounded-full bg-surface border border-border text-petal flex items-center justify-center shrink-0 overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              composing ? "max-w-11 opacity-100 scale-100" : "max-w-0 w-0 border-0 opacity-0 scale-90 pointer-events-none"
+            className={`${iconBtn} overflow-hidden !transition-[max-width,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              composing ? "max-w-10 opacity-100 scale-100" : "max-w-0 w-0 ring-0 opacity-0 scale-90 pointer-events-none"
             }`}
             title="Show shortcuts"
             aria-label="Show shortcuts"
             aria-hidden={!composing}
           >
-            <ChevronRight className="size-4" />
+            <ChevronRight className="size-[18px]" strokeWidth={1.6} />
           </button>
 
           <div className="flex-1 relative min-w-0">
