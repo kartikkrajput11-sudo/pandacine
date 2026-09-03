@@ -683,15 +683,11 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 toast.error("Couldn't open affection");
               }
             }}
-            className={`size-11 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-              openGroup === "affection"
-                ? "bg-petal text-velvet petal-glow"
-                : "bg-surface border border-border text-petal hover:border-petal/60"
-            }`}
+            className={`${iconBtn} ${openGroup === "affection" ? iconBtnActive : ""}`}
             title="Send affection — kiss, hug, headpat & more"
             aria-label="Open affection panel"
           >
-            <Heart className="size-4 fill-current" />
+            <Heart className={`size-[18px] ${openGroup === "affection" ? "fill-current" : ""}`} strokeWidth={1.6} />
           </button>
           <button
             type="button"
