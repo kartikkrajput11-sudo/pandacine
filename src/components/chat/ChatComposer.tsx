@@ -733,10 +733,10 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
               onBlur={() => { setFocused(false); onTyping(false); }}
               placeholder={whisper ? `Whisper to ${partnerName}…` : `Message ${partnerName}…`}
               disabled={recording}
-              className={`w-full pl-4 py-3 bg-surface border rounded-full text-sm text-candle placeholder:text-candle-muted focus:outline-none transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                composing ? "shadow-[0_0_0_1px_rgba(236,72,153,0.35),0_8px_24px_-12px_rgba(236,72,153,0.55)]" : ""
+              className={`w-full pl-4 py-3 bg-candle/[0.04] ring-1 rounded-full text-sm text-candle placeholder:text-candle-muted/70 focus:outline-none transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                composing ? "shadow-[0_8px_28px_-14px_rgba(236,72,153,0.5)]" : ""
               } ${
-                whisper ? "border-petal/70 focus:border-petal pr-24" : "border-border focus:border-petal/60 pr-4"
+                whisper ? "ring-petal/60 focus:ring-petal pr-24" : "ring-candle/10 focus:ring-petal/40 pr-4"
               }`}
             />
             {whisper && (
