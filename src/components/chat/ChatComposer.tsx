@@ -754,18 +754,18 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
             <button
               type="button"
               onClick={() => onSchedule(text)}
-              className="size-11 rounded-full bg-surface border border-border text-petal flex items-center justify-center shrink-0"
+              className={iconBtn}
               title="Send later"
               aria-label="Schedule message"
             >
-              <CalendarClock className="size-4" />
+              <CalendarClock className="size-[18px]" strokeWidth={1.6} />
             </button>
           )}
           {text.trim() && !recording ? (
             <button
               type="submit"
               disabled={sending}
-              className="size-11 rounded-full bg-petal text-velvet flex items-center justify-center petal-glow disabled:opacity-40 shrink-0"
+              className="size-10 rounded-full bg-petal text-velvet grid place-items-center petal-glow transition-all duration-200 active:scale-95 hover:brightness-110 disabled:opacity-40 shrink-0"
             >
               <Send className="size-4" />
             </button>
