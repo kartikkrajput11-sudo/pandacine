@@ -467,7 +467,7 @@ function ChatPeer() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className="ml-0.5 inline-flex items-center justify-center size-9 rounded-full bg-petal/14 text-petal hover:bg-petal/24 transition-colors"
+                  className="ml-0.5 inline-flex items-center justify-center size-9 rounded-full bg-petal/10 ring-1 ring-petal/25 text-petal hover:bg-petal/[0.18] hover:ring-petal/40 transition-all duration-200 active:scale-95"
                   aria-label="Call"
                 >
                   <Phone className="size-[17px]" strokeWidth={1.6} />

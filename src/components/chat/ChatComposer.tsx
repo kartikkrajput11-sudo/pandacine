@@ -27,6 +27,17 @@ import { Camera } from "lucide-react";
 
 const KISS_EMOJIS = ["💋", "💜", "🌸", "🫧", "💫", "🐼", "🌷", "🫶"];
 
+/**
+ * One button language for the whole composer: quiet glass circles that light
+ * up on hover. The only filled, glowing element is the send button — a single
+ * accent keeps the bar feeling composed instead of noisy.
+ */
+const iconBtn =
+  "size-10 rounded-full grid place-items-center shrink-0 transition-all duration-200 active:scale-95 " +
+  "bg-candle/[0.05] ring-1 ring-candle/10 text-candle/65 " +
+  "hover:bg-candle/[0.1] hover:ring-candle/20 hover:text-candle";
+const iconBtnActive = "bg-petal/12 text-petal ring-petal/40 hover:bg-petal/[0.18] hover:ring-petal/50 hover:text-petal";
+
 
 type Props = {
   meId: string;
@@ -645,17 +656,19 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
           <button
             type="button"
             onClick={() => { setMenuOpen((m) => !m); setStickersOpen(false); }}
-            className="size-11 rounded-full bg-surface border border-border flex items-center justify-center text-petal shrink-0"
+            className={`${iconBtn} ${menuOpen ? iconBtnActive : ""}`}
+            title="Studio — media, stickers & more"
+            aria-label="Open studio"
           >
-            <Plus className={`size-4 transition-transform ${menuOpen ? "rotate-45" : ""}`} />
+            <Plus className={`size-[18px] transition-transform duration-300 ${menuOpen ? "rotate-45" : ""}`} strokeWidth={1.6} />
           </button>
           <button
             type="button"
             onClick={() => { setPandaOpen(true); setStickersOpen(false); setMenuOpen(false); }}
-            className="size-11 rounded-full bg-surface border border-border flex items-center justify-center text-petal shrink-0"
+            className={iconBtn}
             title="Stickers"
           >
-            <Smile className="size-4" />
+            <Smile className="size-[18px]" strokeWidth={1.6} />
           </button>
 
           <button
@@ -670,15 +683,11 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 toast.error("Couldn't open affection");
               }
             }}
-            className={`size-11 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-              openGroup === "affection"
-                ? "bg-petal text-velvet petal-glow"
-                : "bg-surface border border-border text-petal hover:border-petal/60"
-            }`}
+            className={`${iconBtn} ${openGroup === "affection" ? iconBtnActive : ""}`}
             title="Send affection — kiss, hug, headpat & more"
             aria-label="Open affection panel"
           >
-            <Heart className="size-4 fill-current" />
+            <Heart className={`size-[18px] ${openGroup === "affection" ? "fill-current" : ""}`} strokeWidth={1.6} />
           </button>
           <button
             type="button"
@@ -693,15 +702,11 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 toast.error("Couldn't open moments");
               }
             }}
-            className={`size-11 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-              momentsOpen
-                ? "bg-gilt text-velvet"
-                : "bg-surface border border-border text-gilt hover:border-gilt/60"
-            }`}
+            className={`${iconBtn} ${momentsOpen ? iconBtnActive : ""}`}
             title="Moments — heartbeat, letters, capsules & more"
             aria-label="Open moments panel"
           >
-            <Sparkles className="size-4" />
+            <Sparkles className="size-[18px]" strokeWidth={1.6} />
           </button>
           </div>
 
@@ -709,14 +714,14 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
           <button
             type="button"
             onClick={() => { setFocused(false); inputRef.current?.blur(); }}
-            className={`size-11 rounded-full bg-surface border border-border text-petal flex items-center justify-center shrink-0 overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-              composing ? "max-w-11 opacity-100 scale-100" : "max-w-0 w-0 border-0 opacity-0 scale-90 pointer-events-none"
+            className={`${iconBtn} overflow-hidden !transition-[max-width,opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              composing ? "max-w-10 opacity-100 scale-100" : "max-w-0 w-0 ring-0 opacity-0 scale-90 pointer-events-none"
             }`}
             title="Show shortcuts"
             aria-label="Show shortcuts"
             aria-hidden={!composing}
           >
-            <ChevronRight className="size-4" />
+            <ChevronRight className="size-[18px]" strokeWidth={1.6} />
           </button>
 
           <div className="flex-1 relative min-w-0">
@@ -728,10 +733,10 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
               onBlur={() => { setFocused(false); onTyping(false); }}
               placeholder={whisper ? `Whisper to ${partnerName}…` : `Message ${partnerName}…`}
               disabled={recording}
-              className={`w-full pl-4 py-3 bg-surface border rounded-full text-sm text-candle placeholder:text-candle-muted focus:outline-none transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                composing ? "shadow-[0_0_0_1px_rgba(236,72,153,0.35),0_8px_24px_-12px_rgba(236,72,153,0.55)]" : ""
+              className={`w-full pl-4 py-3 bg-candle/[0.04] ring-1 rounded-full text-sm text-candle placeholder:text-candle-muted/70 focus:outline-none transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                composing ? "shadow-[0_8px_28px_-14px_rgba(236,72,153,0.5)]" : ""
               } ${
-                whisper ? "border-petal/70 focus:border-petal pr-24" : "border-border focus:border-petal/60 pr-4"
+                whisper ? "ring-petal/60 focus:ring-petal pr-24" : "ring-candle/10 focus:ring-petal/40 pr-4"
               }`}
             />
             {whisper && (
@@ -749,18 +754,18 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
             <button
               type="button"
               onClick={() => onSchedule(text)}
-              className="size-11 rounded-full bg-surface border border-border text-petal flex items-center justify-center shrink-0"
+              className={iconBtn}
               title="Send later"
               aria-label="Schedule message"
             >
-              <CalendarClock className="size-4" />
+              <CalendarClock className="size-[18px]" strokeWidth={1.6} />
             </button>
           )}
           {text.trim() && !recording ? (
             <button
               type="submit"
               disabled={sending}
-              className="size-11 rounded-full bg-petal text-velvet flex items-center justify-center petal-glow disabled:opacity-40 shrink-0"
+              className="size-10 rounded-full bg-petal text-velvet grid place-items-center petal-glow transition-all duration-200 active:scale-95 hover:brightness-110 disabled:opacity-40 shrink-0"
             >
               <Send className="size-4" />
             </button>
