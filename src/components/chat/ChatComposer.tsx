@@ -702,15 +702,11 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 toast.error("Couldn't open moments");
               }
             }}
-            className={`size-11 rounded-full flex items-center justify-center shrink-0 transition-colors ${
-              momentsOpen
-                ? "bg-gilt text-velvet"
-                : "bg-surface border border-border text-gilt hover:border-gilt/60"
-            }`}
+            className={`${iconBtn} ${momentsOpen ? iconBtnActive : ""}`}
             title="Moments — heartbeat, letters, capsules & more"
             aria-label="Open moments panel"
           >
-            <Sparkles className="size-4" />
+            <Sparkles className="size-[18px]" strokeWidth={1.6} />
           </button>
           </div>
 
