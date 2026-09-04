@@ -5,6 +5,7 @@ import { SignedImage } from "./SignedImage";
 import { SignedVideo } from "./SignedVideo";
 import { Images, Video as VideoIcon, ImageOff, Download, Play } from "lucide-react";
 import { signMedia, type MessageRow } from "@/lib/chat";
+import { supabase } from "@/integrations/supabase/client";
 
 type Tab = "all" | "photos" | "videos";
 
