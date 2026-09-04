@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Phone, Video, Pin, ChevronDown, Lock, Flame, MoreVertical, Trash2, Images, Palette } from "lucide-react";
+import { ArrowLeft, Phone, Video, Pin, ChevronDown, Lock, Flame, MoreVertical, Trash2, Images, Palette, Search } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useQuery } from "@tanstack/react-query";
@@ -96,6 +96,7 @@ function ChatPeer() {
   const [forwardMsg, setForwardMsg] = useState<MessageRow | null>(null);
   const [mediaDrawerOpen, setMediaDrawerOpen] = useState(false);
   const [themePickerOpen, setThemePickerOpen] = useState(false);
+  const [chatSearchOpen, setChatSearchOpen] = useState(false);
   const themeState = useChatThemeState(peerId);
   const chatTheme = themeState.theme;
   const scrollRef = useRef<HTMLDivElement>(null);
