@@ -5,11 +5,22 @@ import type { MessageRow } from "@/lib/chat";
 export function ChatSearch({
   messages,
   onJump,
+  open: openProp,
+  onOpenChange,
+  trigger = "icon",
 }: {
   messages: MessageRow[];
   onJump: (id: string) => void;
+  open?: boolean;
+  onOpenChange?: (v: boolean) => void;
+  trigger?: "icon" | "menu-item";
 }) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = openProp ?? internalOpen;
+  const setOpen = (v: boolean) => {
+    setInternalOpen(v);
+    onOpenChange?.(v);
+  };
   const [q, setQ] = useState("");
 
   const results = useMemo(() => {
@@ -21,7 +32,7 @@ export function ChatSearch({
       .reverse();
   }, [q, messages]);
 
-  if (!open) {
+  if (!open && trigger === "icon") {
     return (
       <button
         onClick={() => setOpen(true)}
@@ -32,6 +43,7 @@ export function ChatSearch({
       </button>
     );
   }
+
 
   return (
     <div className="absolute inset-x-0 top-0 z-20 bg-velvet/95 backdrop-blur border-b border-border">
