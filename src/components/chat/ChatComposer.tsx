@@ -535,6 +535,21 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
                 <GroupChoice icon={<Film className="size-4" />} label="Watch" hint="A movie together" onClick={() => { setWatchPickerOpen(true); setMenuOpen(false); setOpenGroup(null); }} />
                 <GroupChoice icon={<Gamepad2 className="size-4" />} label="Game" hint="Play a round" onClick={() => { setGamePickerOpen(true); setMenuOpen(false); setOpenGroup(null); }} />
                 <GroupChoice icon={<Disc3 className="size-4" />} label="Wheel" hint="Spin to pick" onClick={() => { setWheelOpen(true); setMenuOpen(false); setOpenGroup(null); }} />
+                <GroupChoice
+                  icon={<Sparkles className="size-4 text-petal" />}
+                  label="Moments"
+                  hint="Heartbeat, letters & capsules"
+                  onClick={() => {
+                    try {
+                      setOpenGroup(null);
+                      setMenuOpen(false);
+                      setMomentsOpen(true);
+                    } catch (err) {
+                      console.error("[ChatComposer] failed to open moments", err);
+                      toast.error("Couldn't open moments");
+                    }
+                  }}
+                />
               </div>
             )}
 
@@ -688,25 +703,6 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
             aria-label="Open affection panel"
           >
             <Heart className={`size-[18px] ${openGroup === "affection" ? "fill-current" : ""}`} strokeWidth={1.6} />
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              try {
-                setMenuOpen(false);
-                setStickersOpen(false);
-                setOpenGroup(null);
-                setMomentsOpen((r) => !r);
-              } catch (err) {
-                console.error("[ChatComposer] failed to open moments", err);
-                toast.error("Couldn't open moments");
-              }
-            }}
-            className={`${iconBtn} ${momentsOpen ? iconBtnActive : ""}`}
-            title="Moments — heartbeat, letters, capsules & more"
-            aria-label="Open moments panel"
-          >
-            <Sparkles className="size-[18px]" strokeWidth={1.6} />
           </button>
           </div>
 
