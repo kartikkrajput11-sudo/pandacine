@@ -461,10 +461,6 @@ function ChatPeer() {
           </Link>
 
           <div className="flex items-center gap-1 shrink-0 text-candle/55">
-            <div className="[&_button]:size-9 [&_button]:grid [&_button]:place-items-center [&_button]:rounded-full [&_button]:hover:bg-candle/[0.06] [&_button]:transition-colors">
-              <ChatSearch messages={messages} onJump={jumpTo} />
-            </div>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -499,6 +495,12 @@ function ChatPeer() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-velvet border-candle/20 min-w-52">
                 <DropdownMenuItem
+                  onSelect={(e) => { e.preventDefault(); setChatSearchOpen(true); }}
+                  className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
+                >
+                  <Search className="size-4" /> Search messages
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   onSelect={(e) => { e.preventDefault(); setThemePickerOpen(true); }}
                   className="text-candle focus:text-petal focus:bg-petal/10 gap-2"
                 >
@@ -529,6 +531,14 @@ function ChatPeer() {
           </div>
         </div>
       </header>
+
+      <ChatSearch
+        open={chatSearchOpen}
+        onOpenChange={setChatSearchOpen}
+        messages={messages}
+        onJump={jumpTo}
+        trigger="menu-item"
+      />
 
       <AlertDialog open={clearConfirmOpen} onOpenChange={setClearConfirmOpen}>
         <AlertDialogContent className="bg-velvet border-candle/20">
