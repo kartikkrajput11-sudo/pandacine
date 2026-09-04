@@ -576,6 +576,7 @@ function ChatPeer() {
         open={mediaDrawerOpen}
         onOpenChange={setMediaDrawerOpen}
         messages={messages}
+        peerId={peerId}
         onJumpTo={jumpTo}
       />
 

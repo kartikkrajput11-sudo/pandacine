@@ -5,6 +5,7 @@ import { SignedImage } from "./SignedImage";
 import { SignedVideo } from "./SignedVideo";
 import { Images, Video as VideoIcon, ImageOff, Download, Play } from "lucide-react";
 import { signMedia, type MessageRow } from "@/lib/chat";
+import { supabase } from "@/integrations/supabase/client";
 
 type Tab = "all" | "photos" | "videos";
 
@@ -70,21 +71,58 @@ export function SharedMediaDrawer({
   onOpenChange,
   messages,
   onJumpTo,
+  peerId,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   messages: MessageRow[];
   onJumpTo?: (id: string) => void;
+  peerId?: string;
 }) {
   const [tab, setTab] = useState<Tab>("all");
   const [preview, setPreview] = useState<MessageRow | null>(null);
+  const [history, setHistory] = useState<MessageRow[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  // The chat window only keeps the latest page in memory — when the drawer
+  // opens, page through the full conversation so every photo/video ever
+  // shared shows up, not just today's.
+  useEffect(() => {
+    if (!open || !peerId) return;
+    let cancelled = false;
+    setHistoryLoading(true);
+    (async () => {
+      const all: MessageRow[] = [];
+      let before: string | null = null;
+      try {
+        for (let i = 0; i < 100; i++) {
+          const { data, error } = await (supabase.rpc as any)("chat_messages_between", {
+            _peer: peerId,
+            _before: before,
+            _limit: 200,
+          });
+          if (error) throw error;
+          const rows = (data ?? []) as MessageRow[];
+          all.push(...rows);
+          if (rows.length < 200) break;
+          const oldest = rows.reduce((a, b) => (a.created_at < b.created_at ? a : b));
+          if (before === oldest.created_at) break;
+          before = oldest.created_at;
+        }
+        if (!cancelled) setHistory(all);
+      } catch { /* fall back to in-memory messages */ }
+      if (!cancelled) setHistoryLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, [open, peerId]);
 
   const media = useMemo(() => {
-    return messages
+    const byId = new Map<string, MessageRow>();
+    for (const m of [...history, ...messages]) byId.set(m.id, m);
+    return Array.from(byId.values())
       .filter((m) => (m.type === "image" || m.type === "video") && !!m.media_url && !(m.media_meta as any)?.view_once)
-      .slice()
-      .reverse();
-  }, [messages]);
+      .sort((a, b) => b.created_at.localeCompare(a.created_at));
+  }, [history, messages]);
 
   const filtered = useMemo(() => {
     if (tab === "photos") return media.filter((m) => m.type === "image");
@@ -179,6 +217,11 @@ export function SharedMediaDrawer({
               </div>
             ) : (
               <div className="space-y-5">
+                {historyLoading && (
+                  <p className="text-center text-[10px] uppercase tracking-[0.25em] text-candle/45 py-1">
+                    Gathering full history…
+                  </p>
+                )}
                 {grouped.map((g) => (
                   <section key={g.key}>
                     <h3 className="text-[9px] uppercase tracking-[0.28em] text-candle/50 font-semibold mb-2 px-1">
