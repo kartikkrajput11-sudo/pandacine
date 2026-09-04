@@ -217,6 +217,11 @@ export function SharedMediaDrawer({
               </div>
             ) : (
               <div className="space-y-5">
+                {historyLoading && (
+                  <p className="text-center text-[10px] uppercase tracking-[0.25em] text-candle/45 py-1">
+                    Gathering full history…
+                  </p>
+                )}
                 {grouped.map((g) => (
                   <section key={g.key}>
                     <h3 className="text-[9px] uppercase tracking-[0.28em] text-candle/50 font-semibold mb-2 px-1">
