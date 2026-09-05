@@ -32,6 +32,8 @@ export function ChatSearch({
       .reverse();
   }, [q, messages]);
 
+  if (!open && trigger === "menu-item") return null;
+
   if (!open && trigger === "icon") {
     return (
       <button
