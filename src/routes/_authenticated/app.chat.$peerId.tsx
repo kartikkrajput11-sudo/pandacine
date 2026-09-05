@@ -40,7 +40,7 @@ import { SharedMediaDrawer } from "@/components/chat/SharedMediaDrawer";
 import { ChatThemePicker } from "@/components/chat/ChatThemePicker";
 import { ChatAmbience, useChatThemeState } from "@/components/chat/ChatAmbience";
 import { ScheduleDialog } from "@/components/chat/ScheduleDialog";
-import { markDmReadNow } from "@/lib/dmRead";
+import { markDmReadNow, setDmLastRead } from "@/lib/dmRead";
 
 
 
@@ -282,7 +282,16 @@ function ChatPeer() {
   const lastMsgId = messages[messages.length - 1]?.id ?? null;
   useEffect(() => {
     if (!me?.id || !peer?.id) return;
-    markDmReadNow(me.id, peer.id);
+    // Mark read *through* the newest message's server timestamp (plus a small
+    // buffer) instead of the device clock — clock skew between server and
+    // device otherwise leaves messages permanently "unread" (stuck 9+ badge).
+    const latestIncoming = [...messages].reverse().find((m) => m.sender_id === peer.id);
+    if (latestIncoming) {
+      const through = new Date(new Date(latestIncoming.created_at).getTime() + 2000).toISOString();
+      setDmLastRead(me.id, peer.id, through);
+    } else {
+      markDmReadNow(me.id, peer.id);
+    }
   }, [me?.id, peer?.id, lastMsgId]);
 
 
