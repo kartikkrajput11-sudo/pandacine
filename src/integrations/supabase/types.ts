@@ -1208,6 +1208,67 @@ export type Database = {
           },
         ]
       }
+      group_tasks: {
+        Row: {
+          assignee_id: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          due_date: string | null
+          group_id: string
+          id: string
+          status: Database["public"]["Enums"]["group_task_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          due_date?: string | null
+          group_id: string
+          id?: string
+          status?: Database["public"]["Enums"]["group_task_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          due_date?: string | null
+          group_id?: string
+          id?: string
+          status?: Database["public"]["Enums"]["group_task_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_tasks_assignee_id_fkey"
+            columns: ["assignee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_tasks_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_tasks_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "chat_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       important_dates: {
         Row: {
           created_at: string
@@ -3474,6 +3535,7 @@ export type Database = {
       call_scope: "direct" | "group"
       call_signal_kind: "offer" | "answer" | "ice" | "bye"
       call_status: "ringing" | "active" | "ended" | "missed"
+      group_task_status: "pending" | "done" | "cancelled"
       punishment_status: "active" | "completed" | "cancelled" | "expired"
       punishment_type:
         | "write"
@@ -3625,6 +3687,7 @@ export const Constants = {
       call_scope: ["direct", "group"],
       call_signal_kind: ["offer", "answer", "ice", "bye"],
       call_status: ["ringing", "active", "ended", "missed"],
+      group_task_status: ["pending", "done", "cancelled"],
       punishment_status: ["active", "completed", "cancelled", "expired"],
       punishment_type: [
         "write",
