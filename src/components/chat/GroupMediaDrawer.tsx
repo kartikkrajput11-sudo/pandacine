@@ -182,7 +182,7 @@ export function GroupMediaDrawer({
                         </div>
                       );
                     }
-                    if (cat === "voice" || cat === "audio") {
+                    if (cat === "voice") {
                       return (
                         <div key={m.id} className="col-span-1 aspect-square rounded-xl bg-surface border border-border flex flex-col items-center justify-center gap-1 p-2">
                           <Mic className="size-6 text-petal" />
