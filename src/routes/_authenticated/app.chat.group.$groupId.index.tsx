@@ -519,7 +519,12 @@ function GroupChat() {
               onClick={(e) => e.stopPropagation()}
             >
               {!mine && <p className="text-[10px] mb-1 opacity-70">{sender?.display_name}</p>}
-              {m.type === "image" && m.media_url ? <GroupImage path={m.media_url} /> :
+              {m.type === "announcement" ? (
+                <div className="text-petal-soft">
+                  <p className="text-[10px] uppercase tracking-wider text-petal/70 font-semibold mb-1"><Megaphone className="inline size-3 mr-1" /> Announcement</p>
+                  {m.content}
+                </div>
+              ) : m.type === "image" && m.media_url ? <GroupImage path={m.media_url} /> :
                m.type === "voice" ? <span className="opacity-80">🎙️ Voice message</span> :
                m.type === "poll" ? <span className="opacity-80">📊 Poll</span> :
                m.type === "event" ? <span className="opacity-80">📅 Event</span> :
