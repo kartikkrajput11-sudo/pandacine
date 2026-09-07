@@ -746,7 +746,6 @@ function GroupChat() {
         onOpenChange={setPinnedOpen}
         groupId={groupId}
         memberById={memberById}
-        meId={meId}
         onJumpTo={(id) => scrollToMessage(listRef.current, id)}
       />
 
@@ -754,14 +753,14 @@ function GroupChat() {
         open={mediaOpen}
         onOpenChange={setMediaOpen}
         groupId={groupId}
-        meId={meId}
       />
 
       <GroupTaskSheet
         open={tasksOpen}
         onOpenChange={setTasksOpen}
         groupId={groupId}
-        meId={meId}
+        members={members}
+        meId={meId!}
       />
 
       <GroupSearchSheet
