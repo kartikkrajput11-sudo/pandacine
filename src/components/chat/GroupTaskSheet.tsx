@@ -194,7 +194,7 @@ function TaskCard({
               <div className="flex items-center gap-1.5 text-[10px] text-candle/55 bg-velvet/50 px-2 py-1 rounded-full border border-border">
                 <UserAvatar
                   src={assigneeProfile?.avatar_url ?? null}
-                  name={assigneeProfile?.display_name || assigneeProfile?.username || null}
+                  name={(assigneeProfile?.display_name || assigneeProfile?.username) ?? null}
                   className="size-4"
                 />
                 {assigneeProfile?.display_name || assigneeProfile?.username || "Assigned"}
