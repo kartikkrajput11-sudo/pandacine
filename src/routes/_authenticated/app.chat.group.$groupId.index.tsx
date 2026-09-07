@@ -704,19 +704,11 @@ function GroupChat() {
   );
 }
 
-function GroupImage({ path }: { path: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  useEffect(() => {
-    let alive = true;
-    if (path.startsWith("http")) {
-      setUrl(path);
-      return;
-    }
-    signMedia(path).then((u) => {
-      if (alive) setUrl(u);
-    });
-    return () => { alive = false; };
-  }, [path]);
-  if (!url) return <div className="w-48 h-32 bg-surface animate-pulse rounded-xl" />;
-  return <img src={url} alt="" className="max-w-full max-h-80 rounded-xl object-cover" />;
+function scrollToMessage(listEl: HTMLDivElement | null, messageId: string) {
+  const el = listEl?.querySelector(`[data-message-id="${messageId}"]`);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.add("ring-2", "ring-petal/60", "rounded-2xl");
+    setTimeout(() => el.classList.remove("ring-2", "ring-petal/60", "rounded-2xl"), 1400);
+  }
 }
