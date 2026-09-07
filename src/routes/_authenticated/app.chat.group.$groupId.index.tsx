@@ -388,7 +388,14 @@ function GroupChat() {
                       {memberById.get(replyMsg.sender_id)?.display_name ?? "…"}: {replyMsg.type === "image" ? "📷 Photo" : replyMsg.content}
                     </div>
                   )}
-                  {m.type === "image" && m.media_url ? (
+                  {m.type === "announcement" ? (
+                    <div className="w-full flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-petal/80 font-semibold">
+                        <Megaphone className="size-3" /> Announcement
+                      </div>
+                      <span className="text-petal-soft">{m.content}</span>
+                    </div>
+                  ) : m.type === "image" && m.media_url ? (
                     <GroupImage path={m.media_url} />
                   ) : m.type === "voice" && m.media_url ? (
                     <VoicePlayer path={m.media_url} durationMs={(m.media_meta as any)?.duration_ms} />
