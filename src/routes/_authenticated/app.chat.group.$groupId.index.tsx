@@ -1,16 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft, Settings, Phone, Video as VideoIcon, Send, Image as ImageIcon,
+  ArrowLeft, Phone, Video as VideoIcon, Send, Image as ImageIcon,
   Pin, Trash2, Reply, X, PinOff, BarChart3, Forward, Swords, Calendar,
+  Megaphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useProfile } from "@/hooks/useProfile";
 import { useGroup } from "@/hooks/useGroups";
 import { useGroupChat, type GroupMessage } from "@/hooks/useGroupChat";
 import { useGroupReads, seenByForMessage } from "@/hooks/useGroupReads";
+import { useGroupPresence } from "@/hooks/useGroupPresence";
 import { supabase } from "@/integrations/supabase/client";
-import { signMedia } from "@/lib/chat";
 import { startUpload } from "@/lib/upload-manager";
 import { UploadTray } from "@/components/chat/UploadTray";
 import { startGroupCall } from "@/lib/callActions";
@@ -24,6 +25,14 @@ import { DuelGamePicker } from "@/components/chat/DuelGamePicker";
 import { GroupEventComposer } from "@/components/chat/GroupEventComposer";
 import { GroupEventCard } from "@/components/chat/GroupEventCard";
 import { GroupMatchInviteCard } from "@/components/chat/GroupMatchInviteCard";
+import { GroupImage } from "@/components/chat/GroupImage";
+import { GroupHeaderMenu } from "@/components/chat/GroupHeaderMenu";
+import { GroupPresenceBar } from "@/components/chat/GroupPresenceBar";
+import { GroupPinnedDrawer } from "@/components/chat/GroupPinnedDrawer";
+import { GroupMediaDrawer } from "@/components/chat/GroupMediaDrawer";
+import { GroupTaskSheet } from "@/components/chat/GroupTaskSheet";
+import { GroupSearchSheet } from "@/components/chat/GroupSearchSheet";
+import { AnnouncementComposer } from "@/components/chat/AnnouncementComposer";
 import { createGroupMatch } from "@/hooks/useGroupMatch";
 import type { PollMeta } from "@/lib/poll";
 import type { MessageRow } from "@/lib/chat";
@@ -82,6 +91,13 @@ function GroupChat() {
   const [eventOpen, setEventOpen] = useState(false);
   const [recording, setRecording] = useState(false);
   const [forwardMsg, setForwardMsg] = useState<MessageRow | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [pinnedOpen, setPinnedOpen] = useState(false);
+  const [mediaOpen, setMediaOpen] = useState(false);
+  const [tasksOpen, setTasksOpen] = useState(false);
+  const [announceOpen, setAnnounceOpen] = useState(false);
+  const { onlineIds, typingIds, setTyping } = useGroupPresence(groupId, meId);
   const listRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLInputElement>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -265,15 +281,23 @@ function GroupChat() {
           <VideoIcon className="size-4" />
         </button>
 
-        <Link
-          to="/app/chat/group/$groupId/settings"
-          params={{ groupId }}
-          className="size-9 rounded-full bg-surface border border-border flex items-center justify-center text-candle-muted"
-          aria-label="Settings"
-        >
-          <Settings className="size-4" />
-        </Link>
+        <GroupHeaderMenu
+          isAdmin={isAdmin}
+          onSearch={() => setSearchOpen(true)}
+          onMedia={() => setMediaOpen(true)}
+          onPinned={() => setPinnedOpen(true)}
+          onTasks={() => setTasksOpen(true)}
+          onInfo={() => navigate({ to: "/app/chat/group/$groupId/info", params: { groupId } })}
+          onSettings={() => navigate({ to: "/app/chat/group/$groupId/settings", params: { groupId } })}
+        />
       </header>
+
+      <GroupPresenceBar
+        meId={meId}
+        memberById={memberById}
+        onlineIds={onlineIds}
+        typingIds={typingIds}
+      />
 
       {/* Pinned banner */}
       {pinned.length > 0 && (
@@ -305,7 +329,7 @@ function GroupChat() {
           const canDelete = mine || isAdmin;
           const canPin = isAdmin;
           return (
-            <div key={m.id} className={`flex gap-2 ${mine ? "flex-row-reverse" : ""}`}>
+            <div key={m.id} data-message-id={m.id} className={`flex gap-2 ${mine ? "flex-row-reverse" : ""}`}>
               {!mine && (
                 <UserAvatar
                   src={sender?.avatar_url}
@@ -364,7 +388,14 @@ function GroupChat() {
                       {memberById.get(replyMsg.sender_id)?.display_name ?? "…"}: {replyMsg.type === "image" ? "📷 Photo" : replyMsg.content}
                     </div>
                   )}
-                  {m.type === "image" && m.media_url ? (
+                  {m.type === "announcement" ? (
+                    <div className="w-full flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-petal/80 font-semibold">
+                        <Megaphone className="size-3" /> Announcement
+                      </div>
+                      <span className="text-petal-soft">{m.content}</span>
+                    </div>
+                  ) : m.type === "image" && m.media_url ? (
                     <GroupImage path={m.media_url} />
                   ) : m.type === "voice" && m.media_url ? (
                     <VoicePlayer path={m.media_url} durationMs={(m.media_meta as any)?.duration_ms} />
@@ -488,7 +519,12 @@ function GroupChat() {
               onClick={(e) => e.stopPropagation()}
             >
               {!mine && <p className="text-[10px] mb-1 opacity-70">{sender?.display_name}</p>}
-              {m.type === "image" && m.media_url ? <GroupImage path={m.media_url} /> :
+              {m.type === "announcement" ? (
+                <div className="text-petal-soft">
+                  <p className="text-[10px] uppercase tracking-wider text-petal/70 font-semibold mb-1"><Megaphone className="inline size-3 mr-1" /> Announcement</p>
+                  {m.content}
+                </div>
+              ) : m.type === "image" && m.media_url ? <GroupImage path={m.media_url} /> :
                m.type === "voice" ? <span className="opacity-80">🎙️ Voice message</span> :
                m.type === "poll" ? <span className="opacity-80">📊 Poll</span> :
                m.type === "event" ? <span className="opacity-80">📅 Event</span> :
@@ -593,6 +629,15 @@ function GroupChat() {
             >
               <Swords className="size-4" />
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => setAnnounceOpen(true)}
+                className="size-10 rounded-full bg-petal/10 border border-petal/40 text-petal flex items-center justify-center shrink-0"
+                aria-label="Admin announcement"
+              >
+                <Megaphone className="size-4" />
+              </button>
+            )}
           </>
         )}
         <input
@@ -618,7 +663,11 @@ function GroupChat() {
           <>
             <textarea
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+                setTyping(true);
+              }}
+              onBlur={() => setTyping(false)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                   e.preventDefault();
@@ -683,23 +732,54 @@ function GroupChat() {
         meId={meId}
         onCreated={(ev) => void handleEventCreated(ev)}
       />
+
+      <AnnouncementComposer
+        open={announceOpen}
+        onOpenChange={setAnnounceOpen}
+        onSend={async (content) => {
+          await chat.send({ content, type: "announcement" });
+        }}
+      />
+
+      <GroupPinnedDrawer
+        open={pinnedOpen}
+        onOpenChange={setPinnedOpen}
+        groupId={groupId}
+        memberById={memberById}
+        onJumpTo={(id) => scrollToMessage(listRef.current, id)}
+      />
+
+      <GroupMediaDrawer
+        open={mediaOpen}
+        onOpenChange={setMediaOpen}
+        groupId={groupId}
+      />
+
+      <GroupTaskSheet
+        open={tasksOpen}
+        onOpenChange={setTasksOpen}
+        groupId={groupId}
+        members={members}
+        meId={meId!}
+      />
+
+      <GroupSearchSheet
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        messages={chat.messages}
+        memberById={memberById}
+        meId={meId}
+        onJumpTo={(id) => scrollToMessage(listRef.current, id)}
+      />
     </div>
   );
 }
 
-function GroupImage({ path }: { path: string }) {
-  const [url, setUrl] = useState<string | null>(null);
-  useEffect(() => {
-    let alive = true;
-    if (path.startsWith("http")) {
-      setUrl(path);
-      return;
-    }
-    signMedia(path).then((u) => {
-      if (alive) setUrl(u);
-    });
-    return () => { alive = false; };
-  }, [path]);
-  if (!url) return <div className="w-48 h-32 bg-surface animate-pulse rounded-xl" />;
-  return <img src={url} alt="" className="max-w-full max-h-80 rounded-xl object-cover" />;
+function scrollToMessage(listEl: HTMLDivElement | null, messageId: string) {
+  const el = listEl?.querySelector(`[data-message-id="${messageId}"]`);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.add("ring-2", "ring-petal/60", "rounded-2xl");
+    setTimeout(() => el.classList.remove("ring-2", "ring-petal/60", "rounded-2xl"), 1400);
+  }
 }
