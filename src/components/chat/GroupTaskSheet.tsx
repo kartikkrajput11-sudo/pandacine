@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus, Trash2, CheckCircle2, Circle, Calendar, User, Loader2 } from "lucide-react";
 import { useGroupTasks, useCreateGroupTask, useUpdateGroupTask, useDeleteGroupTask, type GroupTask } from "@/hooks/useGroupTasks";
 import { UserAvatar } from "@/components/UserAvatar";
-import type { GroupMember } from "@/hooks/useGroupAdmin";
+import type { GroupMember } from "@/hooks/useGroups";
 
 export function GroupTaskSheet({
   open,
