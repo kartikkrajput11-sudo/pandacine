@@ -732,6 +732,46 @@ function GroupChat() {
         meId={meId}
         onCreated={(ev) => void handleEventCreated(ev)}
       />
+
+      <AnnouncementComposer
+        open={announceOpen}
+        onOpenChange={setAnnounceOpen}
+        onSend={async (content) => {
+          await chat.send({ content, type: "announcement" });
+        }}
+      />
+
+      <GroupPinnedDrawer
+        open={pinnedOpen}
+        onOpenChange={setPinnedOpen}
+        groupId={groupId}
+        memberById={memberById}
+        meId={meId}
+        onJumpTo={(id) => scrollToMessage(listRef.current, id)}
+      />
+
+      <GroupMediaDrawer
+        open={mediaOpen}
+        onOpenChange={setMediaOpen}
+        groupId={groupId}
+        meId={meId}
+      />
+
+      <GroupTaskSheet
+        open={tasksOpen}
+        onOpenChange={setTasksOpen}
+        groupId={groupId}
+        meId={meId}
+      />
+
+      <GroupSearchSheet
+        open={searchOpen}
+        onOpenChange={setSearchOpen}
+        messages={chat.messages}
+        memberById={memberById}
+        meId={meId}
+        onJumpTo={(id) => scrollToMessage(listRef.current, id)}
+      />
     </div>
   );
 }
