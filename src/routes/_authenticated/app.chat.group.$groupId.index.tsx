@@ -292,6 +292,14 @@ function GroupChat() {
         />
       </header>
 
+      <GroupPresenceBar
+        groupId={groupId}
+        meId={meId}
+        memberById={memberById}
+        onlineIds={onlineIds}
+        typingIds={typingIds}
+      />
+
       {/* Pinned banner */}
       {pinned.length > 0 && (
         <div className="px-4 py-2 bg-muted/50 border-b border-border text-xs text-candle-muted flex items-center gap-2 overflow-x-auto">
