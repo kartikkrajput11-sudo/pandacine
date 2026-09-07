@@ -169,7 +169,7 @@ function TaskCard({
   onDelete: ReturnType<typeof useDeleteGroupTask>;
   groupId: string;
 }) {
-  const assignee = members.find((m) => m.user_id === task.assignee_id) || task.assignee;
+  const assigneeProfile = members.find((m) => m.user_id === task.assignee_id)?.profile || task.assignee;
   const canDelete = task.created_by === meId;
 
   return (
@@ -193,11 +193,11 @@ function TaskCard({
             {task.assignee_id && (
               <div className="flex items-center gap-1.5 text-[10px] text-candle/55 bg-velvet/50 px-2 py-1 rounded-full border border-border">
                 <UserAvatar
-                  src={assignee?.avatar_url ?? null}
-                  name={assignee?.display_name || assignee?.username || null}
+                  src={assigneeProfile?.avatar_url ?? null}
+                  name={assigneeProfile?.display_name || assigneeProfile?.username || null}
                   className="size-4"
                 />
-                {assignee?.display_name || assignee?.username || "Assigned"}
+                {assigneeProfile?.display_name || assigneeProfile?.username || "Assigned"}
               </div>
             )}
             {task.due_date && (
