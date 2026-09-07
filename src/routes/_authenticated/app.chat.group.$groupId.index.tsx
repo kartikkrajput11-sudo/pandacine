@@ -329,7 +329,7 @@ function GroupChat() {
           const canDelete = mine || isAdmin;
           const canPin = isAdmin;
           return (
-            <div key={m.id} className={`flex gap-2 ${mine ? "flex-row-reverse" : ""}`}>
+            <div key={m.id} data-message-id={m.id} className={`flex gap-2 ${mine ? "flex-row-reverse" : ""}`}>
               {!mine && (
                 <UserAvatar
                   src={sender?.avatar_url}
