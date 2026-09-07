@@ -293,7 +293,6 @@ function GroupChat() {
       </header>
 
       <GroupPresenceBar
-        groupId={groupId}
         meId={meId}
         memberById={memberById}
         onlineIds={onlineIds}
