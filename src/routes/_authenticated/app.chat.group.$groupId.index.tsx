@@ -91,6 +91,13 @@ function GroupChat() {
   const [eventOpen, setEventOpen] = useState(false);
   const [recording, setRecording] = useState(false);
   const [forwardMsg, setForwardMsg] = useState<MessageRow | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [pinnedOpen, setPinnedOpen] = useState(false);
+  const [mediaOpen, setMediaOpen] = useState(false);
+  const [tasksOpen, setTasksOpen] = useState(false);
+  const [announceOpen, setAnnounceOpen] = useState(false);
+  const { onlineIds, typingIds, setTyping } = useGroupPresence(groupId, meId);
   const listRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLInputElement>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
