@@ -629,6 +629,15 @@ function GroupChat() {
             >
               <Swords className="size-4" />
             </button>
+            {isAdmin && (
+              <button
+                onClick={() => setAnnounceOpen(true)}
+                className="size-10 rounded-full bg-petal/10 border border-petal/40 text-petal flex items-center justify-center shrink-0"
+                aria-label="Admin announcement"
+              >
+                <Megaphone className="size-4" />
+              </button>
+            )}
           </>
         )}
         <input
