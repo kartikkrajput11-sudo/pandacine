@@ -1,16 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowLeft, Settings, Phone, Video as VideoIcon, Send, Image as ImageIcon,
+  ArrowLeft, Phone, Video as VideoIcon, Send, Image as ImageIcon,
   Pin, Trash2, Reply, X, PinOff, BarChart3, Forward, Swords, Calendar,
+  Megaphone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useProfile } from "@/hooks/useProfile";
 import { useGroup } from "@/hooks/useGroups";
 import { useGroupChat, type GroupMessage } from "@/hooks/useGroupChat";
 import { useGroupReads, seenByForMessage } from "@/hooks/useGroupReads";
+import { useGroupPresence } from "@/hooks/useGroupPresence";
 import { supabase } from "@/integrations/supabase/client";
-import { signMedia } from "@/lib/chat";
 import { startUpload } from "@/lib/upload-manager";
 import { UploadTray } from "@/components/chat/UploadTray";
 import { startGroupCall } from "@/lib/callActions";
@@ -24,6 +25,14 @@ import { DuelGamePicker } from "@/components/chat/DuelGamePicker";
 import { GroupEventComposer } from "@/components/chat/GroupEventComposer";
 import { GroupEventCard } from "@/components/chat/GroupEventCard";
 import { GroupMatchInviteCard } from "@/components/chat/GroupMatchInviteCard";
+import { GroupImage } from "@/components/chat/GroupImage";
+import { GroupHeaderMenu } from "@/components/chat/GroupHeaderMenu";
+import { GroupPresenceBar } from "@/components/chat/GroupPresenceBar";
+import { GroupPinnedDrawer } from "@/components/chat/GroupPinnedDrawer";
+import { GroupMediaDrawer } from "@/components/chat/GroupMediaDrawer";
+import { GroupTaskSheet } from "@/components/chat/GroupTaskSheet";
+import { GroupSearchSheet } from "@/components/chat/GroupSearchSheet";
+import { AnnouncementComposer } from "@/components/chat/AnnouncementComposer";
 import { createGroupMatch } from "@/hooks/useGroupMatch";
 import type { PollMeta } from "@/lib/poll";
 import type { MessageRow } from "@/lib/chat";
