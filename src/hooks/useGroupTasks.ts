@@ -16,7 +16,7 @@ export type GroupTask = {
   due_date: string | null;
   created_at: string;
   updated_at: string;
-  assignee?: { display_name: string | null; avatar_url: string | null } | null;
+  assignee?: { display_name: string | null; username: string | null; avatar_url: string | null } | null;
 };
 
 export function useGroupTasks(groupId: string | null) {
