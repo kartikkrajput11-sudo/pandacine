@@ -122,7 +122,7 @@ export function GroupTaskSheet({
                   <option value="">Anyone</option>
                   {members.map((m) => (
                     <option key={m.user_id} value={m.user_id}>
-                      {m.display_name || m.username || "Member"}
+                      {m.profile?.display_name || m.profile?.username || "Member"}
                     </option>
                   ))}
                 </select>
