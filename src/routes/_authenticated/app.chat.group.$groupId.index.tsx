@@ -281,14 +281,15 @@ function GroupChat() {
           <VideoIcon className="size-4" />
         </button>
 
-        <Link
-          to="/app/chat/group/$groupId/settings"
-          params={{ groupId }}
-          className="size-9 rounded-full bg-surface border border-border flex items-center justify-center text-candle-muted"
-          aria-label="Settings"
-        >
-          <Settings className="size-4" />
-        </Link>
+        <GroupHeaderMenu
+          isAdmin={isAdmin}
+          onSearch={() => setSearchOpen(true)}
+          onMedia={() => setMediaOpen(true)}
+          onPinned={() => setPinnedOpen(true)}
+          onTasks={() => setTasksOpen(true)}
+          onInfo={() => navigate({ to: "/app/chat/group/$groupId/info", params: { groupId } })}
+          onSettings={() => navigate({ to: "/app/chat/group/$groupId/settings", params: { groupId } })}
+        />
       </header>
 
       {/* Pinned banner */}
