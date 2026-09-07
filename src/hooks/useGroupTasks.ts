@@ -28,7 +28,7 @@ export function useGroupTasks(groupId: string | null) {
       if (!groupId) return [];
       const { data, error } = await supabase
         .from("group_tasks")
-        .select("*, assignee:profiles!group_tasks_assignee_id_fkey(display_name, avatar_url)")
+        .select("*, assignee:profiles!group_tasks_assignee_id_fkey(display_name, username, avatar_url)")
         .eq("group_id", groupId)
         .order("created_at", { ascending: false });
       if (error) throw error;
