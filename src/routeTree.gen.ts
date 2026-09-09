@@ -25,6 +25,7 @@ import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticat
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicPushDispatchRouteImport } from './routes/api/public/push-dispatch'
 import { Route as AuthenticatedAppWishlistRouteImport } from './routes/_authenticated/app.wishlist'
+import { Route as AuthenticatedAppWildCards2RouteImport } from './routes/_authenticated/app.wild-cards-2'
 import { Route as AuthenticatedAppWidgetRouteImport } from './routes/_authenticated/app.widget'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app.watchlist'
 import { Route as AuthenticatedAppWatchRouteImport } from './routes/_authenticated/app.watch'
@@ -34,6 +35,7 @@ import { Route as AuthenticatedAppTriviaRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenticated/app.timeline'
 import { Route as AuthenticatedAppTamannaRouteImport } from './routes/_authenticated/app.tamanna'
 import { Route as AuthenticatedAppShopRouteImport } from './routes/_authenticated/app.shop'
+import { Route as AuthenticatedAppSeaBattleRouteImport } from './routes/_authenticated/app.sea-battle'
 import { Route as AuthenticatedAppScribbleRouteImport } from './routes/_authenticated/app.scribble'
 import { Route as AuthenticatedAppPuzzleRouteImport } from './routes/_authenticated/app.puzzle'
 import { Route as AuthenticatedAppPoolRouteImport } from './routes/_authenticated/app.pool'
@@ -171,6 +173,12 @@ const AuthenticatedAppWishlistRoute =
     path: '/wishlist',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppWildCards2Route =
+  AuthenticatedAppWildCards2RouteImport.update({
+    id: '/wild-cards-2',
+    path: '/wild-cards-2',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppWidgetRoute = AuthenticatedAppWidgetRouteImport.update({
   id: '/widget',
   path: '/widget',
@@ -218,6 +226,12 @@ const AuthenticatedAppShopRoute = AuthenticatedAppShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppSeaBattleRoute =
+  AuthenticatedAppSeaBattleRouteImport.update({
+    id: '/sea-battle',
+    path: '/sea-battle',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppScribbleRoute =
   AuthenticatedAppScribbleRouteImport.update({
     id: '/scribble',
@@ -577,6 +591,7 @@ export interface FileRoutesByFullPath {
   '/app/pool': typeof AuthenticatedAppPoolRoute
   '/app/puzzle': typeof AuthenticatedAppPuzzleRoute
   '/app/scribble': typeof AuthenticatedAppScribbleRoute
+  '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
@@ -586,6 +601,7 @@ export interface FileRoutesByFullPath {
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app/widget': typeof AuthenticatedAppWidgetRoute
+  '/app/wild-cards-2': typeof AuthenticatedAppWildCards2Route
   '/app/wishlist': typeof AuthenticatedAppWishlistRoute
   '/api/public/push-dispatch': typeof ApiPublicPushDispatchRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -657,6 +673,7 @@ export interface FileRoutesByTo {
   '/app/pool': typeof AuthenticatedAppPoolRoute
   '/app/puzzle': typeof AuthenticatedAppPuzzleRoute
   '/app/scribble': typeof AuthenticatedAppScribbleRoute
+  '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
@@ -666,6 +683,7 @@ export interface FileRoutesByTo {
   '/app/watch': typeof AuthenticatedAppWatchRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app/widget': typeof AuthenticatedAppWidgetRoute
+  '/app/wild-cards-2': typeof AuthenticatedAppWildCards2Route
   '/app/wishlist': typeof AuthenticatedAppWishlistRoute
   '/api/public/push-dispatch': typeof ApiPublicPushDispatchRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -740,6 +758,7 @@ export interface FileRoutesById {
   '/_authenticated/app/pool': typeof AuthenticatedAppPoolRoute
   '/_authenticated/app/puzzle': typeof AuthenticatedAppPuzzleRoute
   '/_authenticated/app/scribble': typeof AuthenticatedAppScribbleRoute
+  '/_authenticated/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/_authenticated/app/shop': typeof AuthenticatedAppShopRoute
   '/_authenticated/app/tamanna': typeof AuthenticatedAppTamannaRoute
   '/_authenticated/app/timeline': typeof AuthenticatedAppTimelineRoute
@@ -749,6 +768,7 @@ export interface FileRoutesById {
   '/_authenticated/app/watch': typeof AuthenticatedAppWatchRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/_authenticated/app/widget': typeof AuthenticatedAppWidgetRoute
+  '/_authenticated/app/wild-cards-2': typeof AuthenticatedAppWildCards2Route
   '/_authenticated/app/wishlist': typeof AuthenticatedAppWishlistRoute
   '/api/public/push-dispatch': typeof ApiPublicPushDispatchRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
@@ -824,6 +844,7 @@ export interface FileRouteTypes {
     | '/app/pool'
     | '/app/puzzle'
     | '/app/scribble'
+    | '/app/sea-battle'
     | '/app/shop'
     | '/app/tamanna'
     | '/app/timeline'
@@ -833,6 +854,7 @@ export interface FileRouteTypes {
     | '/app/watch'
     | '/app/watchlist'
     | '/app/widget'
+    | '/app/wild-cards-2'
     | '/app/wishlist'
     | '/api/public/push-dispatch'
     | '/lovable/email/suppression'
@@ -904,6 +926,7 @@ export interface FileRouteTypes {
     | '/app/pool'
     | '/app/puzzle'
     | '/app/scribble'
+    | '/app/sea-battle'
     | '/app/shop'
     | '/app/tamanna'
     | '/app/timeline'
@@ -913,6 +936,7 @@ export interface FileRouteTypes {
     | '/app/watch'
     | '/app/watchlist'
     | '/app/widget'
+    | '/app/wild-cards-2'
     | '/app/wishlist'
     | '/api/public/push-dispatch'
     | '/lovable/email/suppression'
@@ -986,6 +1010,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/pool'
     | '/_authenticated/app/puzzle'
     | '/_authenticated/app/scribble'
+    | '/_authenticated/app/sea-battle'
     | '/_authenticated/app/shop'
     | '/_authenticated/app/tamanna'
     | '/_authenticated/app/timeline'
@@ -995,6 +1020,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/watch'
     | '/_authenticated/app/watchlist'
     | '/_authenticated/app/widget'
+    | '/_authenticated/app/wild-cards-2'
     | '/_authenticated/app/wishlist'
     | '/api/public/push-dispatch'
     | '/lovable/email/suppression'
@@ -1160,6 +1186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppWishlistRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/wild-cards-2': {
+      id: '/_authenticated/app/wild-cards-2'
+      path: '/wild-cards-2'
+      fullPath: '/app/wild-cards-2'
+      preLoaderRoute: typeof AuthenticatedAppWildCards2RouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/widget': {
       id: '/_authenticated/app/widget'
       path: '/widget'
@@ -1221,6 +1254,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/app/shop'
       preLoaderRoute: typeof AuthenticatedAppShopRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/sea-battle': {
+      id: '/_authenticated/app/sea-battle'
+      path: '/sea-battle'
+      fullPath: '/app/sea-battle'
+      preLoaderRoute: typeof AuthenticatedAppSeaBattleRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/scribble': {
@@ -1709,6 +1749,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppPoolRoute: typeof AuthenticatedAppPoolRoute
   AuthenticatedAppPuzzleRoute: typeof AuthenticatedAppPuzzleRoute
   AuthenticatedAppScribbleRoute: typeof AuthenticatedAppScribbleRoute
+  AuthenticatedAppSeaBattleRoute: typeof AuthenticatedAppSeaBattleRoute
   AuthenticatedAppShopRoute: typeof AuthenticatedAppShopRoute
   AuthenticatedAppTamannaRoute: typeof AuthenticatedAppTamannaRoute
   AuthenticatedAppTimelineRoute: typeof AuthenticatedAppTimelineRoute
@@ -1718,6 +1759,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppWatchRoute: typeof AuthenticatedAppWatchRoute
   AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
   AuthenticatedAppWidgetRoute: typeof AuthenticatedAppWidgetRoute
+  AuthenticatedAppWildCards2Route: typeof AuthenticatedAppWildCards2Route
   AuthenticatedAppWishlistRoute: typeof AuthenticatedAppWishlistRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
   AuthenticatedAppCallPeerIdRoute: typeof AuthenticatedAppCallPeerIdRoute
@@ -1765,6 +1807,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppPoolRoute: AuthenticatedAppPoolRoute,
   AuthenticatedAppPuzzleRoute: AuthenticatedAppPuzzleRoute,
   AuthenticatedAppScribbleRoute: AuthenticatedAppScribbleRoute,
+  AuthenticatedAppSeaBattleRoute: AuthenticatedAppSeaBattleRoute,
   AuthenticatedAppShopRoute: AuthenticatedAppShopRoute,
   AuthenticatedAppTamannaRoute: AuthenticatedAppTamannaRoute,
   AuthenticatedAppTimelineRoute: AuthenticatedAppTimelineRoute,
@@ -1774,6 +1817,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppWatchRoute: AuthenticatedAppWatchRoute,
   AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
   AuthenticatedAppWidgetRoute: AuthenticatedAppWidgetRoute,
+  AuthenticatedAppWildCards2Route: AuthenticatedAppWildCards2Route,
   AuthenticatedAppWishlistRoute: AuthenticatedAppWishlistRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
   AuthenticatedAppCallPeerIdRoute: AuthenticatedAppCallPeerIdRoute,
