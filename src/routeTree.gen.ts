@@ -56,9 +56,11 @@ import { Route as AuthenticatedAppInviteRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppHideseekRouteImport } from './routes/_authenticated/app.hideseek'
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated/app.help'
 import { Route as AuthenticatedAppFriendsRouteImport } from './routes/_authenticated/app.friends'
+import { Route as AuthenticatedAppFourInARowRouteImport } from './routes/_authenticated/app.four-in-a-row'
 import { Route as AuthenticatedAppDailyChallengeRouteImport } from './routes/_authenticated/app.daily-challenge'
 import { Route as AuthenticatedAppConciergeRouteImport } from './routes/_authenticated/app.concierge'
 import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticated/app.chess'
+import { Route as AuthenticatedAppCheckersRouteImport } from './routes/_authenticated/app.checkers'
 import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated/app.calls'
 import { Route as AuthenticatedAppCalendarRouteImport } from './routes/_authenticated/app.calendar'
 import { Route as AuthenticatedAppBucketRouteImport } from './routes/_authenticated/app.bucket'
@@ -332,6 +334,12 @@ const AuthenticatedAppFriendsRoute = AuthenticatedAppFriendsRouteImport.update({
   path: '/friends',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppFourInARowRoute =
+  AuthenticatedAppFourInARowRouteImport.update({
+    id: '/four-in-a-row',
+    path: '/four-in-a-row',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppDailyChallengeRoute =
   AuthenticatedAppDailyChallengeRouteImport.update({
     id: '/daily-challenge',
@@ -349,6 +357,12 @@ const AuthenticatedAppChessRoute = AuthenticatedAppChessRouteImport.update({
   path: '/chess',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppCheckersRoute =
+  AuthenticatedAppCheckersRouteImport.update({
+    id: '/checkers',
+    path: '/checkers',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppCallsRoute = AuthenticatedAppCallsRouteImport.update({
   id: '/calls',
   path: '/calls',
@@ -536,9 +550,11 @@ export interface FileRoutesByFullPath {
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
+  '/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
+  '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
   '/app/friends': typeof AuthenticatedAppFriendsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
   '/app/hideseek': typeof AuthenticatedAppHideseekRoute
@@ -615,9 +631,11 @@ export interface FileRoutesByTo {
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
+  '/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
+  '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
   '/app/friends': typeof AuthenticatedAppFriendsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
   '/app/hideseek': typeof AuthenticatedAppHideseekRoute
@@ -695,9 +713,11 @@ export interface FileRoutesById {
   '/_authenticated/app/bucket': typeof AuthenticatedAppBucketRoute
   '/_authenticated/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
+  '/_authenticated/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/_authenticated/app/chess': typeof AuthenticatedAppChessRoute
   '/_authenticated/app/concierge': typeof AuthenticatedAppConciergeRoute
   '/_authenticated/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
+  '/_authenticated/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
   '/_authenticated/app/friends': typeof AuthenticatedAppFriendsRoute
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
   '/_authenticated/app/hideseek': typeof AuthenticatedAppHideseekRoute
@@ -777,9 +797,11 @@ export interface FileRouteTypes {
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
+    | '/app/checkers'
     | '/app/chess'
     | '/app/concierge'
     | '/app/daily-challenge'
+    | '/app/four-in-a-row'
     | '/app/friends'
     | '/app/help'
     | '/app/hideseek'
@@ -856,9 +878,11 @@ export interface FileRouteTypes {
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
+    | '/app/checkers'
     | '/app/chess'
     | '/app/concierge'
     | '/app/daily-challenge'
+    | '/app/four-in-a-row'
     | '/app/friends'
     | '/app/help'
     | '/app/hideseek'
@@ -935,9 +959,11 @@ export interface FileRouteTypes {
     | '/_authenticated/app/bucket'
     | '/_authenticated/app/calendar'
     | '/_authenticated/app/calls'
+    | '/_authenticated/app/checkers'
     | '/_authenticated/app/chess'
     | '/_authenticated/app/concierge'
     | '/_authenticated/app/daily-challenge'
+    | '/_authenticated/app/four-in-a-row'
     | '/_authenticated/app/friends'
     | '/_authenticated/app/help'
     | '/_authenticated/app/hideseek'
@@ -1351,6 +1377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppFriendsRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/four-in-a-row': {
+      id: '/_authenticated/app/four-in-a-row'
+      path: '/four-in-a-row'
+      fullPath: '/app/four-in-a-row'
+      preLoaderRoute: typeof AuthenticatedAppFourInARowRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/daily-challenge': {
       id: '/_authenticated/app/daily-challenge'
       path: '/daily-challenge'
@@ -1370,6 +1403,13 @@ declare module '@tanstack/react-router' {
       path: '/chess'
       fullPath: '/app/chess'
       preLoaderRoute: typeof AuthenticatedAppChessRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/checkers': {
+      id: '/_authenticated/app/checkers'
+      path: '/checkers'
+      fullPath: '/app/checkers'
+      preLoaderRoute: typeof AuthenticatedAppCheckersRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/calls': {
@@ -1642,9 +1682,11 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppBucketRoute: typeof AuthenticatedAppBucketRoute
   AuthenticatedAppCalendarRoute: typeof AuthenticatedAppCalendarRoute
   AuthenticatedAppCallsRoute: typeof AuthenticatedAppCallsRoute
+  AuthenticatedAppCheckersRoute: typeof AuthenticatedAppCheckersRoute
   AuthenticatedAppChessRoute: typeof AuthenticatedAppChessRoute
   AuthenticatedAppConciergeRoute: typeof AuthenticatedAppConciergeRoute
   AuthenticatedAppDailyChallengeRoute: typeof AuthenticatedAppDailyChallengeRoute
+  AuthenticatedAppFourInARowRoute: typeof AuthenticatedAppFourInARowRoute
   AuthenticatedAppFriendsRoute: typeof AuthenticatedAppFriendsRoute
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
   AuthenticatedAppHideseekRoute: typeof AuthenticatedAppHideseekRoute
@@ -1696,9 +1738,11 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppBucketRoute: AuthenticatedAppBucketRoute,
   AuthenticatedAppCalendarRoute: AuthenticatedAppCalendarRoute,
   AuthenticatedAppCallsRoute: AuthenticatedAppCallsRoute,
+  AuthenticatedAppCheckersRoute: AuthenticatedAppCheckersRoute,
   AuthenticatedAppChessRoute: AuthenticatedAppChessRoute,
   AuthenticatedAppConciergeRoute: AuthenticatedAppConciergeRoute,
   AuthenticatedAppDailyChallengeRoute: AuthenticatedAppDailyChallengeRoute,
+  AuthenticatedAppFourInARowRoute: AuthenticatedAppFourInARowRoute,
   AuthenticatedAppFriendsRoute: AuthenticatedAppFriendsRoute,
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
   AuthenticatedAppHideseekRoute: AuthenticatedAppHideseekRoute,
