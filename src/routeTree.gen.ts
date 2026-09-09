@@ -59,6 +59,7 @@ import { Route as AuthenticatedAppHideseekRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated/app.help'
 import { Route as AuthenticatedAppFriendsRouteImport } from './routes/_authenticated/app.friends'
 import { Route as AuthenticatedAppFourInARowRouteImport } from './routes/_authenticated/app.four-in-a-row'
+import { Route as AuthenticatedAppDarts101RouteImport } from './routes/_authenticated/app.darts-101'
 import { Route as AuthenticatedAppDailyChallengeRouteImport } from './routes/_authenticated/app.daily-challenge'
 import { Route as AuthenticatedAppConciergeRouteImport } from './routes/_authenticated/app.concierge'
 import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticated/app.chess'
@@ -67,6 +68,7 @@ import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAppCalendarRouteImport } from './routes/_authenticated/app.calendar'
 import { Route as AuthenticatedAppBucketRouteImport } from './routes/_authenticated/app.bucket'
 import { Route as AuthenticatedAppArenaRouteImport } from './routes/_authenticated/app.arena'
+import { Route as AuthenticatedAppArcheryMasterRouteImport } from './routes/_authenticated/app.archery-master'
 import { Route as AuthenticatedAppAnniversaryRouteImport } from './routes/_authenticated/app.anniversary'
 import { Route as AuthenticatedAppMoviesIndexRouteImport } from './routes/_authenticated/app.movies.index'
 import { Route as AuthenticatedAppLettersIndexRouteImport } from './routes/_authenticated/app.letters.index'
@@ -354,6 +356,12 @@ const AuthenticatedAppFourInARowRoute =
     path: '/four-in-a-row',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppDarts101Route =
+  AuthenticatedAppDarts101RouteImport.update({
+    id: '/darts-101',
+    path: '/darts-101',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppDailyChallengeRoute =
   AuthenticatedAppDailyChallengeRouteImport.update({
     id: '/daily-challenge',
@@ -398,6 +406,12 @@ const AuthenticatedAppArenaRoute = AuthenticatedAppArenaRouteImport.update({
   path: '/arena',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppArcheryMasterRoute =
+  AuthenticatedAppArcheryMasterRouteImport.update({
+    id: '/archery-master',
+    path: '/archery-master',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppAnniversaryRoute =
   AuthenticatedAppAnniversaryRouteImport.update({
     id: '/anniversary',
@@ -560,6 +574,7 @@ export interface FileRoutesByFullPath {
   '/api/livekit-token': typeof ApiLivekitTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
+  '/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/app/arena': typeof AuthenticatedAppArenaRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
@@ -568,6 +583,7 @@ export interface FileRoutesByFullPath {
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
+  '/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
   '/app/friends': typeof AuthenticatedAppFriendsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -643,6 +659,7 @@ export interface FileRoutesByTo {
   '/api/livekit-token': typeof ApiLivekitTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
+  '/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/app/arena': typeof AuthenticatedAppArenaRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
@@ -651,6 +668,7 @@ export interface FileRoutesByTo {
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
+  '/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
   '/app/friends': typeof AuthenticatedAppFriendsRoute
   '/app/help': typeof AuthenticatedAppHelpRoute
@@ -727,6 +745,7 @@ export interface FileRoutesById {
   '/api/livekit-token': typeof ApiLivekitTokenRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/_authenticated/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
+  '/_authenticated/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/_authenticated/app/arena': typeof AuthenticatedAppArenaRoute
   '/_authenticated/app/bucket': typeof AuthenticatedAppBucketRoute
   '/_authenticated/app/calendar': typeof AuthenticatedAppCalendarRoute
@@ -735,6 +754,7 @@ export interface FileRoutesById {
   '/_authenticated/app/chess': typeof AuthenticatedAppChessRoute
   '/_authenticated/app/concierge': typeof AuthenticatedAppConciergeRoute
   '/_authenticated/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
+  '/_authenticated/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/_authenticated/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
   '/_authenticated/app/friends': typeof AuthenticatedAppFriendsRoute
   '/_authenticated/app/help': typeof AuthenticatedAppHelpRoute
@@ -813,6 +833,7 @@ export interface FileRouteTypes {
     | '/api/livekit-token'
     | '/email/unsubscribe'
     | '/app/anniversary'
+    | '/app/archery-master'
     | '/app/arena'
     | '/app/bucket'
     | '/app/calendar'
@@ -821,6 +842,7 @@ export interface FileRouteTypes {
     | '/app/chess'
     | '/app/concierge'
     | '/app/daily-challenge'
+    | '/app/darts-101'
     | '/app/four-in-a-row'
     | '/app/friends'
     | '/app/help'
@@ -896,6 +918,7 @@ export interface FileRouteTypes {
     | '/api/livekit-token'
     | '/email/unsubscribe'
     | '/app/anniversary'
+    | '/app/archery-master'
     | '/app/arena'
     | '/app/bucket'
     | '/app/calendar'
@@ -904,6 +927,7 @@ export interface FileRouteTypes {
     | '/app/chess'
     | '/app/concierge'
     | '/app/daily-challenge'
+    | '/app/darts-101'
     | '/app/four-in-a-row'
     | '/app/friends'
     | '/app/help'
@@ -979,6 +1003,7 @@ export interface FileRouteTypes {
     | '/api/livekit-token'
     | '/email/unsubscribe'
     | '/_authenticated/app/anniversary'
+    | '/_authenticated/app/archery-master'
     | '/_authenticated/app/arena'
     | '/_authenticated/app/bucket'
     | '/_authenticated/app/calendar'
@@ -987,6 +1012,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/chess'
     | '/_authenticated/app/concierge'
     | '/_authenticated/app/daily-challenge'
+    | '/_authenticated/app/darts-101'
     | '/_authenticated/app/four-in-a-row'
     | '/_authenticated/app/friends'
     | '/_authenticated/app/help'
@@ -1424,6 +1450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppFourInARowRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/darts-101': {
+      id: '/_authenticated/app/darts-101'
+      path: '/darts-101'
+      fullPath: '/app/darts-101'
+      preLoaderRoute: typeof AuthenticatedAppDarts101RouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/daily-challenge': {
       id: '/_authenticated/app/daily-challenge'
       path: '/daily-challenge'
@@ -1478,6 +1511,13 @@ declare module '@tanstack/react-router' {
       path: '/arena'
       fullPath: '/app/arena'
       preLoaderRoute: typeof AuthenticatedAppArenaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/archery-master': {
+      id: '/_authenticated/app/archery-master'
+      path: '/archery-master'
+      fullPath: '/app/archery-master'
+      preLoaderRoute: typeof AuthenticatedAppArcheryMasterRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/anniversary': {
@@ -1718,6 +1758,7 @@ const AuthenticatedAppChatGroupGroupIdRouteWithChildren =
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnniversaryRoute: typeof AuthenticatedAppAnniversaryRoute
+  AuthenticatedAppArcheryMasterRoute: typeof AuthenticatedAppArcheryMasterRoute
   AuthenticatedAppArenaRoute: typeof AuthenticatedAppArenaRoute
   AuthenticatedAppBucketRoute: typeof AuthenticatedAppBucketRoute
   AuthenticatedAppCalendarRoute: typeof AuthenticatedAppCalendarRoute
@@ -1726,6 +1767,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppChessRoute: typeof AuthenticatedAppChessRoute
   AuthenticatedAppConciergeRoute: typeof AuthenticatedAppConciergeRoute
   AuthenticatedAppDailyChallengeRoute: typeof AuthenticatedAppDailyChallengeRoute
+  AuthenticatedAppDarts101Route: typeof AuthenticatedAppDarts101Route
   AuthenticatedAppFourInARowRoute: typeof AuthenticatedAppFourInARowRoute
   AuthenticatedAppFriendsRoute: typeof AuthenticatedAppFriendsRoute
   AuthenticatedAppHelpRoute: typeof AuthenticatedAppHelpRoute
@@ -1776,6 +1818,7 @@ interface AuthenticatedAppRouteChildren {
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnniversaryRoute: AuthenticatedAppAnniversaryRoute,
+  AuthenticatedAppArcheryMasterRoute: AuthenticatedAppArcheryMasterRoute,
   AuthenticatedAppArenaRoute: AuthenticatedAppArenaRoute,
   AuthenticatedAppBucketRoute: AuthenticatedAppBucketRoute,
   AuthenticatedAppCalendarRoute: AuthenticatedAppCalendarRoute,
@@ -1784,6 +1827,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppChessRoute: AuthenticatedAppChessRoute,
   AuthenticatedAppConciergeRoute: AuthenticatedAppConciergeRoute,
   AuthenticatedAppDailyChallengeRoute: AuthenticatedAppDailyChallengeRoute,
+  AuthenticatedAppDarts101Route: AuthenticatedAppDarts101Route,
   AuthenticatedAppFourInARowRoute: AuthenticatedAppFourInARowRoute,
   AuthenticatedAppFriendsRoute: AuthenticatedAppFriendsRoute,
   AuthenticatedAppHelpRoute: AuthenticatedAppHelpRoute,
