@@ -61,6 +61,7 @@ import { Route as AuthenticatedAppFriendsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppFourInARowRouteImport } from './routes/_authenticated/app.four-in-a-row'
 import { Route as AuthenticatedAppDarts101RouteImport } from './routes/_authenticated/app.darts-101'
 import { Route as AuthenticatedAppDailyChallengeRouteImport } from './routes/_authenticated/app.daily-challenge'
+import { Route as AuthenticatedAppCupPongRouteImport } from './routes/_authenticated/app.cup-pong'
 import { Route as AuthenticatedAppConciergeRouteImport } from './routes/_authenticated/app.concierge'
 import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticated/app.chess'
 import { Route as AuthenticatedAppCheckersRouteImport } from './routes/_authenticated/app.checkers'
@@ -368,6 +369,11 @@ const AuthenticatedAppDailyChallengeRoute =
     path: '/daily-challenge',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppCupPongRoute = AuthenticatedAppCupPongRouteImport.update({
+  id: '/cup-pong',
+  path: '/cup-pong',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppConciergeRoute =
   AuthenticatedAppConciergeRouteImport.update({
     id: '/concierge',
@@ -582,6 +588,7 @@ export interface FileRoutesByFullPath {
   '/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
+  '/app/cup-pong': typeof AuthenticatedAppCupPongRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
@@ -667,6 +674,7 @@ export interface FileRoutesByTo {
   '/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
+  '/app/cup-pong': typeof AuthenticatedAppCupPongRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
@@ -753,6 +761,7 @@ export interface FileRoutesById {
   '/_authenticated/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/_authenticated/app/chess': typeof AuthenticatedAppChessRoute
   '/_authenticated/app/concierge': typeof AuthenticatedAppConciergeRoute
+  '/_authenticated/app/cup-pong': typeof AuthenticatedAppCupPongRoute
   '/_authenticated/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/_authenticated/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/_authenticated/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
@@ -841,6 +850,7 @@ export interface FileRouteTypes {
     | '/app/checkers'
     | '/app/chess'
     | '/app/concierge'
+    | '/app/cup-pong'
     | '/app/daily-challenge'
     | '/app/darts-101'
     | '/app/four-in-a-row'
@@ -926,6 +936,7 @@ export interface FileRouteTypes {
     | '/app/checkers'
     | '/app/chess'
     | '/app/concierge'
+    | '/app/cup-pong'
     | '/app/daily-challenge'
     | '/app/darts-101'
     | '/app/four-in-a-row'
@@ -1011,6 +1022,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/checkers'
     | '/_authenticated/app/chess'
     | '/_authenticated/app/concierge'
+    | '/_authenticated/app/cup-pong'
     | '/_authenticated/app/daily-challenge'
     | '/_authenticated/app/darts-101'
     | '/_authenticated/app/four-in-a-row'
@@ -1464,6 +1476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppDailyChallengeRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/cup-pong': {
+      id: '/_authenticated/app/cup-pong'
+      path: '/cup-pong'
+      fullPath: '/app/cup-pong'
+      preLoaderRoute: typeof AuthenticatedAppCupPongRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/concierge': {
       id: '/_authenticated/app/concierge'
       path: '/concierge'
@@ -1766,6 +1785,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppCheckersRoute: typeof AuthenticatedAppCheckersRoute
   AuthenticatedAppChessRoute: typeof AuthenticatedAppChessRoute
   AuthenticatedAppConciergeRoute: typeof AuthenticatedAppConciergeRoute
+  AuthenticatedAppCupPongRoute: typeof AuthenticatedAppCupPongRoute
   AuthenticatedAppDailyChallengeRoute: typeof AuthenticatedAppDailyChallengeRoute
   AuthenticatedAppDarts101Route: typeof AuthenticatedAppDarts101Route
   AuthenticatedAppFourInARowRoute: typeof AuthenticatedAppFourInARowRoute
@@ -1826,6 +1846,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppCheckersRoute: AuthenticatedAppCheckersRoute,
   AuthenticatedAppChessRoute: AuthenticatedAppChessRoute,
   AuthenticatedAppConciergeRoute: AuthenticatedAppConciergeRoute,
+  AuthenticatedAppCupPongRoute: AuthenticatedAppCupPongRoute,
   AuthenticatedAppDailyChallengeRoute: AuthenticatedAppDailyChallengeRoute,
   AuthenticatedAppDarts101Route: AuthenticatedAppDarts101Route,
   AuthenticatedAppFourInARowRoute: AuthenticatedAppFourInARowRoute,
