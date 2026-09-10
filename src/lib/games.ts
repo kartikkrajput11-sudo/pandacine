@@ -21,7 +21,17 @@ export type GameKind =
   | "ludo"
   | "uno"
   | "hide-seek"
-  | "pool";
+  | "pool"
+  | "sea-battle"
+  | "wild-cards-2"
+  | "four-in-a-row"
+  | "checkers"
+  | "darts-101"
+  | "mini-golf"
+  | "cup-pong"
+  | "tank-shot"
+  | "basketball-arcade"
+  | "archery-master";
 
 // Games shown in the picker. Rock-Paper-Scissors is retired but the route
 // still handles it for any deep-link, so it stays in GameKind above.
@@ -49,10 +59,30 @@ export const GAME_KINDS: GameKind[] = [
   "never-have-i-ever",
   "this-or-that",
   "guess-me",
+  "sea-battle",
+  "wild-cards-2",
+  "four-in-a-row",
+  "checkers",
+  "darts-101",
+  "mini-golf",
+  "cup-pong",
+  "tank-shot",
+  "basketball-arcade",
+  "archery-master",
 ];
 
 
 export const GAMES: Record<GameKind, { name: string; emoji: string; body: string; ai?: boolean; href?: string; comingSoon?: boolean }> = {
+  "sea-battle": { name: "Sea Battle", emoji: "🚢", body: "Sink their fleet before they sink yours.", href: "/app/sea-battle" },
+  "wild-cards-2": { name: "Wild Cards 2", emoji: "🃏", body: "Match colour or number — go out first.", href: "/app/wild-cards-2" },
+  "four-in-a-row": { name: "Four In A Row", emoji: "🔴", body: "Drop discs, connect four.", href: "/app/four-in-a-row" },
+  "checkers": { name: "Checkers", emoji: "⛃", body: "Forced captures, crowned kings.", href: "/app/checkers" },
+  "darts-101": { name: "101 Darts", emoji: "🎯", body: "Three darts a turn, double out.", href: "/app/darts-101" },
+  "mini-golf": { name: "Mini Golf Match", emoji: "⛳", body: "Nine holes, lowest score wins.", href: "/app/mini-golf" },
+  "cup-pong": { name: "Cup Pong", emoji: "🥤", body: "Ten cups, steady hands.", href: "/app/cup-pong" },
+  "tank-shot": { name: "Tank Shot!", emoji: "💥", body: "Angle, power, artillery duel.", href: "/app/tank-shot" },
+  "basketball-arcade": { name: "Basketball Arcade", emoji: "🏀", body: "Sixty seconds of buckets.", href: "/app/basketball-arcade" },
+  "archery-master": { name: "Archery Master", emoji: "🏹", body: "Three rounds, find the gold.", href: "/app/archery-master" },
   "paint-together": { name: "Paint Together", emoji: "🎨", body: "Live shared canvas.", href: "/app/paint" },
   "chess": { name: "Chess", emoji: "♟️", body: "Play with your panda, live.", href: "/app/chess" },
   "ludo": { name: "Ludo", emoji: "🎲", body: "Roll, race, capture — 2-player.", href: "/app/ludo" },

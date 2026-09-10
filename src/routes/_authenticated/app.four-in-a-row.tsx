@@ -41,7 +41,7 @@ function FourInARow() {
 
   return (
     <DuoGameFrame
-      game={"four-in-a-row" as never}
+      game="four-in-a-row"
       title="Four In A Row"
       tagline="Drop, stack, connect four."
       rules={RULES}

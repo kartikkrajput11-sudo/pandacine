@@ -51,7 +51,7 @@ function Archery() {
 
   return (
     <DuoGameFrame
-      game={"archery-master" as never}
+      game="archery-master"
       title="Archery Master"
       tagline="Three rounds. Fifteen arrows. Find the gold."
       rules={RULES}

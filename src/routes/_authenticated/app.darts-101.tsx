@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createFileRoute as _crf } from "@tanstack/react-router";
 import { useDuoGame, duoSearch } from "@/hooks/useDuoGame";
 import { DuoGameFrame } from "@/components/games/DuoGameFrame";
 import { dartsInitial, dartsThrow, scoreDart, type DartsState } from "@/lib/duo/arcade";
@@ -45,7 +44,7 @@ function Darts() {
 
   return (
     <DuoGameFrame
-      game={"darts-101" as never}
+      game="darts-101"
       title="101 Darts"
       tagline="Three darts, double out."
       rules={RULES}

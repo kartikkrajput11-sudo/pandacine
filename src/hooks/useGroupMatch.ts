@@ -46,6 +46,16 @@ export const DUEL_GAMES = [
   { id: "daily-challenge", name: "Daily Challenge",    emoji: "🌞", href: "/app/daily-challenge",  maxPlayers: 4 },
   { id: "puzzle-together", name: "Puzzle Together",    emoji: "🧩", href: "/app/puzzle",           maxPlayers: 4 },
 
+  { id: "sea-battle", name: "Sea Battle", emoji: "🚢", href: "/app/sea-battle", maxPlayers: 2 },
+  { id: "wild-cards-2", name: "Wild Cards 2", emoji: "🃏", href: "/app/wild-cards-2", maxPlayers: 2 },
+  { id: "four-in-a-row", name: "Four In A Row", emoji: "🔴", href: "/app/four-in-a-row", maxPlayers: 2 },
+  { id: "checkers", name: "Checkers", emoji: "⛃", href: "/app/checkers", maxPlayers: 2 },
+  { id: "darts-101", name: "101 Darts", emoji: "🎯", href: "/app/darts-101", maxPlayers: 2 },
+  { id: "mini-golf", name: "Mini Golf Match", emoji: "⛳", href: "/app/mini-golf", maxPlayers: 2 },
+  { id: "cup-pong", name: "Cup Pong", emoji: "🥤", href: "/app/cup-pong", maxPlayers: 2 },
+  { id: "tank-shot", name: "Tank Shot!", emoji: "💥", href: "/app/tank-shot", maxPlayers: 2 },
+  { id: "basketball-arcade", name: "Basketball Arcade", emoji: "🏀", href: "/app/basketball-arcade", maxPlayers: 2 },
+  { id: "archery-master", name: "Archery Master", emoji: "🏹", href: "/app/archery-master", maxPlayers: 2 },
 ];
 
 export async function createGroupMatch(groupId: string, game: string, maxPlayers = 2): Promise<GroupMatchRow> {

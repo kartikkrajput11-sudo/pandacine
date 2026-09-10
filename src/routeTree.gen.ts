@@ -33,6 +33,7 @@ import { Route as AuthenticatedAppWalletRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppUnoRouteImport } from './routes/_authenticated/app.uno'
 import { Route as AuthenticatedAppTriviaRouteImport } from './routes/_authenticated/app.trivia'
 import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenticated/app.timeline'
+import { Route as AuthenticatedAppTankShotRouteImport } from './routes/_authenticated/app.tank-shot'
 import { Route as AuthenticatedAppTamannaRouteImport } from './routes/_authenticated/app.tamanna'
 import { Route as AuthenticatedAppShopRouteImport } from './routes/_authenticated/app.shop'
 import { Route as AuthenticatedAppSeaBattleRouteImport } from './routes/_authenticated/app.sea-battle'
@@ -46,6 +47,7 @@ import { Route as AuthenticatedAppPandaShopRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppPaintRouteImport } from './routes/_authenticated/app.paint'
 import { Route as AuthenticatedAppMoviesRouteImport } from './routes/_authenticated/app.movies'
 import { Route as AuthenticatedAppMoodRouteImport } from './routes/_authenticated/app.mood'
+import { Route as AuthenticatedAppMiniGolfRouteImport } from './routes/_authenticated/app.mini-golf'
 import { Route as AuthenticatedAppMemoryChallengeRouteImport } from './routes/_authenticated/app.memory-challenge'
 import { Route as AuthenticatedAppMemoriesRouteImport } from './routes/_authenticated/app.memories'
 import { Route as AuthenticatedAppMeRouteImport } from './routes/_authenticated/app.me'
@@ -61,12 +63,14 @@ import { Route as AuthenticatedAppFriendsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppFourInARowRouteImport } from './routes/_authenticated/app.four-in-a-row'
 import { Route as AuthenticatedAppDarts101RouteImport } from './routes/_authenticated/app.darts-101'
 import { Route as AuthenticatedAppDailyChallengeRouteImport } from './routes/_authenticated/app.daily-challenge'
+import { Route as AuthenticatedAppCupPongRouteImport } from './routes/_authenticated/app.cup-pong'
 import { Route as AuthenticatedAppConciergeRouteImport } from './routes/_authenticated/app.concierge'
 import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticated/app.chess'
 import { Route as AuthenticatedAppCheckersRouteImport } from './routes/_authenticated/app.checkers'
 import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated/app.calls'
 import { Route as AuthenticatedAppCalendarRouteImport } from './routes/_authenticated/app.calendar'
 import { Route as AuthenticatedAppBucketRouteImport } from './routes/_authenticated/app.bucket'
+import { Route as AuthenticatedAppBasketballArcadeRouteImport } from './routes/_authenticated/app.basketball-arcade'
 import { Route as AuthenticatedAppArenaRouteImport } from './routes/_authenticated/app.arena'
 import { Route as AuthenticatedAppArcheryMasterRouteImport } from './routes/_authenticated/app.archery-master'
 import { Route as AuthenticatedAppAnniversaryRouteImport } from './routes/_authenticated/app.anniversary'
@@ -218,6 +222,12 @@ const AuthenticatedAppTimelineRoute =
     path: '/timeline',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppTankShotRoute =
+  AuthenticatedAppTankShotRouteImport.update({
+    id: '/tank-shot',
+    path: '/tank-shot',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppTamannaRoute = AuthenticatedAppTamannaRouteImport.update({
   id: '/tamanna',
   path: '/tamanna',
@@ -286,6 +296,12 @@ const AuthenticatedAppMoodRoute = AuthenticatedAppMoodRouteImport.update({
   path: '/mood',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppMiniGolfRoute =
+  AuthenticatedAppMiniGolfRouteImport.update({
+    id: '/mini-golf',
+    path: '/mini-golf',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppMemoryChallengeRoute =
   AuthenticatedAppMemoryChallengeRouteImport.update({
     id: '/memory-challenge',
@@ -368,6 +384,11 @@ const AuthenticatedAppDailyChallengeRoute =
     path: '/daily-challenge',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppCupPongRoute = AuthenticatedAppCupPongRouteImport.update({
+  id: '/cup-pong',
+  path: '/cup-pong',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
 const AuthenticatedAppConciergeRoute =
   AuthenticatedAppConciergeRouteImport.update({
     id: '/concierge',
@@ -401,6 +422,12 @@ const AuthenticatedAppBucketRoute = AuthenticatedAppBucketRouteImport.update({
   path: '/bucket',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppBasketballArcadeRoute =
+  AuthenticatedAppBasketballArcadeRouteImport.update({
+    id: '/basketball-arcade',
+    path: '/basketball-arcade',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppArenaRoute = AuthenticatedAppArenaRouteImport.update({
   id: '/arena',
   path: '/arena',
@@ -576,12 +603,14 @@ export interface FileRoutesByFullPath {
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
   '/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/app/arena': typeof AuthenticatedAppArenaRoute
+  '/app/basketball-arcade': typeof AuthenticatedAppBasketballArcadeRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
   '/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
+  '/app/cup-pong': typeof AuthenticatedAppCupPongRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
@@ -597,6 +626,7 @@ export interface FileRoutesByFullPath {
   '/app/me': typeof AuthenticatedAppMeRoute
   '/app/memories': typeof AuthenticatedAppMemoriesRoute
   '/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
+  '/app/mini-golf': typeof AuthenticatedAppMiniGolfRoute
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/app/paint': typeof AuthenticatedAppPaintRoute
@@ -610,6 +640,7 @@ export interface FileRoutesByFullPath {
   '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
+  '/app/tank-shot': typeof AuthenticatedAppTankShotRoute
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
@@ -661,12 +692,14 @@ export interface FileRoutesByTo {
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
   '/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/app/arena': typeof AuthenticatedAppArenaRoute
+  '/app/basketball-arcade': typeof AuthenticatedAppBasketballArcadeRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
   '/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/app/chess': typeof AuthenticatedAppChessRoute
   '/app/concierge': typeof AuthenticatedAppConciergeRoute
+  '/app/cup-pong': typeof AuthenticatedAppCupPongRoute
   '/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
@@ -682,6 +715,7 @@ export interface FileRoutesByTo {
   '/app/me': typeof AuthenticatedAppMeRoute
   '/app/memories': typeof AuthenticatedAppMemoriesRoute
   '/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
+  '/app/mini-golf': typeof AuthenticatedAppMiniGolfRoute
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/paint': typeof AuthenticatedAppPaintRoute
   '/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
@@ -694,6 +728,7 @@ export interface FileRoutesByTo {
   '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
+  '/app/tank-shot': typeof AuthenticatedAppTankShotRoute
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
@@ -747,12 +782,14 @@ export interface FileRoutesById {
   '/_authenticated/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
   '/_authenticated/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/_authenticated/app/arena': typeof AuthenticatedAppArenaRoute
+  '/_authenticated/app/basketball-arcade': typeof AuthenticatedAppBasketballArcadeRoute
   '/_authenticated/app/bucket': typeof AuthenticatedAppBucketRoute
   '/_authenticated/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
   '/_authenticated/app/checkers': typeof AuthenticatedAppCheckersRoute
   '/_authenticated/app/chess': typeof AuthenticatedAppChessRoute
   '/_authenticated/app/concierge': typeof AuthenticatedAppConciergeRoute
+  '/_authenticated/app/cup-pong': typeof AuthenticatedAppCupPongRoute
   '/_authenticated/app/daily-challenge': typeof AuthenticatedAppDailyChallengeRoute
   '/_authenticated/app/darts-101': typeof AuthenticatedAppDarts101Route
   '/_authenticated/app/four-in-a-row': typeof AuthenticatedAppFourInARowRoute
@@ -768,6 +805,7 @@ export interface FileRoutesById {
   '/_authenticated/app/me': typeof AuthenticatedAppMeRoute
   '/_authenticated/app/memories': typeof AuthenticatedAppMemoriesRoute
   '/_authenticated/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
+  '/_authenticated/app/mini-golf': typeof AuthenticatedAppMiniGolfRoute
   '/_authenticated/app/mood': typeof AuthenticatedAppMoodRoute
   '/_authenticated/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/_authenticated/app/paint': typeof AuthenticatedAppPaintRoute
@@ -781,6 +819,7 @@ export interface FileRoutesById {
   '/_authenticated/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/_authenticated/app/shop': typeof AuthenticatedAppShopRoute
   '/_authenticated/app/tamanna': typeof AuthenticatedAppTamannaRoute
+  '/_authenticated/app/tank-shot': typeof AuthenticatedAppTankShotRoute
   '/_authenticated/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/_authenticated/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/_authenticated/app/uno': typeof AuthenticatedAppUnoRoute
@@ -835,12 +874,14 @@ export interface FileRouteTypes {
     | '/app/anniversary'
     | '/app/archery-master'
     | '/app/arena'
+    | '/app/basketball-arcade'
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
     | '/app/checkers'
     | '/app/chess'
     | '/app/concierge'
+    | '/app/cup-pong'
     | '/app/daily-challenge'
     | '/app/darts-101'
     | '/app/four-in-a-row'
@@ -856,6 +897,7 @@ export interface FileRouteTypes {
     | '/app/me'
     | '/app/memories'
     | '/app/memory-challenge'
+    | '/app/mini-golf'
     | '/app/mood'
     | '/app/movies'
     | '/app/paint'
@@ -869,6 +911,7 @@ export interface FileRouteTypes {
     | '/app/sea-battle'
     | '/app/shop'
     | '/app/tamanna'
+    | '/app/tank-shot'
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
@@ -920,12 +963,14 @@ export interface FileRouteTypes {
     | '/app/anniversary'
     | '/app/archery-master'
     | '/app/arena'
+    | '/app/basketball-arcade'
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
     | '/app/checkers'
     | '/app/chess'
     | '/app/concierge'
+    | '/app/cup-pong'
     | '/app/daily-challenge'
     | '/app/darts-101'
     | '/app/four-in-a-row'
@@ -941,6 +986,7 @@ export interface FileRouteTypes {
     | '/app/me'
     | '/app/memories'
     | '/app/memory-challenge'
+    | '/app/mini-golf'
     | '/app/mood'
     | '/app/paint'
     | '/app/panda-shop'
@@ -953,6 +999,7 @@ export interface FileRouteTypes {
     | '/app/sea-battle'
     | '/app/shop'
     | '/app/tamanna'
+    | '/app/tank-shot'
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
@@ -1005,12 +1052,14 @@ export interface FileRouteTypes {
     | '/_authenticated/app/anniversary'
     | '/_authenticated/app/archery-master'
     | '/_authenticated/app/arena'
+    | '/_authenticated/app/basketball-arcade'
     | '/_authenticated/app/bucket'
     | '/_authenticated/app/calendar'
     | '/_authenticated/app/calls'
     | '/_authenticated/app/checkers'
     | '/_authenticated/app/chess'
     | '/_authenticated/app/concierge'
+    | '/_authenticated/app/cup-pong'
     | '/_authenticated/app/daily-challenge'
     | '/_authenticated/app/darts-101'
     | '/_authenticated/app/four-in-a-row'
@@ -1026,6 +1075,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/me'
     | '/_authenticated/app/memories'
     | '/_authenticated/app/memory-challenge'
+    | '/_authenticated/app/mini-golf'
     | '/_authenticated/app/mood'
     | '/_authenticated/app/movies'
     | '/_authenticated/app/paint'
@@ -1039,6 +1089,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/sea-battle'
     | '/_authenticated/app/shop'
     | '/_authenticated/app/tamanna'
+    | '/_authenticated/app/tank-shot'
     | '/_authenticated/app/timeline'
     | '/_authenticated/app/trivia'
     | '/_authenticated/app/uno'
@@ -1268,6 +1319,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppTimelineRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/tank-shot': {
+      id: '/_authenticated/app/tank-shot'
+      path: '/tank-shot'
+      fullPath: '/app/tank-shot'
+      preLoaderRoute: typeof AuthenticatedAppTankShotRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/tamanna': {
       id: '/_authenticated/app/tamanna'
       path: '/tamanna'
@@ -1357,6 +1415,13 @@ declare module '@tanstack/react-router' {
       path: '/mood'
       fullPath: '/app/mood'
       preLoaderRoute: typeof AuthenticatedAppMoodRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/mini-golf': {
+      id: '/_authenticated/app/mini-golf'
+      path: '/mini-golf'
+      fullPath: '/app/mini-golf'
+      preLoaderRoute: typeof AuthenticatedAppMiniGolfRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/memory-challenge': {
@@ -1464,6 +1529,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppDailyChallengeRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/cup-pong': {
+      id: '/_authenticated/app/cup-pong'
+      path: '/cup-pong'
+      fullPath: '/app/cup-pong'
+      preLoaderRoute: typeof AuthenticatedAppCupPongRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
     '/_authenticated/app/concierge': {
       id: '/_authenticated/app/concierge'
       path: '/concierge'
@@ -1504,6 +1576,13 @@ declare module '@tanstack/react-router' {
       path: '/bucket'
       fullPath: '/app/bucket'
       preLoaderRoute: typeof AuthenticatedAppBucketRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/basketball-arcade': {
+      id: '/_authenticated/app/basketball-arcade'
+      path: '/basketball-arcade'
+      fullPath: '/app/basketball-arcade'
+      preLoaderRoute: typeof AuthenticatedAppBasketballArcadeRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/arena': {
@@ -1760,12 +1839,14 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnniversaryRoute: typeof AuthenticatedAppAnniversaryRoute
   AuthenticatedAppArcheryMasterRoute: typeof AuthenticatedAppArcheryMasterRoute
   AuthenticatedAppArenaRoute: typeof AuthenticatedAppArenaRoute
+  AuthenticatedAppBasketballArcadeRoute: typeof AuthenticatedAppBasketballArcadeRoute
   AuthenticatedAppBucketRoute: typeof AuthenticatedAppBucketRoute
   AuthenticatedAppCalendarRoute: typeof AuthenticatedAppCalendarRoute
   AuthenticatedAppCallsRoute: typeof AuthenticatedAppCallsRoute
   AuthenticatedAppCheckersRoute: typeof AuthenticatedAppCheckersRoute
   AuthenticatedAppChessRoute: typeof AuthenticatedAppChessRoute
   AuthenticatedAppConciergeRoute: typeof AuthenticatedAppConciergeRoute
+  AuthenticatedAppCupPongRoute: typeof AuthenticatedAppCupPongRoute
   AuthenticatedAppDailyChallengeRoute: typeof AuthenticatedAppDailyChallengeRoute
   AuthenticatedAppDarts101Route: typeof AuthenticatedAppDarts101Route
   AuthenticatedAppFourInARowRoute: typeof AuthenticatedAppFourInARowRoute
@@ -1781,6 +1862,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMeRoute: typeof AuthenticatedAppMeRoute
   AuthenticatedAppMemoriesRoute: typeof AuthenticatedAppMemoriesRoute
   AuthenticatedAppMemoryChallengeRoute: typeof AuthenticatedAppMemoryChallengeRoute
+  AuthenticatedAppMiniGolfRoute: typeof AuthenticatedAppMiniGolfRoute
   AuthenticatedAppMoodRoute: typeof AuthenticatedAppMoodRoute
   AuthenticatedAppMoviesRoute: typeof AuthenticatedAppMoviesRouteWithChildren
   AuthenticatedAppPaintRoute: typeof AuthenticatedAppPaintRoute
@@ -1794,6 +1876,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppSeaBattleRoute: typeof AuthenticatedAppSeaBattleRoute
   AuthenticatedAppShopRoute: typeof AuthenticatedAppShopRoute
   AuthenticatedAppTamannaRoute: typeof AuthenticatedAppTamannaRoute
+  AuthenticatedAppTankShotRoute: typeof AuthenticatedAppTankShotRoute
   AuthenticatedAppTimelineRoute: typeof AuthenticatedAppTimelineRoute
   AuthenticatedAppTriviaRoute: typeof AuthenticatedAppTriviaRoute
   AuthenticatedAppUnoRoute: typeof AuthenticatedAppUnoRoute
@@ -1820,12 +1903,14 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnniversaryRoute: AuthenticatedAppAnniversaryRoute,
   AuthenticatedAppArcheryMasterRoute: AuthenticatedAppArcheryMasterRoute,
   AuthenticatedAppArenaRoute: AuthenticatedAppArenaRoute,
+  AuthenticatedAppBasketballArcadeRoute: AuthenticatedAppBasketballArcadeRoute,
   AuthenticatedAppBucketRoute: AuthenticatedAppBucketRoute,
   AuthenticatedAppCalendarRoute: AuthenticatedAppCalendarRoute,
   AuthenticatedAppCallsRoute: AuthenticatedAppCallsRoute,
   AuthenticatedAppCheckersRoute: AuthenticatedAppCheckersRoute,
   AuthenticatedAppChessRoute: AuthenticatedAppChessRoute,
   AuthenticatedAppConciergeRoute: AuthenticatedAppConciergeRoute,
+  AuthenticatedAppCupPongRoute: AuthenticatedAppCupPongRoute,
   AuthenticatedAppDailyChallengeRoute: AuthenticatedAppDailyChallengeRoute,
   AuthenticatedAppDarts101Route: AuthenticatedAppDarts101Route,
   AuthenticatedAppFourInARowRoute: AuthenticatedAppFourInARowRoute,
@@ -1841,6 +1926,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppMeRoute: AuthenticatedAppMeRoute,
   AuthenticatedAppMemoriesRoute: AuthenticatedAppMemoriesRoute,
   AuthenticatedAppMemoryChallengeRoute: AuthenticatedAppMemoryChallengeRoute,
+  AuthenticatedAppMiniGolfRoute: AuthenticatedAppMiniGolfRoute,
   AuthenticatedAppMoodRoute: AuthenticatedAppMoodRoute,
   AuthenticatedAppMoviesRoute: AuthenticatedAppMoviesRouteWithChildren,
   AuthenticatedAppPaintRoute: AuthenticatedAppPaintRoute,
@@ -1854,6 +1940,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppSeaBattleRoute: AuthenticatedAppSeaBattleRoute,
   AuthenticatedAppShopRoute: AuthenticatedAppShopRoute,
   AuthenticatedAppTamannaRoute: AuthenticatedAppTamannaRoute,
+  AuthenticatedAppTankShotRoute: AuthenticatedAppTankShotRoute,
   AuthenticatedAppTimelineRoute: AuthenticatedAppTimelineRoute,
   AuthenticatedAppTriviaRoute: AuthenticatedAppTriviaRoute,
   AuthenticatedAppUnoRoute: AuthenticatedAppUnoRoute,
