@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createFileRoute as _crf } from "@tanstack/react-router";
 import { useDuoGame, duoSearch } from "@/hooks/useDuoGame";
 import { DuoGameFrame } from "@/components/games/DuoGameFrame";
 import { dartsInitial, dartsThrow, scoreDart, type DartsState } from "@/lib/duo/arcade";
