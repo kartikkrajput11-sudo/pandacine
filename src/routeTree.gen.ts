@@ -47,6 +47,7 @@ import { Route as AuthenticatedAppPandaShopRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppPaintRouteImport } from './routes/_authenticated/app.paint'
 import { Route as AuthenticatedAppMoviesRouteImport } from './routes/_authenticated/app.movies'
 import { Route as AuthenticatedAppMoodRouteImport } from './routes/_authenticated/app.mood'
+import { Route as AuthenticatedAppMiniGolfRouteImport } from './routes/_authenticated/app.mini-golf'
 import { Route as AuthenticatedAppMemoryChallengeRouteImport } from './routes/_authenticated/app.memory-challenge'
 import { Route as AuthenticatedAppMemoriesRouteImport } from './routes/_authenticated/app.memories'
 import { Route as AuthenticatedAppMeRouteImport } from './routes/_authenticated/app.me'
@@ -295,6 +296,12 @@ const AuthenticatedAppMoodRoute = AuthenticatedAppMoodRouteImport.update({
   path: '/mood',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppMiniGolfRoute =
+  AuthenticatedAppMiniGolfRouteImport.update({
+    id: '/mini-golf',
+    path: '/mini-golf',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppMemoryChallengeRoute =
   AuthenticatedAppMemoryChallengeRouteImport.update({
     id: '/memory-challenge',
@@ -619,6 +626,7 @@ export interface FileRoutesByFullPath {
   '/app/me': typeof AuthenticatedAppMeRoute
   '/app/memories': typeof AuthenticatedAppMemoriesRoute
   '/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
+  '/app/mini-golf': typeof AuthenticatedAppMiniGolfRoute
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/app/paint': typeof AuthenticatedAppPaintRoute
@@ -707,6 +715,7 @@ export interface FileRoutesByTo {
   '/app/me': typeof AuthenticatedAppMeRoute
   '/app/memories': typeof AuthenticatedAppMemoriesRoute
   '/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
+  '/app/mini-golf': typeof AuthenticatedAppMiniGolfRoute
   '/app/mood': typeof AuthenticatedAppMoodRoute
   '/app/paint': typeof AuthenticatedAppPaintRoute
   '/app/panda-shop': typeof AuthenticatedAppPandaShopRoute
@@ -796,6 +805,7 @@ export interface FileRoutesById {
   '/_authenticated/app/me': typeof AuthenticatedAppMeRoute
   '/_authenticated/app/memories': typeof AuthenticatedAppMemoriesRoute
   '/_authenticated/app/memory-challenge': typeof AuthenticatedAppMemoryChallengeRoute
+  '/_authenticated/app/mini-golf': typeof AuthenticatedAppMiniGolfRoute
   '/_authenticated/app/mood': typeof AuthenticatedAppMoodRoute
   '/_authenticated/app/movies': typeof AuthenticatedAppMoviesRouteWithChildren
   '/_authenticated/app/paint': typeof AuthenticatedAppPaintRoute
@@ -887,6 +897,7 @@ export interface FileRouteTypes {
     | '/app/me'
     | '/app/memories'
     | '/app/memory-challenge'
+    | '/app/mini-golf'
     | '/app/mood'
     | '/app/movies'
     | '/app/paint'
@@ -975,6 +986,7 @@ export interface FileRouteTypes {
     | '/app/me'
     | '/app/memories'
     | '/app/memory-challenge'
+    | '/app/mini-golf'
     | '/app/mood'
     | '/app/paint'
     | '/app/panda-shop'
@@ -1063,6 +1075,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/me'
     | '/_authenticated/app/memories'
     | '/_authenticated/app/memory-challenge'
+    | '/_authenticated/app/mini-golf'
     | '/_authenticated/app/mood'
     | '/_authenticated/app/movies'
     | '/_authenticated/app/paint'
@@ -1402,6 +1415,13 @@ declare module '@tanstack/react-router' {
       path: '/mood'
       fullPath: '/app/mood'
       preLoaderRoute: typeof AuthenticatedAppMoodRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/mini-golf': {
+      id: '/_authenticated/app/mini-golf'
+      path: '/mini-golf'
+      fullPath: '/app/mini-golf'
+      preLoaderRoute: typeof AuthenticatedAppMiniGolfRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/memory-challenge': {
@@ -1842,6 +1862,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppMeRoute: typeof AuthenticatedAppMeRoute
   AuthenticatedAppMemoriesRoute: typeof AuthenticatedAppMemoriesRoute
   AuthenticatedAppMemoryChallengeRoute: typeof AuthenticatedAppMemoryChallengeRoute
+  AuthenticatedAppMiniGolfRoute: typeof AuthenticatedAppMiniGolfRoute
   AuthenticatedAppMoodRoute: typeof AuthenticatedAppMoodRoute
   AuthenticatedAppMoviesRoute: typeof AuthenticatedAppMoviesRouteWithChildren
   AuthenticatedAppPaintRoute: typeof AuthenticatedAppPaintRoute
@@ -1905,6 +1926,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppMeRoute: AuthenticatedAppMeRoute,
   AuthenticatedAppMemoriesRoute: AuthenticatedAppMemoriesRoute,
   AuthenticatedAppMemoryChallengeRoute: AuthenticatedAppMemoryChallengeRoute,
+  AuthenticatedAppMiniGolfRoute: AuthenticatedAppMiniGolfRoute,
   AuthenticatedAppMoodRoute: AuthenticatedAppMoodRoute,
   AuthenticatedAppMoviesRoute: AuthenticatedAppMoviesRouteWithChildren,
   AuthenticatedAppPaintRoute: AuthenticatedAppPaintRoute,

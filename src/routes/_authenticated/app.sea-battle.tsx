@@ -134,7 +134,7 @@ function SeaBattle() {
 
   return (
     <DuoGameFrame
-      game={"sea-battle" as never}
+      game="sea-battle"
       title="Sea Battle"
       tagline="Sink their fleet before they sink yours."
       rules={RULES}

@@ -44,7 +44,7 @@ function Darts() {
 
   return (
     <DuoGameFrame
-      game={"darts-101" as never}
+      game="darts-101"
       title="101 Darts"
       tagline="Three darts, double out."
       rules={RULES}

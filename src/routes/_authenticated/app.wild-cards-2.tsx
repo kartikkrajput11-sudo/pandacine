@@ -87,7 +87,7 @@ function WildCards() {
 
   return (
     <DuoGameFrame
-      game={"wild-cards-2" as never}
+      game="wild-cards-2"
       title="Wild Cards 2"
       tagline="Match the colour, dump your hand."
       rules={RULES}

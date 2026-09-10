@@ -77,7 +77,7 @@ function CupPong() {
 
   return (
     <DuoGameFrame
-      game={"cup-pong" as never}
+      game="cup-pong"
       title="Cup Pong"
       tagline="Ten cups. Steady hands."
       rules={RULES}

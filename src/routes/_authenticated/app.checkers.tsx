@@ -57,7 +57,7 @@ function CheckersPage() {
 
   return (
     <DuoGameFrame
-      game={"checkers" as never}
+      game="checkers"
       title="Checkers"
       tagline="Forced captures, crowned kings."
       rules={RULES}

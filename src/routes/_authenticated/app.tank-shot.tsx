@@ -69,7 +69,7 @@ function TankShot() {
 
   return (
     <DuoGameFrame
-      game={"tank-shot" as never}
+      game="tank-shot"
       title="Tank Shot!"
       tagline="Angle, power, boom."
       rules={RULES}

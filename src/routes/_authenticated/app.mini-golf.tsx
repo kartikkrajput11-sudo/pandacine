@@ -117,7 +117,7 @@ function MiniGolf() {
 
   return (
     <DuoGameFrame
-      game={"mini-golf" as never}
+      game="mini-golf"
       title="Mini Golf Match"
       tagline="Nine holes, lowest score takes it."
       rules={RULES}

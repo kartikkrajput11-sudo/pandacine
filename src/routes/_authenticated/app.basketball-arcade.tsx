@@ -82,7 +82,7 @@ function Basketball() {
 
   return (
     <DuoGameFrame
-      game={"basketball-arcade" as never}
+      game="basketball-arcade"
       title="Basketball Arcade"
       tagline="Sixty seconds of buckets."
       rules={RULES}
