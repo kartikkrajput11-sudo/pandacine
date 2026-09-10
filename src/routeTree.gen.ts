@@ -33,6 +33,7 @@ import { Route as AuthenticatedAppWalletRouteImport } from './routes/_authentica
 import { Route as AuthenticatedAppUnoRouteImport } from './routes/_authenticated/app.uno'
 import { Route as AuthenticatedAppTriviaRouteImport } from './routes/_authenticated/app.trivia'
 import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenticated/app.timeline'
+import { Route as AuthenticatedAppTankShotRouteImport } from './routes/_authenticated/app.tank-shot'
 import { Route as AuthenticatedAppTamannaRouteImport } from './routes/_authenticated/app.tamanna'
 import { Route as AuthenticatedAppShopRouteImport } from './routes/_authenticated/app.shop'
 import { Route as AuthenticatedAppSeaBattleRouteImport } from './routes/_authenticated/app.sea-battle'
@@ -68,6 +69,7 @@ import { Route as AuthenticatedAppCheckersRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated/app.calls'
 import { Route as AuthenticatedAppCalendarRouteImport } from './routes/_authenticated/app.calendar'
 import { Route as AuthenticatedAppBucketRouteImport } from './routes/_authenticated/app.bucket'
+import { Route as AuthenticatedAppBasketballArcadeRouteImport } from './routes/_authenticated/app.basketball-arcade'
 import { Route as AuthenticatedAppArenaRouteImport } from './routes/_authenticated/app.arena'
 import { Route as AuthenticatedAppArcheryMasterRouteImport } from './routes/_authenticated/app.archery-master'
 import { Route as AuthenticatedAppAnniversaryRouteImport } from './routes/_authenticated/app.anniversary'
@@ -217,6 +219,12 @@ const AuthenticatedAppTimelineRoute =
   AuthenticatedAppTimelineRouteImport.update({
     id: '/timeline',
     path: '/timeline',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppTankShotRoute =
+  AuthenticatedAppTankShotRouteImport.update({
+    id: '/tank-shot',
+    path: '/tank-shot',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppTamannaRoute = AuthenticatedAppTamannaRouteImport.update({
@@ -407,6 +415,12 @@ const AuthenticatedAppBucketRoute = AuthenticatedAppBucketRouteImport.update({
   path: '/bucket',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppBasketballArcadeRoute =
+  AuthenticatedAppBasketballArcadeRouteImport.update({
+    id: '/basketball-arcade',
+    path: '/basketball-arcade',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 const AuthenticatedAppArenaRoute = AuthenticatedAppArenaRouteImport.update({
   id: '/arena',
   path: '/arena',
@@ -582,6 +596,7 @@ export interface FileRoutesByFullPath {
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
   '/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/app/arena': typeof AuthenticatedAppArenaRoute
+  '/app/basketball-arcade': typeof AuthenticatedAppBasketballArcadeRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
@@ -617,6 +632,7 @@ export interface FileRoutesByFullPath {
   '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
+  '/app/tank-shot': typeof AuthenticatedAppTankShotRoute
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
@@ -668,6 +684,7 @@ export interface FileRoutesByTo {
   '/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
   '/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/app/arena': typeof AuthenticatedAppArenaRoute
+  '/app/basketball-arcade': typeof AuthenticatedAppBasketballArcadeRoute
   '/app/bucket': typeof AuthenticatedAppBucketRoute
   '/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/app/calls': typeof AuthenticatedAppCallsRoute
@@ -702,6 +719,7 @@ export interface FileRoutesByTo {
   '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/app/shop': typeof AuthenticatedAppShopRoute
   '/app/tamanna': typeof AuthenticatedAppTamannaRoute
+  '/app/tank-shot': typeof AuthenticatedAppTankShotRoute
   '/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/app/uno': typeof AuthenticatedAppUnoRoute
@@ -755,6 +773,7 @@ export interface FileRoutesById {
   '/_authenticated/app/anniversary': typeof AuthenticatedAppAnniversaryRoute
   '/_authenticated/app/archery-master': typeof AuthenticatedAppArcheryMasterRoute
   '/_authenticated/app/arena': typeof AuthenticatedAppArenaRoute
+  '/_authenticated/app/basketball-arcade': typeof AuthenticatedAppBasketballArcadeRoute
   '/_authenticated/app/bucket': typeof AuthenticatedAppBucketRoute
   '/_authenticated/app/calendar': typeof AuthenticatedAppCalendarRoute
   '/_authenticated/app/calls': typeof AuthenticatedAppCallsRoute
@@ -790,6 +809,7 @@ export interface FileRoutesById {
   '/_authenticated/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
   '/_authenticated/app/shop': typeof AuthenticatedAppShopRoute
   '/_authenticated/app/tamanna': typeof AuthenticatedAppTamannaRoute
+  '/_authenticated/app/tank-shot': typeof AuthenticatedAppTankShotRoute
   '/_authenticated/app/timeline': typeof AuthenticatedAppTimelineRoute
   '/_authenticated/app/trivia': typeof AuthenticatedAppTriviaRoute
   '/_authenticated/app/uno': typeof AuthenticatedAppUnoRoute
@@ -844,6 +864,7 @@ export interface FileRouteTypes {
     | '/app/anniversary'
     | '/app/archery-master'
     | '/app/arena'
+    | '/app/basketball-arcade'
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
@@ -879,6 +900,7 @@ export interface FileRouteTypes {
     | '/app/sea-battle'
     | '/app/shop'
     | '/app/tamanna'
+    | '/app/tank-shot'
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
@@ -930,6 +952,7 @@ export interface FileRouteTypes {
     | '/app/anniversary'
     | '/app/archery-master'
     | '/app/arena'
+    | '/app/basketball-arcade'
     | '/app/bucket'
     | '/app/calendar'
     | '/app/calls'
@@ -964,6 +987,7 @@ export interface FileRouteTypes {
     | '/app/sea-battle'
     | '/app/shop'
     | '/app/tamanna'
+    | '/app/tank-shot'
     | '/app/timeline'
     | '/app/trivia'
     | '/app/uno'
@@ -1016,6 +1040,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/anniversary'
     | '/_authenticated/app/archery-master'
     | '/_authenticated/app/arena'
+    | '/_authenticated/app/basketball-arcade'
     | '/_authenticated/app/bucket'
     | '/_authenticated/app/calendar'
     | '/_authenticated/app/calls'
@@ -1051,6 +1076,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/sea-battle'
     | '/_authenticated/app/shop'
     | '/_authenticated/app/tamanna'
+    | '/_authenticated/app/tank-shot'
     | '/_authenticated/app/timeline'
     | '/_authenticated/app/trivia'
     | '/_authenticated/app/uno'
@@ -1278,6 +1304,13 @@ declare module '@tanstack/react-router' {
       path: '/timeline'
       fullPath: '/app/timeline'
       preLoaderRoute: typeof AuthenticatedAppTimelineRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/tank-shot': {
+      id: '/_authenticated/app/tank-shot'
+      path: '/tank-shot'
+      fullPath: '/app/tank-shot'
+      preLoaderRoute: typeof AuthenticatedAppTankShotRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/tamanna': {
@@ -1523,6 +1556,13 @@ declare module '@tanstack/react-router' {
       path: '/bucket'
       fullPath: '/app/bucket'
       preLoaderRoute: typeof AuthenticatedAppBucketRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/basketball-arcade': {
+      id: '/_authenticated/app/basketball-arcade'
+      path: '/basketball-arcade'
+      fullPath: '/app/basketball-arcade'
+      preLoaderRoute: typeof AuthenticatedAppBasketballArcadeRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/arena': {
@@ -1779,6 +1819,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppAnniversaryRoute: typeof AuthenticatedAppAnniversaryRoute
   AuthenticatedAppArcheryMasterRoute: typeof AuthenticatedAppArcheryMasterRoute
   AuthenticatedAppArenaRoute: typeof AuthenticatedAppArenaRoute
+  AuthenticatedAppBasketballArcadeRoute: typeof AuthenticatedAppBasketballArcadeRoute
   AuthenticatedAppBucketRoute: typeof AuthenticatedAppBucketRoute
   AuthenticatedAppCalendarRoute: typeof AuthenticatedAppCalendarRoute
   AuthenticatedAppCallsRoute: typeof AuthenticatedAppCallsRoute
@@ -1814,6 +1855,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppSeaBattleRoute: typeof AuthenticatedAppSeaBattleRoute
   AuthenticatedAppShopRoute: typeof AuthenticatedAppShopRoute
   AuthenticatedAppTamannaRoute: typeof AuthenticatedAppTamannaRoute
+  AuthenticatedAppTankShotRoute: typeof AuthenticatedAppTankShotRoute
   AuthenticatedAppTimelineRoute: typeof AuthenticatedAppTimelineRoute
   AuthenticatedAppTriviaRoute: typeof AuthenticatedAppTriviaRoute
   AuthenticatedAppUnoRoute: typeof AuthenticatedAppUnoRoute
@@ -1840,6 +1882,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppAnniversaryRoute: AuthenticatedAppAnniversaryRoute,
   AuthenticatedAppArcheryMasterRoute: AuthenticatedAppArcheryMasterRoute,
   AuthenticatedAppArenaRoute: AuthenticatedAppArenaRoute,
+  AuthenticatedAppBasketballArcadeRoute: AuthenticatedAppBasketballArcadeRoute,
   AuthenticatedAppBucketRoute: AuthenticatedAppBucketRoute,
   AuthenticatedAppCalendarRoute: AuthenticatedAppCalendarRoute,
   AuthenticatedAppCallsRoute: AuthenticatedAppCallsRoute,
@@ -1875,6 +1918,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppSeaBattleRoute: AuthenticatedAppSeaBattleRoute,
   AuthenticatedAppShopRoute: AuthenticatedAppShopRoute,
   AuthenticatedAppTamannaRoute: AuthenticatedAppTamannaRoute,
+  AuthenticatedAppTankShotRoute: AuthenticatedAppTankShotRoute,
   AuthenticatedAppTimelineRoute: AuthenticatedAppTimelineRoute,
   AuthenticatedAppTriviaRoute: AuthenticatedAppTriviaRoute,
   AuthenticatedAppUnoRoute: AuthenticatedAppUnoRoute,
