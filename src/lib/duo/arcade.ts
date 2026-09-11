@@ -272,3 +272,329 @@ export function hoopEndTurn(s: HoopState): HoopState {
   };
 }
 
+/* ----------------------------- Mini Golf -------------------------------- */
+
+export type GolfWall = { x: number; y: number; w: number; h: number };
+export type GolfBumper = { x: number; y: number; r: number };
+export type GolfPatch = { x: number; y: number; w: number; h: number; kind: "sand" | "water" };
+export type GolfHole = {
+  par: number;
+  tee: { x: number; y: number };
+  cup: { x: number; y: number };
+  walls: GolfWall[];
+  bumpers?: GolfBumper[];
+  patches?: GolfPatch[];
+};
+
+export const GOLF_W = 320;
+export const GOLF_H = 460;
+export const GOLF_BALL_R = 6;
+export const GOLF_CUP_R = 11;
+export const GOLF_MAX_STROKES = 6;
+
+/** Nine hand-built holes: doglegs, bumpers, sand traps and water hazards. */
+export const GOLF_HOLES: GolfHole[] = [
+  {
+    par: 2,
+    tee: { x: 160, y: 400 },
+    cup: { x: 160, y: 70 },
+    walls: [
+      { x: 60, y: 220, w: 80, h: 14 },
+      { x: 180, y: 220, w: 80, h: 14 },
+    ],
+    bumpers: [{ x: 160, y: 300, r: 16 }],
+  },
+  {
+    par: 3,
+    tee: { x: 70, y: 405 },
+    cup: { x: 250, y: 80 },
+    walls: [
+      { x: 60, y: 250, w: 180, h: 14 },
+      { x: 150, y: 120, w: 14, h: 100 },
+    ],
+    patches: [{ x: 180, y: 300, w: 90, h: 70, kind: "sand" }],
+  },
+  {
+    par: 3,
+    tee: { x: 160, y: 410 },
+    cup: { x: 160, y: 62 },
+    walls: [
+      { x: 30, y: 270, w: 130, h: 14 },
+      { x: 170, y: 180, w: 130, h: 14 },
+    ],
+    bumpers: [
+      { x: 240, y: 300, r: 18 },
+      { x: 80, y: 130, r: 18 },
+    ],
+  },
+  {
+    par: 4,
+    tee: { x: 60, y: 410 },
+    cup: { x: 265, y: 68 },
+    walls: [
+      { x: 100, y: 300, w: 14, h: 110 },
+      { x: 190, y: 150, w: 14, h: 120 },
+      { x: 120, y: 230, w: 120, h: 14 },
+    ],
+    patches: [{ x: 210, y: 300, w: 80, h: 80, kind: "water" }],
+  },
+  {
+    par: 3,
+    tee: { x: 262, y: 400 },
+    cup: { x: 60, y: 84 },
+    walls: [
+      { x: 120, y: 260, w: 160, h: 14 },
+      { x: 40, y: 160, w: 160, h: 14 },
+    ],
+    bumpers: [{ x: 90, y: 330, r: 15 }],
+  },
+  {
+    par: 4,
+    tee: { x: 160, y: 415 },
+    cup: { x: 160, y: 58 },
+    walls: [
+      { x: 100, y: 330, w: 120, h: 14 },
+      { x: 34, y: 220, w: 96, h: 14 },
+      { x: 190, y: 220, w: 96, h: 14 },
+      { x: 138, y: 112, w: 44, h: 14 },
+    ],
+    patches: [{ x: 120, y: 250, w: 80, h: 60, kind: "sand" }],
+  },
+  {
+    par: 3,
+    tee: { x: 70, y: 400 },
+    cup: { x: 252, y: 104 },
+    walls: [
+      { x: 150, y: 250, w: 14, h: 140 },
+      { x: 90, y: 168, w: 140, h: 14 },
+    ],
+    bumpers: [{ x: 250, y: 250, r: 20 }],
+  },
+  {
+    par: 4,
+    tee: { x: 252, y: 410 },
+    cup: { x: 68, y: 72 },
+    walls: [
+      { x: 60, y: 310, w: 180, h: 14 },
+      { x: 130, y: 180, w: 160, h: 14 },
+      { x: 60, y: 110, w: 14, h: 70 },
+    ],
+    patches: [{ x: 40, y: 330, w: 70, h: 70, kind: "water" }],
+  },
+  {
+    par: 5,
+    tee: { x: 160, y: 420 },
+    cup: { x: 160, y: 58 },
+    walls: [
+      { x: 40, y: 350, w: 110, h: 14 },
+      { x: 180, y: 290, w: 110, h: 14 },
+      { x: 50, y: 210, w: 130, h: 14 },
+      { x: 190, y: 132, w: 90, h: 14 },
+    ],
+    bumpers: [
+      { x: 250, y: 360, r: 16 },
+      { x: 70, y: 130, r: 16 },
+    ],
+    patches: [{ x: 120, y: 240, w: 70, h: 46, kind: "sand" }],
+  },
+];
+
+export type GolfState = {
+  hole: number;
+  ball: [{ x: number; y: number }, { x: number; y: number }];
+  strokes: [number, number];
+  holed: [boolean, boolean];
+  totals: [number, number];
+  turn: Seat;
+  suddenDeath: boolean;
+  winner: Seat | "draw" | null;
+};
+
+export const golfHoleAt = (i: number) => GOLF_HOLES[i % GOLF_HOLES.length];
+
+export const golfInitial = (): GolfState => ({
+  hole: 0,
+  ball: [{ ...GOLF_HOLES[0].tee }, { ...GOLF_HOLES[0].tee }],
+  strokes: [0, 0],
+  holed: [false, false],
+  totals: [0, 0],
+  turn: 0,
+  suddenDeath: false,
+  winner: null,
+});
+
+const inRect = (x: number, y: number, r: { x: number; y: number; w: number; h: number }) =>
+  x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h;
+
+export type PuttResult = {
+  path: { x: number; y: number }[];
+  sank: boolean;
+  end: { x: number; y: number };
+  splash: boolean;
+};
+
+/**
+ * Deterministic putt simulation: swept motion with proper circle-vs-box
+ * resolution (the ball is pushed out along the shallowest axis, then
+ * reflected), round bumpers that kick the ball away, sand that drags it to a
+ * halt and water that returns it to where the stroke began.
+ */
+export function simulatePutt(
+  hole: GolfHole,
+  from: { x: number; y: number },
+  angle: number,
+  power: number,
+): PuttResult {
+  const path: { x: number; y: number }[] = [{ ...from }];
+  let x = from.x;
+  let y = from.y;
+  const speed = 2 + power * 13;
+  let vx = Math.cos(angle) * speed;
+  let vy = Math.sin(angle) * speed;
+  let sank = false;
+  let splash = false;
+
+  for (let step = 0; step < 900; step++) {
+    // Sub-step so a fast ball cannot tunnel through a wall.
+    const sub = Math.max(1, Math.ceil(Math.hypot(vx, vy) / 3));
+    for (let k = 0; k < sub; k++) {
+      x += vx / sub;
+      y += vy / sub;
+
+      // Rails.
+      if (x < GOLF_BALL_R + 8) {
+        x = GOLF_BALL_R + 8;
+        vx = Math.abs(vx) * 0.78;
+      }
+      if (x > GOLF_W - GOLF_BALL_R - 8) {
+        x = GOLF_W - GOLF_BALL_R - 8;
+        vx = -Math.abs(vx) * 0.78;
+      }
+      if (y < GOLF_BALL_R + 8) {
+        y = GOLF_BALL_R + 8;
+        vy = Math.abs(vy) * 0.78;
+      }
+      if (y > GOLF_H - GOLF_BALL_R - 8) {
+        y = GOLF_H - GOLF_BALL_R - 8;
+        vy = -Math.abs(vy) * 0.78;
+      }
+
+      // Walls — resolve by shallowest penetration axis.
+      for (const w of hole.walls) {
+        const cx = Math.max(w.x, Math.min(x, w.x + w.w));
+        const cy = Math.max(w.y, Math.min(y, w.y + w.h));
+        const dx = x - cx;
+        const dy = y - cy;
+        const d = Math.hypot(dx, dy);
+        if (d >= GOLF_BALL_R) continue;
+        if (d > 0.0001) {
+          const nx = dx / d;
+          const ny = dy / d;
+          const push = GOLF_BALL_R - d;
+          x += nx * push;
+          y += ny * push;
+          const dot = vx * nx + vy * ny;
+          vx = (vx - 2 * dot * nx) * 0.8;
+          vy = (vy - 2 * dot * ny) * 0.8;
+        } else {
+          vx = -vx * 0.8;
+          vy = -vy * 0.8;
+        }
+      }
+
+      // Round bumpers — livelier rebound.
+      for (const b of hole.bumpers ?? []) {
+        const dx = x - b.x;
+        const dy = y - b.y;
+        const d = Math.hypot(dx, dy);
+        const min = b.r + GOLF_BALL_R;
+        if (d >= min || d < 0.0001) continue;
+        const nx = dx / d;
+        const ny = dy / d;
+        x = b.x + nx * min;
+        y = b.y + ny * min;
+        const dot = vx * nx + vy * ny;
+        vx = (vx - 2 * dot * nx) * 1.05;
+        vy = (vy - 2 * dot * ny) * 1.05;
+      }
+
+      // Cup — only drops in when rolling slowly enough.
+      const dc = Math.hypot(x - hole.cup.x, y - hole.cup.y);
+      if (dc < GOLF_CUP_R && Math.hypot(vx, vy) < 5.5) {
+        sank = true;
+        x = hole.cup.x;
+        y = hole.cup.y;
+        break;
+      }
+      // Fast ball lips out around the rim.
+      if (dc < GOLF_CUP_R + 2 && Math.hypot(vx, vy) >= 5.5) {
+        const nx = (x - hole.cup.x) / (dc || 1);
+        const ny = (y - hole.cup.y) / (dc || 1);
+        vx += nx * 0.6;
+        vy += ny * 0.6;
+      }
+    }
+    if (sank) {
+      path.push({ x, y });
+      break;
+    }
+
+    // Terrain friction.
+    let friction = 0.985;
+    for (const p of hole.patches ?? []) {
+      if (!inRect(x, y, p)) continue;
+      if (p.kind === "sand") friction = 0.9;
+      if (p.kind === "water") {
+        splash = true;
+      }
+    }
+    if (splash) {
+      path.push({ x, y });
+      break;
+    }
+    vx *= friction;
+    vy *= friction;
+    path.push({ x, y });
+    if (Math.hypot(vx, vy) < 0.22) break;
+  }
+
+  if (splash) {
+    // Water penalty: the ball comes back to where the stroke was played.
+    return { path, sank: false, end: { ...from }, splash: true };
+  }
+  return { path, sank, end: sank ? { ...hole.cup } : { x, y }, splash: false };
+}
+
+/* ------------------------- Archery flight model -------------------------- */
+
+export const ARCHERY_TARGET = { x: 300, y: 130, r: 62 };
+
+/**
+ * Flies an arrow from the bow towards the target. Deterministic given the
+ * release parameters, so both clients replay the identical shot.
+ * `aim` is the vertical aim offset (-1 up .. 1 down), `power` the draw (0..1),
+ * `wind` a lateral drift in target units.
+ */
+export function simulateArrow(aim: number, power: number, wind: number) {
+  const path: { x: number; y: number }[] = [];
+  const start = { x: 62, y: 168 };
+  let x = start.x;
+  let y = start.y;
+  const speed = 6 + power * 16;
+  let vx = speed;
+  let vy = aim * speed * 0.55;
+  const gravity = 0.62 - power * 0.28;
+  let t = 0;
+  while (x < ARCHERY_TARGET.x && t < 400) {
+    x += vx;
+    y += vy;
+    vy += gravity;
+    vx *= 0.995;
+    path.push({ x, y });
+    t++;
+  }
+  // Lateral wind shows up as extra vertical drift on this side-on view.
+  const impactY = y + wind * 26;
+  const dist = Math.min(2, Math.abs(impactY - ARCHERY_TARGET.y) / ARCHERY_TARGET.r);
+  return { path, impact: { x: ARCHERY_TARGET.x, y: impactY }, dist };
+}
