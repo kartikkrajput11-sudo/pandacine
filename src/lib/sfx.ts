@@ -193,3 +193,20 @@ export function sfxPoolWin() {
   ]);
 }
 
+// Tank Shot — compact, playful cannon and impact sounds.
+export function sfxTankFire() {
+  play([
+    { freq: 150, glideTo: 72, start: 0, dur: 0.2, gain: 0.09, type: "triangle" },
+    { freq: 820, glideTo: 260, start: 0, dur: 0.08, gain: 0.035, type: "square" },
+  ]);
+}
+
+export function sfxTankImpact(hit: boolean) {
+  play(hit
+    ? [
+        { freq: 120, glideTo: 48, start: 0, dur: 0.28, gain: 0.1, type: "sawtooth" },
+        { freq: 420, glideTo: 110, start: 0.02, dur: 0.18, gain: 0.045, type: "triangle" },
+      ]
+    : [{ freq: 190, glideTo: 75, start: 0, dur: 0.18, gain: 0.055, type: "triangle" }]);
+}
+
