@@ -1,55 +1,28 @@
-# Rebuild Group Chat
+# Rebuild Tank Shot Presentation
 
-The backend tables (`chat_groups`, `chat_group_members`, `message_reactions`, `messages` with `reply_to_id`/`pinned_at`/`deleted_at`) and RLS/helpers (`is_group_member`, `is_group_admin`, `chat_group_messages`, `call_start_group`) all still exist from before. This rebuild is frontend-only.
+## Goal
+Turn Tank Shot into a polished portrait-first mobile mini-game while preserving its current shot physics, damage rules, multiplayer synchronization, authentication, and stored game systems.
 
-## What ships
+## What will change
+- Replace the generic game card with an open, full-height illustrated battlefield that visually dominates the screen.
+- Add a compact symmetrical player header with avatars, names, animated health bars, damage trails, and a centered turn indicator.
+- Redraw both tanks as rounded character-like machines with tracks, wheels, turrets, shadows, subtle idle motion, and smoothly rotating cannons.
+- Add a live dotted trajectory preview tied to the existing angle and power values.
+- Reorganize controls into a reachable bottom dock: angle, power slider, and a prominent Fire control.
+- Enrich the existing projectile animation with a trail, recoil, muzzle flash, smoke, impact particles, damage feedback, and restrained battlefield shake.
+- Add polished turn transitions and an end-of-match overlay with result summary and restart/back actions.
+- Add a lightweight pause sheet with sound, rules, resume, and exit actions, using the app’s existing sound preference.
+- Add a portrait-orientation prompt for short landscape phone layouts and safe-area spacing for modern phones.
+- Keep shared room status and in-game chat available without letting them crowd the battlefield.
 
-### 1. Group list (in Chats)
-- Groups section on `/app/chat` above Friends
-- "+" menu → New group / Add friend
-- `NewGroupDialog`: name, emoji avatar, pick friends/partner
-- Unread count + last-message preview per group
+## Technical details
+- Limit gameplay changes to presentation state inside the Tank Shot route; continue calling the existing `tankFire` result function unchanged.
+- Build the environment and tanks as responsive inline SVG so visuals remain crisp without new image assets.
+- Use semantic PandaCine theme tokens and scoped Tank Shot styles/animations, with reduced-motion fallbacks.
+- Use the existing Button component for commands and preserve `DuoGameFrame`, room routing, invite flow, reset behavior, and GameChat.
+- Complete route metadata with Tank Shot-specific Open Graph and Twitter fields.
 
-### 2. Group chat screen `/app/chat/group/$groupId`
-- Header: avatar, name, member count, call button, settings (gear) link
-- Message list reusing `ChatBubble`
-- Composer reusing `ChatComposer` (text, image, voice, sticker)
-- Realtime via `chat_group_messages` RPC + realtime channel
-- Reply/quote, react (emoji), pin (admin), delete-for-everyone (admin/sender)
-- Pinned banner at top
-
-### 3. Group info / settings `/app/chat/group/$groupId/info`
-- Rename group (admin)
-- Change avatar emoji (admin)
-- **Theme picker** — aurora / sunset / midnight / sakura / forest / mono, applied via `data-group-theme` on chat screen
-- Members list with role badges, promote/demote (admin), remove (admin)
-- Add members from friends
-- Leave group
-- Mute notifications (device-local)
-
-### 4. Group calls
-- Voice/video group call from header button → `/app/call/group/$groupId`
-- Reuses `call_start_group` RPC + existing LiveKit call panel
-- `IncomingCallListener` re-enables `scope=group` routing
-
-## Files
-
-Recreate:
-- `src/hooks/useGroups.ts` — list + `useGroup(id)` + `useCreateGroup` + `useLeaveGroup`
-- `src/hooks/useGroupChat.ts` — messages + send + realtime
-- `src/hooks/useGroupAdmin.ts` — rename/avatar/theme, member roles, add/remove, mute
-- `src/components/chat/NewGroupDialog.tsx`
-- `src/routes/_authenticated/app.chat.group.$groupId.tsx`
-- `src/routes/_authenticated/app.chat.group.$groupId.info.tsx`
-- `src/routes/_authenticated/app.call.group.$groupId.tsx`
-
-Edit:
-- `src/routes/_authenticated/app.chat.index.tsx` — add groups section + "+" menu back
-- `src/components/IncomingCallListener.tsx` — restore group-call navigation
-- `src/hooks/useUnreadMessages.ts` — include group unreads
-- `src/styles.css` — `[data-group-theme]` token overrides for the 6 themes
-
-## Notes
-- No DB migration — schema is already in place.
-- Reactions/reply/pin surface in group chat only for now (not direct chats) to keep the diff contained.
-- After you approve, I ship it in one pass.
+## Validation
+- Check type safety.
+- Verify the game loads and remains usable at mobile portrait and desktop sizes.
+- Confirm angle/power controls, firing, impact feedback, restart, rules, pause, sound toggle, and result state remain operable.
