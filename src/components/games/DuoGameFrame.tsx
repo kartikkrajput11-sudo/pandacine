@@ -22,6 +22,7 @@ export function DuoGameFrame({
   duo,
   onReset,
   status,
+  immersive = false,
   children,
 }: {
   game: GameKind;
@@ -38,6 +39,7 @@ export function DuoGameFrame({
   };
   onReset?: () => void;
   status?: ReactNode;
+  immersive?: boolean;
   children: ReactNode;
 }) {
   const [showRules, setShowRules] = useState(false);
@@ -87,10 +89,10 @@ export function DuoGameFrame({
   }
 
   return (
-    <div className="min-h-dvh px-4 pt-8 pb-28">
-      <Header title={title} tagline={tagline} onRules={() => setShowRules(true)} onReset={onReset} />
-      {status && <div className="max-w-3xl mx-auto mt-3">{status}</div>}
-      <div className="max-w-3xl mx-auto mt-4">{children}</div>
+    <div className={immersive ? "min-h-dvh pb-28" : "min-h-dvh px-4 pt-8 pb-28"}>
+      {!immersive && <Header title={title} tagline={tagline} onRules={() => setShowRules(true)} onReset={onReset} />}
+      {status && <div className={immersive ? "mx-auto" : "max-w-3xl mx-auto mt-3"}>{status}</div>}
+      <div className={immersive ? "mx-auto" : "max-w-3xl mx-auto mt-4"}>{children}</div>
       {mode === "partner" && partner && (
         <>
           <GameChat roomKey={roomKey} me={me} partnerName={partner.display_name} />
