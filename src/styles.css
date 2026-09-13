@@ -2078,3 +2078,187 @@ body { overscroll-behavior-y: contain; }
 @media (prefers-reduced-motion: reduce) {
   .reaction-bit, .reaction-halo { animation: none; display: none; }
 }
+
+/* ============================================================
+ * TANK SHOT — soft illustrated mobile battlefield
+ * ============================================================ */
+.tank-game {
+  --tank-sky-a: oklch(0.89 0.06 235);
+  --tank-sky-b: oklch(0.96 0.035 95);
+  --tank-cloud: oklch(1 0 0 / 0.58);
+  --tank-sun: oklch(0.88 0.12 82 / 0.62);
+  --tank-hill-far: oklch(0.69 0.075 166);
+  --tank-hill-near: oklch(0.58 0.09 158);
+  --tank-grass: oklch(0.48 0.095 146);
+  --tank-soil: oklch(0.32 0.07 79);
+  --tank-one: oklch(0.68 0.14 20);
+  --tank-one-deep: oklch(0.52 0.13 17);
+  --tank-two: oklch(0.76 0.13 82);
+  --tank-two-deep: oklch(0.57 0.12 72);
+  --tank-metal: oklch(0.28 0.025 270);
+  --tank-track: oklch(0.22 0.018 270);
+  --tank-shell: oklch(0.92 0.13 93);
+  min-height: min(100dvh, 900px);
+  width: min(100%, 920px);
+  margin-inline: auto;
+  padding: max(0.75rem, env(safe-area-inset-top)) 0.75rem max(1rem, env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+.tank-topbar { display: grid; grid-template-columns: 2.5rem minmax(0,1fr) 2.5rem; align-items: center; gap: .7rem; }
+.tank-icon-button { display: inline-flex; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center; border-radius: 999px; color: var(--candle-muted); background: color-mix(in oklab, var(--surface-elevated) 70%, transparent); border: 1px solid var(--border); backdrop-filter: blur(14px); }
+.tank-icon-button svg { width: 1.05rem; height: 1.05rem; }
+.tank-title { min-width: 0; text-align: center; line-height: 1.05; }
+.tank-title span { display: block; color: var(--candle-muted); font-size: .55rem; font-weight: 700; letter-spacing: .16em; }
+.tank-title strong { display: block; margin-top: .22rem; font-size: 1rem; letter-spacing: 0; }
+
+.tank-hud { display: grid; grid-template-columns: minmax(0,1fr) 3.2rem minmax(0,1fr); align-items: center; gap: .45rem; margin: .75rem auto .6rem; max-width: 44rem; }
+.tank-player { display: flex; align-items: center; gap: .48rem; min-width: 0; opacity: .7; transition: opacity .3s ease, transform .3s ease; }
+.tank-player.right { flex-direction: row-reverse; text-align: right; }
+.tank-player.is-active { opacity: 1; transform: translateY(-1px); }
+.tank-avatar { width: 2.15rem; height: 2.15rem; flex: 0 0 auto; display: grid; place-items: center; overflow: hidden; border-radius: 999px; border: 2px solid color-mix(in oklab, var(--petal) 45%, transparent); background: var(--surface-elevated); color: var(--candle); font-weight: 700; font-size: .72rem; box-shadow: 0 5px 18px color-mix(in oklab, var(--velvet) 25%, transparent); }
+.tank-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.tank-player-meta { min-width: 0; flex: 1; }
+.tank-player-meta > div:first-child { display: flex; align-items: baseline; justify-content: space-between; gap: .3rem; }
+.tank-player.right .tank-player-meta > div:first-child { flex-direction: row-reverse; }
+.tank-player-meta strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .67rem; font-weight: 700; }
+.tank-player-meta span { flex: 0 0 auto; color: var(--candle-muted); font-size: .52rem; }
+.tank-health { position: relative; height: .34rem; margin-top: .3rem; overflow: hidden; border-radius: 999px; background: var(--input); }
+.tank-health b, .tank-health i { position: absolute; inset-block: 0; left: 0; border-radius: inherit; transition: width .8s cubic-bezier(.16,1,.3,1); }
+.tank-player.right .tank-health b, .tank-player.right .tank-health i { left: auto; right: 0; }
+.tank-health i { background: color-mix(in oklab, var(--lavender) 60%, var(--petal)); transition-duration: 1.25s; }
+.tank-health b { background: var(--petal); box-shadow: 0 0 9px color-mix(in oklab, var(--petal) 40%, transparent); }
+.tank-vs { display: grid; place-items: center; line-height: 1; }
+.tank-vs span { font-size: .45rem; font-weight: 750; color: var(--petal); letter-spacing: .1em; white-space: nowrap; }
+.tank-vs b { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; margin-top: .18rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); font-size: .58rem; }
+
+.tank-battlefield { position: relative; width: 100%; max-width: 52rem; margin-inline: auto; overflow: hidden; border-radius: 1.45rem; box-shadow: 0 22px 55px -28px color-mix(in oklab, var(--velvet) 75%, transparent); transform-origin: center bottom; }
+.tank-battlefield svg { display: block; width: 100%; min-height: 20rem; aspect-ratio: 7/3.6; }
+.tank-sky-top { stop-color: var(--tank-sky-a); }
+.tank-sky-bottom { stop-color: var(--tank-sky-b); }
+.tank-grass { stop-color: var(--tank-grass); }
+.tank-soil { stop-color: var(--tank-soil); }
+.tank-sun { fill: var(--tank-sun); filter: url(#softBlur); }
+.tank-clouds { color: var(--tank-cloud); animation: tank-cloud-drift 18s ease-in-out infinite alternate; }
+.tank-hills-far { fill: var(--tank-hill-far); opacity: .58; }
+.tank-hills-near { fill: var(--tank-hill-near); opacity: .88; }
+.tank-ground-highlight { fill: none; stroke: color-mix(in oklab, var(--tank-grass) 70%, var(--candle)); stroke-width: 4; opacity: .55; }
+.tank-crater { fill: color-mix(in oklab, var(--tank-soil) 70%, var(--velvet)); opacity: .72; animation: tank-crater-in .35s ease-out; }
+.tank-trajectory { fill: color-mix(in oklab, var(--candle) 82%, var(--tank-shell)); filter: drop-shadow(0 0 3px color-mix(in oklab, var(--candle) 50%, transparent)); }
+.tank-shadow { fill: color-mix(in oklab, var(--velvet) 55%, transparent); }
+.tank-track { fill: var(--tank-track); stroke: color-mix(in oklab, var(--candle) 15%, var(--tank-track)); stroke-width: 2; }
+.tank-wheel { fill: var(--tank-metal); stroke: color-mix(in oklab, var(--candle) 25%, var(--tank-metal)); stroke-width: 2; }
+.tank-0 .tank-body, .tank-0 .tank-turret { fill: var(--tank-one); stroke: var(--tank-one-deep); stroke-width: 2; }
+.tank-1 .tank-body, .tank-1 .tank-turret { fill: var(--tank-two); stroke: var(--tank-two-deep); stroke-width: 2; }
+.tank-0 .tank-cannon, .tank-0 .tank-cannon-tip { fill: var(--tank-one-deep); }
+.tank-1 .tank-cannon, .tank-1 .tank-cannon-tip { fill: var(--tank-two-deep); }
+.tank-highlight { fill: color-mix(in oklab, var(--candle) 72%, transparent); }
+.tank-idle { transform-origin: center bottom; animation: tank-idle 3.2s ease-in-out infinite; }
+.tank-1 .tank-idle { animation-delay: -1.6s; }
+.tank-barrel { transition: transform .3s cubic-bezier(.16,1,.3,1); }
+.tank-barrel.is-recoil { animation: tank-recoil .28s ease-out; }
+.tank-character.is-hit { animation: tank-hit .38s ease-out; }
+.tank-shell-trail { fill: color-mix(in oklab, var(--tank-shell) 60%, transparent); }
+.tank-shell circle { fill: var(--tank-shell); filter: drop-shadow(0 0 6px var(--tank-shell)); }
+.tank-shell path { fill: color-mix(in oklab, var(--tank-shell) 30%, transparent); }
+.tank-muzzle { animation: tank-muzzle .3s ease-out forwards; }
+.tank-muzzle circle:first-child { fill: color-mix(in oklab, var(--tank-shell) 34%, transparent); }
+.tank-muzzle circle:last-child { fill: var(--tank-shell); }
+.tank-impact-fx { animation: tank-impact .8s ease-out forwards; }
+.tank-impact-ring { fill: none; stroke: var(--tank-shell); stroke-width: 4; }
+.tank-impact-particle { fill: color-mix(in oklab, var(--tank-soil) 75%, var(--tank-shell)); }
+.tank-impact-fx text { fill: var(--candle); font-size: 18px; font-weight: 750; paint-order: stroke; stroke: color-mix(in oklab, var(--velvet) 65%, transparent); stroke-width: 4; }
+.tank-battlefield.is-impact { animation: tank-shake-soft .24s ease-out; }
+.tank-battlefield.is-hit { animation: tank-shake-hit .32s ease-out; }
+.tank-turn-pill { position: absolute; top: .65rem; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: .38rem; padding: .36rem .62rem; border: 1px solid color-mix(in oklab, var(--candle) 35%, transparent); border-radius: 999px; background: color-mix(in oklab, var(--velvet) 62%, transparent); color: var(--candle); backdrop-filter: blur(12px); font-size: .57rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.tank-turn-pill span { width: .38rem; height: .38rem; border-radius: 50%; background: var(--petal); box-shadow: 0 0 8px var(--petal); animation: tank-pulse 1.6s ease-in-out infinite; }
+.tank-turn-pill.is-entering { animation: tank-turn-in .5s cubic-bezier(.16,1,.3,1); }
+.tank-countdown { position: absolute; inset: 0; display: grid; place-items: center; background: color-mix(in oklab, var(--velvet) 34%, transparent); backdrop-filter: blur(2px); }
+.tank-countdown strong { color: var(--candle); font-size: clamp(3.5rem, 16vw, 6.5rem); line-height: 1; text-shadow: 0 8px 28px color-mix(in oklab, var(--velvet) 60%, transparent); animation: tank-count .52s cubic-bezier(.16,1,.3,1); }
+
+.tank-controls { display: grid; grid-template-columns: 4.2rem minmax(0,1fr) 4.5rem; gap: .65rem; align-items: center; width: min(100%, 44rem); margin: .8rem auto 0; padding: .72rem; border: 1px solid var(--border); border-radius: 1.25rem; background: color-mix(in oklab, var(--surface-elevated) 82%, transparent); box-shadow: 0 14px 38px -24px color-mix(in oklab, var(--velvet) 85%, transparent); backdrop-filter: blur(18px); }
+.tank-angle-readout { display: grid; grid-template-columns: 1rem auto; align-items: center; column-gap: .25rem; color: var(--candle-muted); }
+.tank-angle-readout svg { width: .95rem; }
+.tank-angle-readout span { font-size: .5rem; text-transform: uppercase; letter-spacing: .08em; }
+.tank-angle-readout strong { grid-column: 1/-1; margin-top: .1rem; color: var(--candle); font-size: 1.2rem; }
+.tank-sliders { display: grid; gap: .4rem; min-width: 0; }
+.tank-sliders label { display: grid; grid-template-columns: 2.5rem minmax(0,1fr); align-items: center; gap: .3rem; color: var(--candle-muted); font-size: .53rem; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; }
+.tank-sliders label span { display: flex; justify-content: space-between; }
+.tank-sliders label:first-child span { color: transparent; font-size: 0; }
+.tank-sliders input { width: 100%; height: 1.4rem; accent-color: var(--petal); cursor: pointer; }
+.tank-sliders input::-webkit-slider-runnable-track { height: .28rem; border-radius: 99px; background: var(--input); }
+.tank-sliders input::-webkit-slider-thumb { width: 1.15rem; height: 1.15rem; margin-top: -.43rem; border: 3px solid var(--surface-elevated); border-radius: 50%; background: var(--petal); box-shadow: 0 2px 9px color-mix(in oklab, var(--petal) 45%, transparent); -webkit-appearance: none; }
+.tank-fire { width: 4.2rem; height: 4.2rem; padding: 0; display: grid; place-items: center; align-content: center; gap: .08rem; border-radius: 50%; background: var(--petal); color: var(--velvet); box-shadow: 0 9px 24px -9px color-mix(in oklab, var(--petal) 68%, transparent), inset 0 1px 0 color-mix(in oklab, var(--candle) 45%, transparent); transition: transform .2s cubic-bezier(.16,1,.3,1), opacity .2s; }
+.tank-fire:active { transform: scale(.92); }
+.tank-fire-icon { transform: rotate(-24deg); font-size: .9rem; line-height: 1; }
+.tank-fire span:last-child { font-size: .62rem; font-weight: 850; letter-spacing: .06em; }
+.tank-last-shot { margin-top: .48rem; text-align: center; color: var(--candle-muted); font-size: .6rem; }
+
+.tank-result { position: absolute; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.1rem 2rem; background: color-mix(in oklab, var(--velvet) 70%, transparent); color: var(--candle); backdrop-filter: blur(7px); animation: tank-result-in .5s cubic-bezier(.16,1,.3,1); }
+.tank-result > span { color: var(--candle-muted); font-size: .65rem; }
+.tank-result h2 { margin-top: .15rem; font-family: var(--font-serif); font-size: 2.4rem; font-style: italic; }
+.tank-result > div { display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; gap: 1.4rem; margin: .65rem 0 .8rem; text-align: center; }
+.tank-result p { display: grid; }
+.tank-result small { color: var(--candle-muted); font-size: .5rem; text-transform: uppercase; letter-spacing: .08em; }
+.tank-result strong { font-size: 1.25rem; }
+.tank-result i { width: 1px; height: 2rem; background: var(--border); }
+.tank-result > button, .tank-result > a { max-width: 16rem; margin-top: .35rem; }
+
+.tank-sheet-backdrop { position: fixed; inset: 0; z-index: 70; display: flex; align-items: flex-end; justify-content: center; background: color-mix(in oklab, var(--velvet) 64%, transparent); backdrop-filter: blur(6px); }
+.tank-sheet { width: min(100%, 30rem); max-height: 84dvh; overflow-y: auto; padding: .55rem 1rem max(1.1rem, env(safe-area-inset-bottom)); border: 1px solid var(--border); border-bottom: 0; border-radius: 1.5rem 1.5rem 0 0; background: var(--surface-elevated); box-shadow: 0 -20px 65px -30px color-mix(in oklab, var(--velvet) 80%, transparent); animation: tank-sheet-in .35s cubic-bezier(.16,1,.3,1); }
+.tank-sheet-handle { width: 2.4rem; height: .22rem; margin: 0 auto .75rem; border-radius: 99px; background: var(--border); }
+.tank-sheet-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.tank-sheet-heading span { color: var(--petal); font-size: .57rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
+.tank-sheet-heading h2 { font-family: var(--font-serif); font-size: 1.5rem; font-style: italic; }
+.tank-pause-actions, .tank-rules { display: grid; gap: .55rem; margin-top: 1rem; }
+.tank-rules article { display: grid; grid-template-columns: 2rem minmax(0,1fr); gap: .65rem; padding: .7rem 0; border-bottom: 1px solid var(--border); }
+.tank-rules article > b { color: var(--petal); font-size: .7rem; }
+.tank-rules article strong { font-size: .78rem; }
+.tank-rules article p { margin-top: .15rem; color: var(--candle-muted); font-size: .68rem; }
+.tank-landscape { display: none; }
+
+@keyframes tank-cloud-drift { to { transform: translateX(22px); } }
+@keyframes tank-idle { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-2px) rotate(.3deg); } }
+@keyframes tank-recoil { 35% { transform: translateX(-8px); } }
+@keyframes tank-hit { 25% { transform: translateX(-7px) rotate(-2deg); } 55% { transform: translateX(4px) rotate(1deg); } }
+@keyframes tank-muzzle { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.9); opacity: 0; } }
+@keyframes tank-impact { 0% { opacity: 1; transform: scale(.3); } 70% { opacity: .75; } 100% { opacity: 0; transform: scale(1.8); } }
+@keyframes tank-crater-in { from { transform: scaleX(.2); opacity: 0; } }
+@keyframes tank-shake-soft { 30% { transform: translateX(-2px); } 60% { transform: translateX(2px); } }
+@keyframes tank-shake-hit { 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } }
+@keyframes tank-pulse { 50% { opacity: .35; transform: scale(.75); } }
+@keyframes tank-turn-in { from { opacity: 0; transform: translate(-50%,-8px) scale(.92); } }
+@keyframes tank-count { from { opacity: 0; transform: scale(.7); } 55% { opacity: 1; } to { opacity: 0; transform: scale(1.12); } }
+@keyframes tank-result-in { from { opacity: 0; } }
+@keyframes tank-sheet-in { from { transform: translateY(100%); } }
+
+@media (min-width: 640px) {
+  .tank-game { padding-inline: 1.4rem; }
+  .tank-title strong { font-size: 1.2rem; }
+  .tank-hud { margin-top: 1rem; }
+  .tank-player-meta strong { font-size: .8rem; }
+  .tank-battlefield { border-radius: 1.8rem; }
+  .tank-controls { grid-template-columns: 5rem minmax(0,1fr) 5rem; padding: .9rem 1rem; }
+  .tank-fire { width: 4.6rem; height: 4.6rem; }
+  .tank-sliders label:first-child span { color: var(--candle-muted); font-size: .53rem; }
+}
+
+@media (max-height: 640px) and (orientation: portrait) {
+  .tank-game { padding-top: .45rem; }
+  .tank-hud { margin-block: .35rem; }
+  .tank-avatar { width: 1.85rem; height: 1.85rem; }
+  .tank-battlefield svg { min-height: 16rem; }
+  .tank-controls { margin-top: .45rem; padding: .55rem; }
+  .tank-fire { width: 3.7rem; height: 3.7rem; }
+}
+
+@media (orientation: landscape) and (max-height: 520px) and (max-width: 950px) {
+  .tank-game > :not(.tank-landscape) { display: none; }
+  .tank-landscape { position: fixed; inset: 0; z-index: 80; display: grid; place-content: center; justify-items: center; gap: .5rem; background: var(--background); color: var(--candle); text-align: center; }
+  .tank-landscape svg { width: 2rem; height: 2rem; color: var(--petal); }
+  .tank-landscape strong { font-family: var(--font-serif); font-size: 1.6rem; font-style: italic; }
+  .tank-landscape span { color: var(--candle-muted); font-size: .75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tank-game *, .tank-game *::before, .tank-game *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
