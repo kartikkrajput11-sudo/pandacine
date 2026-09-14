@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, Crosshair, Pause, RotateCcw, Settings2, Volume2, VolumeX, X } from "lucide-react";
 import { useDuoGame, duoSearch } from "@/hooks/useDuoGame";
@@ -25,9 +25,9 @@ export const Route = createFileRoute("/_authenticated/app/tank-shot")({
 });
 
 const RULES = [
-  { heading: "01 · Aim", lines: ["Adjust the cannon angle and follow the dotted arc."] },
-  { heading: "02 · Power", lines: ["Choose how far the shell should travel."] },
-  { heading: "03 · Fire", lines: ["Launch your shot when the turn indicator is yours."] },
+  { heading: "01 · Aim", lines: ["Touch the battlefield and drag the target to aim."] },
+  { heading: "02 · Power", lines: ["Drag farther from your tank for a stronger shot."] },
+  { heading: "03 · Fire", lines: ["Release your finger to fire immediately."] },
   { heading: "04 · Hit", lines: ["Reduce the other tank from 100 health to zero."] },
 ];
 
@@ -35,6 +35,7 @@ const GROUND_Y = 260;
 const SVG_W = 700;
 type Point = { x: number; y: number };
 type Impact = Point & { damage: number; id: number };
+type Aim = { angle: number; power: number };
 
 function flightPath(turn: 0 | 1, angle: number, power: number) {
   const dir = turn === 0 ? 1 : -1;
@@ -61,8 +62,12 @@ function TankShot() {
   const s = duo.state;
   const seat = duo.mode === "local" ? s.turn : duo.seat;
   const myTurn = duo.canAct(s.turn);
-  const [angle, setAngle] = useState(45);
-  const [power, setPower] = useState(60);
+  const [aims, setAims] = useState<[Aim, Aim]>([
+    { angle: 45, power: 60 },
+    { angle: 45, power: 60 },
+  ]);
+  const [aimTarget, setAimTarget] = useState<Point | null>(null);
+  const [isAiming, setIsAiming] = useState(false);
   const [shell, setShell] = useState<Point | null>(null);
   const [trail, setTrail] = useState<Point[]>([]);
   const [impact, setImpact] = useState<Impact | null>(null);
@@ -100,14 +105,18 @@ function TankShot() {
     if (timerRef.current != null) window.clearInterval(timerRef.current);
   }, []);
 
-  const preview = useMemo(() => flightPath(s.turn, angle, power).filter((_, i) => i % 8 === 0).slice(0, 18), [s.turn, angle, power]);
+  const activeAim = aims[s.turn];
+  const preview = useMemo(
+    () => flightPath(s.turn, activeAim.angle, activeAim.power).filter((_, i) => i % 8 === 0).slice(0, 18),
+    [s.turn, activeAim.angle, activeAim.power],
+  );
   const opponentName = duo.partner?.display_name ?? "Opponent";
   const playerName = duo.me?.display_name ?? "You";
 
-  const fire = () => {
+  const fire = (aim: Aim) => {
     if (!myTurn || s.winner != null || shell || paused || countdown) return;
     const firingSeat = s.turn;
-    const path = flightPath(firingSeat, angle, power);
+    const path = flightPath(firingSeat, aim.angle, aim.power);
     if (!path.length) return;
     setRecoil(firingSeat);
     setTrail([]);
@@ -136,6 +145,54 @@ function TankShot() {
     }, 16);
   };
 
+  const aimFromPointer = (event: ReactPointerEvent<SVGSVGElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const point = {
+      x: ((event.clientX - rect.left) / rect.width) * SVG_W,
+      y: ((event.clientY - rect.top) / rect.height) * 360,
+    };
+    const direction = s.turn === 0 ? 1 : -1;
+    const forward = Math.max(18, direction * (point.x - TANK_X[s.turn]));
+    const rise = Math.max(8, GROUND_Y - 30 - point.y);
+    const angle = Math.round(Math.min(85, Math.max(5, (Math.atan2(rise, forward) * 180) / Math.PI)));
+    const distance = Math.hypot(forward, rise);
+    const power = Math.round(Math.min(100, Math.max(10, 10 + (distance / 430) * 90)));
+    const nextAim = { angle, power };
+    setAims((current) => {
+      const next: [Aim, Aim] = [{ ...current[0] }, { ...current[1] }];
+      next[s.turn] = nextAim;
+      return next;
+    });
+    setAimTarget(point);
+    return nextAim;
+  };
+
+  const startAiming = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (!myTurn || s.winner != null || shell || paused || countdown) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setIsAiming(true);
+    aimFromPointer(event);
+  };
+
+  const moveAim = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (!isAiming) return;
+    aimFromPointer(event);
+  };
+
+  const releaseAim = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (!isAiming) return;
+    const releasedAim = aimFromPointer(event);
+    setIsAiming(false);
+    setAimTarget(null);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    fire(releasedAim);
+  };
+
+  const cancelAim = () => {
+    setIsAiming(false);
+    setAimTarget(null);
+  };
+
   const toggleSound = () => {
     const next = !soundOn;
     setSoundOn(next);
@@ -159,7 +216,16 @@ function TankShot() {
         />
 
         <section className={`tank-battlefield ${impact ? (impact.damage > 0 ? "is-hit" : "is-impact") : ""}`}>
-          <svg viewBox="0 0 700 360" role="img" aria-label="Two tanks facing each other across rolling hills">
+          <svg
+            viewBox="0 0 700 360"
+            role="application"
+            aria-label="Drag across the battlefield and release to fire"
+            className={isAiming ? "is-aiming" : ""}
+            onPointerDown={startAiming}
+            onPointerMove={moveAim}
+            onPointerUp={releaseAim}
+            onPointerCancel={cancelAim}
+          >
             <defs>
               <linearGradient id="tankSky" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0" className="tank-sky-top" /><stop offset="1" className="tank-sky-bottom" />
@@ -180,11 +246,12 @@ function TankShot() {
             <path d="M0 278 Q95 240 191 273 T375 252 T540 272 T700 252 V360 H0Z" fill="url(#tankGround)" />
             <path d="M0 287 Q160 260 312 282 T700 268" className="tank-ground-highlight" />
             {s.craters.map((c, i) => <ellipse key={`${c.x}-${i}`} cx={c.x} cy={Math.min(c.y, GROUND_Y) + 16} rx={c.r + 5} ry={c.r / 2.5} className="tank-crater" />)}
-            {!shell && myTurn && !paused && !countdown && preview.map((p, i) => (
+            {!shell && myTurn && !paused && !countdown && isAiming && preview.map((p, i) => (
               <circle key={`${p.x}-${i}`} cx={p.x} cy={p.y} r={Math.max(1.5, 3.4 - i * 0.12)} className="tank-trajectory" style={{ opacity: Math.max(0.12, 0.75 - i * 0.035) }} />
             ))}
-            <TankSvg seat={0} angle={angle} active={s.turn === 0} recoil={recoil === 0} hit={Boolean(impact?.damage && Math.abs(impact.x - TANK_X[0]) < 90)} />
-            <TankSvg seat={1} angle={angle} active={s.turn === 1} recoil={recoil === 1} hit={Boolean(impact?.damage && Math.abs(impact.x - TANK_X[1]) < 90)} />
+            {aimTarget && isAiming && <g className="tank-aim-target" transform={`translate(${aimTarget.x} ${aimTarget.y})`}><circle r="20" /><circle r="7" /><path d="M-29 0h18M11 0h18M0-29v18M0 11v18" /></g>}
+            <TankSvg seat={0} angle={aims[0].angle} active={s.turn === 0} recoil={recoil === 0} hit={Boolean(impact?.damage && Math.abs(impact.x - TANK_X[0]) < 90)} />
+            <TankSvg seat={1} angle={aims[1].angle} active={s.turn === 1} recoil={recoil === 1} hit={Boolean(impact?.damage && Math.abs(impact.x - TANK_X[1]) < 90)} />
             {trail.map((p, i) => <circle key={`${p.x}-${i}`} cx={p.x} cy={p.y} r={1.5 + i * 0.28} className="tank-shell-trail" style={{ opacity: (i + 1) / trail.length }} />)}
             {shell && <g className="tank-shell"><path d={`M${shell.x - 11} ${shell.y + 4}l-13 4 9-10Z`} /><circle cx={shell.x} cy={shell.y} r="5" /></g>}
             {recoil != null && <g className="tank-muzzle" transform={`translate(${TANK_X[recoil] + (recoil === 0 ? 44 : -44)} 230)`}><circle r="12" /><circle r="5" /></g>}
@@ -199,15 +266,9 @@ function TankShot() {
           {s.winner != null && <ResultOverlay winner={s.winner} seat={seat} hp={s.hp} onReset={duo.reset} />}
         </section>
 
-        <section className="tank-controls" aria-label="Shot controls">
-          <div className="tank-angle-readout"><Crosshair /><span>Angle</span><strong>{angle}°</strong></div>
-          <div className="tank-sliders">
-            <label><span>Angle</span><input aria-label="Cannon angle" type="range" min={5} max={85} value={angle} onChange={(e) => setAngle(Number(e.target.value))} /></label>
-            <label><span>Power <b>{power}%</b></span><input aria-label="Shot power" type="range" min={10} max={100} value={power} onChange={(e) => setPower(Number(e.target.value))} /></label>
-          </div>
-          <Button className="tank-fire" onClick={fire} disabled={!myTurn || s.winner != null || Boolean(shell) || paused || Boolean(countdown)} aria-label="Fire cannon">
-            <span className="tank-fire-icon">➤</span><span>FIRE</span>
-          </Button>
+        <section className={`tank-drag-guide ${isAiming ? "is-aiming" : ""}`} aria-live="polite">
+          <Crosshair />
+          <div><strong>{isAiming ? `${activeAim.angle}° · ${activeAim.power}% power` : myTurn ? "Drag target to aim" : "Waiting for opponent"}</strong><span>{isAiming ? "Release to fire" : "Aim directly on the battlefield"}</span></div>
         </section>
 
         {s.last && <p className="tank-last-shot">Last shot · {s.last.damage > 0 ? `${s.last.damage} damage` : "near miss"}</p>}
