@@ -2132,7 +2132,7 @@ body { overscroll-behavior-y: contain; }
 .tank-vs b { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; margin-top: .18rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); font-size: .58rem; }
 
 .tank-battlefield { position: relative; width: 100%; max-width: 52rem; margin-inline: auto; overflow: hidden; border-radius: 1.45rem; box-shadow: 0 22px 55px -28px color-mix(in oklab, var(--velvet) 75%, transparent); transform-origin: center bottom; }
-.tank-battlefield svg { display: block; width: 100%; min-height: 20rem; aspect-ratio: 7/3.6; }
+.tank-battlefield svg { display: block; width: 100%; height: auto; aspect-ratio: 700/360; }
 .tank-sky-top { stop-color: var(--tank-sky-a); }
 .tank-sky-bottom { stop-color: var(--tank-sky-b); }
 .tank-grass { stop-color: var(--tank-grass); }
@@ -2181,7 +2181,7 @@ body { overscroll-behavior-y: contain; }
 .tank-angle-readout span { font-size: .5rem; text-transform: uppercase; letter-spacing: .08em; }
 .tank-angle-readout strong { grid-column: 1/-1; margin-top: .1rem; color: var(--candle); font-size: 1.2rem; }
 .tank-sliders { display: grid; gap: .4rem; min-width: 0; }
-.tank-sliders label { display: grid; grid-template-columns: 2.5rem minmax(0,1fr); align-items: center; gap: .3rem; color: var(--candle-muted); font-size: .53rem; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; }
+.tank-sliders label { display: grid; grid-template-columns: 3.35rem minmax(0,1fr); align-items: center; gap: .3rem; color: var(--candle-muted); font-size: .53rem; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; }
 .tank-sliders label span { display: flex; justify-content: space-between; }
 .tank-sliders label:first-child span { color: transparent; font-size: 0; }
 .tank-sliders input { width: 100%; height: 1.4rem; accent-color: var(--petal); cursor: pointer; }
@@ -2246,7 +2246,7 @@ body { overscroll-behavior-y: contain; }
   .tank-game { padding-top: .45rem; }
   .tank-hud { margin-block: .35rem; }
   .tank-avatar { width: 1.85rem; height: 1.85rem; }
-  .tank-battlefield svg { min-height: 16rem; }
+  .tank-battlefield svg { height: auto; }
   .tank-controls { margin-top: .45rem; padding: .55rem; }
   .tank-fire { width: 3.7rem; height: 3.7rem; }
 }
