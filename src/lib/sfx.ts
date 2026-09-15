@@ -210,3 +210,41 @@ export function sfxTankImpact(hit: boolean) {
     : [{ freq: 190, glideTo: 75, start: 0, dur: 0.18, gain: 0.055, type: "triangle" }]);
 }
 
+// Archery — taut string draw, release, target impact, and match result.
+export function sfxArcheryDraw() {
+  play([
+    { freq: 118, glideTo: 178, start: 0, dur: 0.42, gain: 0.035, type: "triangle" },
+    { freq: 236, glideTo: 312, start: 0.08, dur: 0.36, gain: 0.018, type: "sine" },
+  ]);
+}
+
+export function sfxArcheryRelease() {
+  play([
+    { freq: 920, glideTo: 210, start: 0, dur: 0.16, gain: 0.055, type: "triangle" },
+    { freq: 1420, glideTo: 480, start: 0.015, dur: 0.1, gain: 0.028, type: "square" },
+  ]);
+}
+
+export function sfxArcheryImpact(points: number) {
+  play(points > 0
+    ? [
+        { freq: 164, glideTo: 92, start: 0, dur: 0.12, gain: 0.075, type: "triangle" },
+        { freq: 620 + points * 36, start: 0.06, dur: 0.16, gain: 0.04, type: "sine" },
+      ]
+    : [{ freq: 130, glideTo: 62, start: 0, dur: 0.2, gain: 0.04, type: "sawtooth" }]);
+}
+
+export function sfxArcheryResult(won: boolean) {
+  play(won
+    ? [
+        { freq: 523.25, start: 0, dur: 0.18, gain: 0.065, type: "triangle" },
+        { freq: 659.25, start: 0.14, dur: 0.18, gain: 0.065, type: "triangle" },
+        { freq: 783.99, start: 0.28, dur: 0.18, gain: 0.07, type: "triangle" },
+        { freq: 1046.5, start: 0.42, dur: 0.34, gain: 0.075, type: "triangle" },
+      ]
+    : [
+        { freq: 330, glideTo: 196, start: 0, dur: 0.28, gain: 0.05, type: "triangle" },
+        { freq: 247, glideTo: 147, start: 0.18, dur: 0.34, gain: 0.045, type: "sine" },
+      ]);
+}
+
