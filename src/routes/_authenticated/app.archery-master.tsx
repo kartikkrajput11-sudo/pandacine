@@ -1,16 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { Crosshair, Volume2, VolumeX } from "lucide-react";
 import { useDuoGame, duoSearch } from "@/hooks/useDuoGame";
 import { DuoGameFrame } from "@/components/games/DuoGameFrame";
+import { Button } from "@/components/ui/button";
+import { ARROWS_PER_ROUND, archeryInitial, archeryPoints, archeryShoot, type ArcheryState } from "@/lib/duo/arcade";
 import {
-  ARCHERY_TARGET,
-  ARROWS_PER_ROUND,
-  archeryInitial,
-  archeryPoints,
-  archeryShoot,
-  simulateArrow,
-  type ArcheryState,
-} from "@/lib/duo/arcade";
+  isSfxEnabled,
+  setSfxEnabled,
+  sfxArcheryDraw,
+  sfxArcheryImpact,
+  sfxArcheryRelease,
+  sfxArcheryResult,
+} from "@/lib/sfx";
 
 export const Route = createFileRoute("/_authenticated/app/archery-master")({
   component: Archery,
@@ -18,37 +20,29 @@ export const Route = createFileRoute("/_authenticated/app/archery-master")({
   head: () => ({
     meta: [
       { title: "Archery Master — PandaCine" },
-      { name: "description", content: "Draw the bow, read the wind, and loose the arrow — closest to gold wins." },
+      { name: "description", content: "Aim from the shooting line, draw your bow, and compete for the gold." },
+      { property: "og:title", content: "Archery Master — PandaCine" },
+      { property: "og:description", content: "Aim from the shooting line, draw your bow, and compete for the gold." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
 });
 
 const RULES = [
-  { heading: "Objective", lines: ["Score the most points over 3 rounds of 5 arrows."] },
-  { heading: "Players", lines: ["2 players, alternating arrows — 15 arrows each."] },
-  {
-    heading: "Controls",
-    lines: [
-      "Hold anywhere on the range to draw the bow — the power bar fills as you hold.",
-      "Move up or down while holding to set your elevation.",
-      "Release to loose the arrow.",
-    ],
-  },
-  {
-    heading: "Wind & sway",
-    lines: [
-      "The wind flag shows drift; aim into it.",
-      "Your hand sways while drawing and gets shakier at full draw — release on the steady beat.",
-    ],
-  },
-  { heading: "Scoring", lines: ["Gold 10, then 9 down to 1 outward. Missing the boss scores 0."] },
-  { heading: "Win", lines: ["Highest total after 3 rounds."] },
-  { heading: "Tie", lines: ["One sudden-death arrow each — closest to centre wins."] },
+  { heading: "Aim", lines: ["Touch the range and drag the crosshair over the target."] },
+  { heading: "Draw", lines: ["Keep holding to draw the bow. Full draw is strongest but your hand sways more."] },
+  { heading: "Shoot", lines: ["Release to fire. Read the wind flag and time the sway."] },
+  { heading: "Match", lines: ["Shoot 5 arrows per round for 3 rounds. Highest total wins."] },
 ];
 
-const VB_W = 360;
-const VB_H = 260;
-const BOW = { x: 62, y: 168 };
+const W = 360;
+const H = 520;
+const TARGET = { x: 224, y: 190, r: 68 };
+const BOW = { x: 48, y: 390 };
+type Point = { x: number; y: number };
+type Hit = Point & { points: number; id: number };
+type Flight = Point & { scale: number; rotation: number };
 
 function Archery() {
   const search = Route.useSearch();
@@ -56,250 +50,251 @@ function Archery() {
   const s = duo.state;
   const seat = duo.mode === "local" ? s.turn : duo.seat;
   const myTurn = duo.canAct(s.turn);
-
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const holdRef = useRef<number | null>(null);
+  const holdRef = useRef(0);
   const rafRef = useRef<number | null>(null);
-  const aimRef = useRef(0);
-  const [aim, setAim] = useState(0); // -1 up .. 1 down
+  const aimRef = useRef<Point>({ x: TARGET.x, y: TARGET.y });
+  const powerRef = useRef(0);
+  const swayRef = useRef(0);
+  const winnerSoundRef = useRef<ArcheryState["winner"]>(null);
+  const [aim, setAim] = useState<Point>(aimRef.current);
   const [power, setPower] = useState(0);
   const [drawing, setDrawing] = useState(false);
   const [sway, setSway] = useState(0);
-  const [flight, setFlight] = useState<{ x: number; y: number } | null>(null);
-  const [hits, setHits] = useState<{ x: number; y: number; pts: number }[]>([]);
+  const [flight, setFlight] = useState<Flight | null>(null);
+  const [hits, setHits] = useState<Hit[]>([]);
   const [wind, setWind] = useState(0);
+  const [soundOn, setSoundOn] = useState(() => isSfxEnabled());
 
-  // A fresh crosswind for each arrow.
-  const arrowKey = `${s.arrows[0]}-${s.arrows[1]}-${s.turn}`;
+  const arrowKey = `${s.arrows[0]}-${s.arrows[1]}-${s.turn}-${s.suddenDeath}`;
   useEffect(() => {
-    setWind(Number(((Math.random() - 0.5) * 1.6).toFixed(2)));
+    setWind(Number(((Math.random() - 0.5) * 1.8).toFixed(1)));
+    aimRef.current = { x: TARGET.x, y: TARGET.y };
+    setAim(aimRef.current);
   }, [arrowKey]);
 
+  useEffect(() => {
+    if (s.winner == null || winnerSoundRef.current === s.winner) return;
+    winnerSoundRef.current = s.winner;
+    sfxArcheryResult(s.winner !== "draw" && s.winner === seat);
+  }, [s.winner, seat]);
+
   useEffect(() => () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
   }, []);
 
-  const pointerAim = (e: React.PointerEvent) => {
-    const r = svgRef.current?.getBoundingClientRect();
-    if (!r) return;
-    const v = ((e.clientY - r.top) / r.height) * 2 - 1;
-    const clamped = Math.max(-1, Math.min(1, v));
-    aimRef.current = clamped;
-    setAim(clamped);
+  const pointFromPointer = (event: ReactPointerEvent<SVGSVGElement>) => {
+    const rect = svgRef.current?.getBoundingClientRect();
+    if (!rect) return aimRef.current;
+    const point = {
+      x: Math.max(86, Math.min(340, ((event.clientX - rect.left) / rect.width) * W)),
+      y: Math.max(72, Math.min(330, ((event.clientY - rect.top) / rect.height) * H)),
+    };
+    aimRef.current = point;
+    setAim(point);
+    return point;
   };
 
-  const startDraw = (e: React.PointerEvent) => {
-    if (!myTurn || s.winner != null || flight) return;
-    pointerAim(e);
+  const startDraw = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (!myTurn || s.winner != null || flight || drawing) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    pointFromPointer(event);
     setDrawing(true);
+    setPower(0);
+    powerRef.current = 0;
     holdRef.current = performance.now();
+    sfxArcheryDraw();
     const loop = () => {
-      const held = (performance.now() - (holdRef.current ?? 0)) / 1000;
-      const p = Math.min(1, held / 1.25);
-      setPower(p);
-      // Shakier the longer you hold at full draw.
-      const shake = 0.045 + p * 0.075 + Math.max(0, held - 1.4) * 0.05;
-      setSway(Math.sin(held * 6.2) * shake + Math.sin(held * 11.3) * shake * 0.4);
+      const held = (performance.now() - holdRef.current) / 1000;
+      const nextPower = Math.min(1, held / 1.15);
+      const shake = 1.3 + nextPower * 3.6 + Math.max(0, held - 1.35) * 4;
+      const nextSway = Math.sin(held * 7.2) * shake + Math.sin(held * 12.7) * shake * 0.32;
+      powerRef.current = nextPower;
+      swayRef.current = nextSway;
+      setPower(nextPower);
+      setSway(nextSway);
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
   };
 
-  const release = () => {
+  const moveAim = (event: ReactPointerEvent<SVGSVGElement>) => {
+    if (drawing) pointFromPointer(event);
+  };
+
+  const release = (event: ReactPointerEvent<SVGSVGElement>) => {
     if (!drawing) return;
+    const releaseAim = pointFromPointer(event);
     setDrawing(false);
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    const p = Math.max(0.12, power);
-    const finalAim = aimRef.current + sway;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    const releasePower = Math.max(0.12, powerRef.current);
+    const drop = (1 - releasePower) * 74;
+    const impact = {
+      x: releaseAim.x + wind * 13 + swayRef.current,
+      y: releaseAim.y + drop + Math.abs(swayRef.current) * 0.35,
+    };
+    const dist = Math.hypot(impact.x - TARGET.x, impact.y - TARGET.y) / TARGET.r;
+    const points = archeryPoints(dist);
+    const shooter = s.turn;
     setPower(0);
     setSway(0);
-    if (!myTurn || s.winner != null) return;
+    powerRef.current = 0;
+    swayRef.current = 0;
+    sfxArcheryRelease();
 
-    const shot = simulateArrow(finalAim, p, wind);
-    const shooter = s.turn;
-    let i = 0;
-    const step = () => {
-      setFlight(shot.path[Math.min(i, shot.path.length - 1)]);
-      i += 2;
-      if (i < shot.path.length) {
-        rafRef.current = requestAnimationFrame(step);
+    const frames = 34;
+    let frame = 0;
+    const animate = () => {
+      frame += 1;
+      const t = Math.min(1, frame / frames);
+      const eased = 1 - (1 - t) ** 3;
+      const x = BOW.x + (impact.x - BOW.x) * eased;
+      const y = BOW.y + (impact.y - BOW.y) * eased - Math.sin(Math.PI * t) * 34 * releasePower;
+      const rotation = (Math.atan2(impact.y - BOW.y, impact.x - BOW.x) * 180) / Math.PI;
+      setFlight({ x, y, scale: 1.7 - t * 0.85, rotation });
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(animate);
         return;
       }
       setFlight(null);
-      const pts = archeryPoints(shot.dist);
-      setHits((h) => [...h.slice(-8), { x: shot.impact.x, y: shot.impact.y, pts }]);
-      duo.push(archeryShoot(s, shooter, shot.dist));
+      setHits((current) => [...current.slice(-11), { ...impact, points, id: Date.now() }]);
+      sfxArcheryImpact(points);
+      duo.push(archeryShoot(s, shooter, dist));
     };
-    rafRef.current = requestAnimationFrame(step);
+    rafRef.current = requestAnimationFrame(animate);
   };
 
-  const drawPull = drawing ? power * 14 : 0;
-  const aimY = BOW.y + (aim + (drawing ? sway : 0)) * 62;
+  const cancelDraw = () => {
+    setDrawing(false);
+    setPower(0);
+    setSway(0);
+    powerRef.current = 0;
+    swayRef.current = 0;
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+  };
+
+  const toggleSound = () => {
+    const next = !soundOn;
+    setSoundOn(next);
+    setSfxEnabled(next);
+  };
+
+  const crosshair = { x: aim.x + (drawing ? sway : 0), y: aim.y };
+  const scoreText = s.winner != null
+    ? s.winner === "draw" ? "Dead heat" : s.winner === seat ? "You win" : "Opponent wins"
+    : s.suddenDeath ? "Sudden death" : `Round ${s.round}/3 · Arrow ${(s.arrows[s.turn] % ARROWS_PER_ROUND) + 1}/5`;
 
   return (
-    <DuoGameFrame
-      game="archery-master"
-      title="Archery Master"
-      tagline="Three rounds. Fifteen arrows. Find the gold."
-      rules={RULES}
-      duo={duo}
-      onReset={duo.reset}
-      status={
-        <div className="rounded-2xl border border-border bg-surface px-4 py-3 text-sm flex items-center justify-between">
-          <span className={s.turn === 0 ? "text-petal font-semibold" : "text-candle-muted"}>P1 · {s.scores[0]}</span>
-          <span className="text-[11px] text-candle-muted">
-            {s.winner != null
-              ? s.winner === "draw"
-                ? "Dead heat."
-                : s.winner === seat
-                  ? "You win."
-                  : "Opponent wins."
-              : s.suddenDeath
-                ? "Sudden death arrow"
-                : `Round ${s.round}/3 · arrow ${(s.arrows[s.turn] % ARROWS_PER_ROUND) + 1}/${ARROWS_PER_ROUND}`}
-          </span>
-          <span className={s.turn === 1 ? "text-petal font-semibold" : "text-candle-muted"}>P2 · {s.scores[1]}</span>
-        </div>
-      }
-    >
+    <DuoGameFrame game="archery-master" title="Archery Master" tagline="Draw. Steady. Find the gold." rules={RULES} duo={duo} onReset={duo.reset}>
       <div className="mx-auto w-full max-w-md space-y-3">
-        <div className="rounded-3xl border border-border bg-surface p-3">
+        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
+          <div className="min-w-0">
+            <div className="flex items-center justify-between gap-3 text-sm font-semibold">
+              <span className={s.turn === 0 ? "text-petal" : "text-candle-muted"}>P1 · {s.scores[0]}</span>
+              <span className={s.turn === 1 ? "text-petal" : "text-candle-muted"}>P2 · {s.scores[1]}</span>
+            </div>
+            <p className="mt-1 truncate text-center text-[11px] text-candle-muted">{scoreText}</p>
+          </div>
+          <Button variant="ghost" size="icon" className="shrink-0 rounded-full" onClick={toggleSound} aria-label={soundOn ? "Mute sound" : "Turn sound on"}>
+            {soundOn ? <Volume2 className="size-4" /> : <VolumeX className="size-4" />}
+          </Button>
+        </header>
+
+        <section className="overflow-hidden rounded-3xl border border-border bg-surface shadow-lg" aria-label="Archery range">
           <svg
             ref={svgRef}
-            viewBox={`0 0 ${VB_W} ${VB_H}`}
-            className={`w-full touch-none select-none ${myTurn && s.winner == null ? "cursor-crosshair" : "opacity-70 pointer-events-none"}`}
+            viewBox={`0 0 ${W} ${H}`}
+            role="application"
+            aria-label="Drag the crosshair, hold to draw, and release to shoot"
+            className={`block aspect-[9/13] w-full select-none touch-none ${myTurn && s.winner == null && !flight ? "cursor-crosshair" : "pointer-events-none opacity-80"}`}
             onPointerDown={startDraw}
-            onPointerMove={(e) => drawing && pointerAim(e)}
+            onPointerMove={moveAim}
             onPointerUp={release}
-            onPointerLeave={release}
+            onPointerCancel={cancelDraw}
           >
             <defs>
-              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1d1a2b" />
-                <stop offset="100%" stopColor="#3b2f3f" />
-              </linearGradient>
-              <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3c6a4c" />
-                <stop offset="100%" stopColor="#24422f" />
-              </linearGradient>
+              <linearGradient id="archery-sky" x1="0" y1="0" x2="0" y2="1"><stop stopColor="hsl(var(--surface-elevated))"/><stop offset="1" stopColor="hsl(var(--petal) / .2)"/></linearGradient>
+              <linearGradient id="archery-grass" x1="0" y1="0" x2="0" y2="1"><stop stopColor="hsl(var(--sage))"/><stop offset="1" stopColor="hsl(var(--velvet))"/></linearGradient>
+              <linearGradient id="archery-bow" x1="0" y1="0" x2="1" y2="0"><stop stopColor="hsl(var(--petal))"/><stop offset=".5" stopColor="hsl(var(--candle))"/><stop offset="1" stopColor="hsl(var(--petal))"/></linearGradient>
+              <filter id="archery-shadow"><feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="hsl(var(--velvet))" floodOpacity=".4"/></filter>
             </defs>
 
-            <rect x="0" y="0" width={VB_W} height={VB_H} rx="18" fill="url(#sky)" />
-            <rect x="0" y="196" width={VB_W} height={VB_H - 196} fill="url(#grass)" />
+            <rect width={W} height={H} fill="url(#archery-sky)" />
+            <path d="M0 170 Q55 118 112 160 T228 145 T360 165 V290 H0Z" fill="hsl(var(--velvet) / .72)" />
+            <path d="M0 220 Q80 198 165 214 T360 202 V520 H0Z" fill="url(#archery-grass)" />
+            <path d="M0 275 Q86 252 170 269 T360 256 V293 Q258 276 171 291 T0 301Z" fill="hsl(var(--sage) / .72)" />
+            <path d="M98 520 L190 255" stroke="hsl(var(--candle) / .82)" strokeWidth="3" />
+            <path d="M338 520 L258 255" stroke="hsl(var(--candle) / .82)" strokeWidth="3" />
 
-            {/* wind flag */}
-            <line x1="336" y1="52" x2="336" y2="196" stroke="#efe4d8" strokeWidth="2" opacity="0.5" />
-            <path
-              d={`M 336 54 q ${wind * 26} 10 ${wind * 34} 20 l ${-wind * 34} 6 z`}
-              fill="hsl(var(--petal))"
-              opacity="0.85"
-            />
+            <g transform="translate(320 108)">
+              <line y2="96" stroke="hsl(var(--candle) / .7)" strokeWidth="2" />
+              <path d={`M0 3 q ${wind * 12} 8 ${wind * 20} 17 q ${-wind * 8} 7 ${-wind * 20} 12Z`} fill="hsl(var(--petal))" />
+            </g>
 
-            {/* target boss */}
-            <ellipse cx={ARCHERY_TARGET.x} cy={ARCHERY_TARGET.y + ARCHERY_TARGET.r + 12} rx="46" ry="8" fill="#000" opacity="0.3" />
-            <line x1={ARCHERY_TARGET.x} y1={ARCHERY_TARGET.y} x2={ARCHERY_TARGET.x} y2="204" stroke="#6b533c" strokeWidth="6" />
-            {[
-              { r: 1, fill: "#efe9df" },
-              { r: 0.8, fill: "#22202a" },
-              { r: 0.6, fill: "#3aa0d1" },
-              { r: 0.4, fill: "#e2574c" },
-              { r: 0.2, fill: "#f2b705" },
-              { r: 0.1, fill: "#f7e08a" },
-            ].map((ring) => (
-              <circle
-                key={ring.r}
-                cx={ARCHERY_TARGET.x}
-                cy={ARCHERY_TARGET.y}
-                r={ARCHERY_TARGET.r * ring.r}
-                fill={ring.fill}
-                stroke="#00000022"
-              />
-            ))}
+            <g filter="url(#archery-shadow)">
+              <rect x="146" y="112" width="156" height="163" rx="3" fill="hsl(var(--candle))" stroke="hsl(var(--velvet))" strokeWidth="4" />
+              <line x1="169" y1="275" x2="158" y2="332" stroke="hsl(var(--velvet))" strokeWidth="7" />
+              <line x1="278" y1="275" x2="289" y2="332" stroke="hsl(var(--velvet))" strokeWidth="7" />
+              {[
+                { r: 68, fill: "hsl(var(--candle))" },
+                { r: 57, fill: "hsl(var(--velvet))" },
+                { r: 45, fill: "hsl(var(--sky))" },
+                { r: 33, fill: "hsl(var(--petal))" },
+                { r: 21, fill: "hsl(var(--gold))" },
+                { r: 9, fill: "hsl(var(--candle))" },
+              ].map((ring) => <circle key={ring.r} cx={TARGET.x} cy={TARGET.y} r={ring.r} fill={ring.fill} stroke="hsl(var(--velvet) / .55)" strokeWidth="1" />)}
+            </g>
 
-            {/* previous arrows stuck in the boss */}
-            {hits.map((h, i) => (
-              <g key={i} opacity={i === hits.length - 1 ? 1 : 0.45}>
-                <line x1={h.x - 16} y1={h.y - 5} x2={h.x} y2={h.y} stroke="#f3ead9" strokeWidth="2" />
-                <circle cx={h.x} cy={h.y} r="2.4" fill="hsl(var(--petal))" />
+            {hits.map((hit) => (
+              <g key={hit.id} opacity={hit === hits[hits.length - 1] ? 1 : .68}>
+                <line x1={hit.x - 18} y1={hit.y + 8} x2={hit.x} y2={hit.y} stroke="hsl(var(--candle))" strokeWidth="2.5" />
+                <circle cx={hit.x} cy={hit.y} r="3" fill="hsl(var(--velvet))" stroke="hsl(var(--petal))" />
+                <text x={hit.x + 6} y={hit.y - 7} fill="hsl(var(--candle))" fontSize="11" fontWeight="700">{hit.points || "MISS"}</text>
               </g>
             ))}
 
-            {/* archer + bow */}
-            <g>
-              <circle cx={BOW.x - 20} cy={BOW.y - 6} r="9" fill="#2b2431" />
-              <rect x={BOW.x - 27} y={BOW.y + 3} width="16" height="34" rx="7" fill="#2b2431" />
-              <path
-                d={`M ${BOW.x} ${aimY - 34} q 22 34 0 68`}
-                fill="none"
-                stroke="#c8a06a"
-                strokeWidth="4"
-                strokeLinecap="round"
-              />
-              <path
-                d={`M ${BOW.x} ${aimY - 34} L ${BOW.x - drawPull} ${aimY} L ${BOW.x} ${aimY + 34}`}
-                fill="none"
-                stroke="#efe4d8"
-                strokeWidth="1.5"
-              />
-              {!flight && (
-                <line
-                  x1={BOW.x - drawPull}
-                  y1={aimY}
-                  x2={BOW.x + 34}
-                  y2={aimY}
-                  stroke="#f3ead9"
-                  strokeWidth="2"
-                />
-              )}
+            <g aria-hidden="true">
+              <ellipse cx="18" cy="382" rx="48" ry="56" fill="hsl(var(--velvet))" />
+              <path d="M0 395 Q35 365 72 390 L103 520 H0Z" fill="hsl(var(--surface-elevated))" />
+              <path d={`M62 248 Q${88 + power * 14} 334 61 476`} fill="none" stroke="url(#archery-bow)" strokeWidth="8" strokeLinecap="round" />
+              <path d={`M62 248 L${62 - power * 22} 362 L61 476`} fill="none" stroke="hsl(var(--candle) / .9)" strokeWidth="1.5" />
+              {!flight && <g transform={`translate(${62 - power * 22} 362) rotate(-36)`}><line x1="-12" x2="82" stroke="hsl(var(--candle))" strokeWidth="3"/><path d="M82 0 l-10 -5 v10Z" fill="hsl(var(--petal))"/></g>}
             </g>
 
-            {/* aim guide */}
-            {drawing && (
-              <line
-                x1={BOW.x + 34}
-                y1={aimY}
-                x2={ARCHERY_TARGET.x - 10}
-                y2={aimY + (1 - power) * 60}
-                stroke="hsl(var(--petal))"
-                strokeWidth="1.2"
-                strokeDasharray="4 6"
-                opacity="0.6"
-              />
+            {flight && (
+              <g transform={`translate(${flight.x} ${flight.y}) rotate(${flight.rotation}) scale(${flight.scale})`}>
+                <line x1="-30" x2="10" stroke="hsl(var(--candle))" strokeWidth="2.4" strokeLinecap="round" />
+                <path d="M12 0 l-9 -4 v8Z" fill="hsl(var(--petal))" />
+              </g>
             )}
 
-            {/* arrow in flight */}
-            {flight && (
-              <line
-                x1={flight.x - 18}
-                y1={flight.y - 3}
-                x2={flight.x}
-                y2={flight.y}
-                stroke="#f3ead9"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
+            {!flight && (
+              <g transform={`translate(${crosshair.x} ${crosshair.y})`} className={drawing ? "animate-pulse" : ""} pointerEvents="none">
+                <circle r="18" fill="none" stroke="hsl(var(--candle))" strokeWidth="5" opacity=".55" />
+                <circle r="18" fill="none" stroke="hsl(var(--petal))" strokeWidth="2" />
+                <circle r="3" fill="hsl(var(--petal))" />
+                <path d="M-29 0h17M12 0h17M0-29v17M0 12v17" stroke="hsl(var(--petal))" strokeWidth="3" strokeLinecap="round" />
+              </g>
             )}
           </svg>
 
-          <div className="mt-2 h-2 rounded-full bg-black/25 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[hsl(var(--petal))] transition-[width] duration-75"
-              style={{ width: `${power * 100}%` }}
-            />
+          <div className="border-t border-border bg-surface-elevated px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Crosshair className="size-4 shrink-0 text-petal" />
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-velvet/40">
+                <div className="h-full rounded-full bg-petal transition-[width] duration-75" style={{ width: `${power * 100}%` }} />
+              </div>
+              <span className="w-14 text-right text-[10px] font-semibold uppercase text-candle-muted">{drawing ? `${Math.round(power * 100)}%` : "Ready"}</span>
+            </div>
+            <p className="mt-2 text-center text-[11px] text-candle-muted">
+              {s.winner != null ? "Match over" : !myTurn ? "Waiting for your opponent…" : flight ? "Arrow in flight…" : drawing ? "Steady… release to shoot" : "Drag the crosshair · hold to draw"}
+            </p>
           </div>
-          <p className="text-center text-[11px] text-candle-muted mt-2">
-            {s.winner != null
-              ? "Match over."
-              : myTurn
-                ? drawing
-                  ? "Hold to draw · move to aim · release to shoot"
-                  : "Press and hold the range to draw your bow"
-                : "Waiting for your opponent…"}
-          </p>
-        </div>
+        </section>
 
         <div className="flex items-center justify-between rounded-2xl border border-border bg-surface px-4 py-2 text-[11px] text-candle-muted">
-          <span>Wind {wind === 0 ? "calm" : `${wind > 0 ? "down" : "up"} ${Math.abs(wind).toFixed(1)}`}</span>
+          <span>Wind {wind === 0 ? "calm" : `${wind > 0 ? "right" : "left"} ${Math.abs(wind).toFixed(1)}`}</span>
           {s.last && <span>Last arrow · {s.last.points} pts</span>}
         </div>
       </div>
