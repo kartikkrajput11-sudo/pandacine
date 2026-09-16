@@ -214,21 +214,21 @@ function Archery() {
             onPointerCancel={cancelDraw}
           >
             <defs>
-              <linearGradient id="archery-sky" x1="0" y1="0" x2="0" y2="1"><stop stopColor="var(--surface-elevated)"/><stop offset="1" stopColor="color-mix(in srgb, var(--petal) calc(.2 * 100%), transparent)"/></linearGradient>
+              <linearGradient id="archery-sky" x1="0" y1="0" x2="0" y2="1"><stop stopColor="var(--surface-elevated)"/><stop offset="1" stopColor="color-mix(in srgb, var(--petal) 20%, transparent)"/></linearGradient>
               <linearGradient id="archery-grass" x1="0" y1="0" x2="0" y2="1"><stop stopColor="var(--sage)"/><stop offset="1" stopColor="var(--velvet)"/></linearGradient>
               <linearGradient id="archery-bow" x1="0" y1="0" x2="1" y2="0"><stop stopColor="var(--petal)"/><stop offset=".5" stopColor="var(--candle)"/><stop offset="1" stopColor="var(--petal)"/></linearGradient>
               <filter id="archery-shadow"><feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="var(--velvet)" floodOpacity=".4"/></filter>
             </defs>
 
             <rect width={W} height={H} fill="url(#archery-sky)" />
-            <path d="M0 170 Q55 118 112 160 T228 145 T360 165 V290 H0Z" fill="color-mix(in srgb, var(--velvet) calc(.72 * 100%), transparent)" />
+            <path d="M0 170 Q55 118 112 160 T228 145 T360 165 V290 H0Z" fill="color-mix(in srgb, var(--velvet) 72%, transparent)" />
             <path d="M0 220 Q80 198 165 214 T360 202 V520 H0Z" fill="url(#archery-grass)" />
-            <path d="M0 275 Q86 252 170 269 T360 256 V293 Q258 276 171 291 T0 301Z" fill="color-mix(in srgb, var(--sage) calc(.72 * 100%), transparent)" />
-            <path d="M98 520 L190 255" stroke="color-mix(in srgb, var(--candle) calc(.82 * 100%), transparent)" strokeWidth="3" />
-            <path d="M338 520 L258 255" stroke="color-mix(in srgb, var(--candle) calc(.82 * 100%), transparent)" strokeWidth="3" />
+            <path d="M0 275 Q86 252 170 269 T360 256 V293 Q258 276 171 291 T0 301Z" fill="color-mix(in srgb, var(--sage) 72%, transparent)" />
+            <path d="M98 520 L190 255" stroke="color-mix(in srgb, var(--candle) 82%, transparent)" strokeWidth="3" />
+            <path d="M338 520 L258 255" stroke="color-mix(in srgb, var(--candle) 82%, transparent)" strokeWidth="3" />
 
             <g transform="translate(320 108)">
-              <line y2="96" stroke="color-mix(in srgb, var(--candle) calc(.7 * 100%), transparent)" strokeWidth="2" />
+              <line y2="96" stroke="color-mix(in srgb, var(--candle) 70%, transparent)" strokeWidth="2" />
               <path d={`M0 3 q ${wind * 12} 8 ${wind * 20} 17 q ${-wind * 8} 7 ${-wind * 20} 12Z`} fill="var(--petal)" />
             </g>
 
@@ -243,7 +243,7 @@ function Archery() {
                 { r: 33, fill: "var(--petal)" },
                 { r: 21, fill: "var(--gold)" },
                 { r: 9, fill: "var(--candle)" },
-              ].map((ring) => <circle key={ring.r} cx={TARGET.x} cy={TARGET.y} r={ring.r} fill={ring.fill} stroke="color-mix(in srgb, var(--velvet) calc(.55 * 100%), transparent)" strokeWidth="1" />)}
+              ].map((ring) => <circle key={ring.r} cx={TARGET.x} cy={TARGET.y} r={ring.r} fill={ring.fill} stroke="color-mix(in srgb, var(--velvet) 55%, transparent)" strokeWidth="1" />)}
             </g>
 
             {hits.map((hit) => (
@@ -258,7 +258,7 @@ function Archery() {
               <ellipse cx="18" cy="382" rx="48" ry="56" fill="var(--velvet)" />
               <path d="M0 395 Q35 365 72 390 L103 520 H0Z" fill="var(--surface-elevated)" />
               <path d={`M62 248 Q${88 + power * 14} 334 61 476`} fill="none" stroke="url(#archery-bow)" strokeWidth="8" strokeLinecap="round" />
-              <path d={`M62 248 L${62 - power * 22} 362 L61 476`} fill="none" stroke="color-mix(in srgb, var(--candle) calc(.9 * 100%), transparent)" strokeWidth="1.5" />
+              <path d={`M62 248 L${62 - power * 22} 362 L61 476`} fill="none" stroke="color-mix(in srgb, var(--candle) 90%, transparent)" strokeWidth="1.5" />
               {!flight && <g transform={`translate(${62 - power * 22} 362) rotate(-36)`}><line x1="-12" x2="82" stroke="var(--candle)" strokeWidth="3"/><path d="M82 0 l-10 -5 v10Z" fill="var(--petal)"/></g>}
             </g>
 
