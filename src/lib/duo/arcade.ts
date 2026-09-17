@@ -175,7 +175,7 @@ export function archeryShoot(s: ArcheryState, seat: Seat, input: ArcheryShotInpu
   if (s.winner != null || s.turn !== seat) return s;
   if (!Number.isFinite(input.aimX) || !Number.isFinite(input.aimY) || !Number.isFinite(input.power)) return s;
   if (input.aimX < -1 || input.aimX > 1 || input.aimY < -1 || input.aimY > 1 || input.power < 0.12 || input.power > 1) return s;
-  const wind = s.winds[Math.max(0, s.round - 1)] ?? 0;
+  const wind = s.winds?.[Math.max(0, s.round - 1)] ?? archeryWind(s.round);
   const result = archeryResolveShot(input, wind);
   const pts = archeryPoints(result.dist);
   const shot: ArcheryShot = {
@@ -190,7 +190,7 @@ export function archeryShoot(s: ArcheryState, seat: Seat, input: ArcheryShotInpu
     points: pts,
     timestamp,
   };
-  const shots: [ArcheryShot[], ArcheryShot[]] = [s.shots[0].slice(), s.shots[1].slice()];
+  const shots: [ArcheryShot[], ArcheryShot[]] = [s.shots?.[0]?.slice() ?? [], s.shots?.[1]?.slice() ?? []];
   shots[seat].push(shot);
   if (s.suddenDeath) {
     const sd: [number | null, number | null] = [s.sd[0], s.sd[1]];
