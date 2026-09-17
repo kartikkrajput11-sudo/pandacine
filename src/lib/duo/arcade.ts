@@ -80,20 +80,66 @@ export function dartsThrow(s: DartsState, seat: Seat, hit: DartHit): DartsState 
 export type ArcheryState = {
   scores: [number, number];
   arrows: [number, number]; // arrows shot
+  shots: [ArcheryShot[], ArcheryShot[]];
   turn: Seat;
   round: number; // 1..3
-  last: { seat: Seat; points: number; dist: number } | null;
+  winds: number[];
+  last: ArcheryShot | null;
   suddenDeath: boolean;
   sd: [number | null, number | null];
   winner: Seat | "draw" | null;
 };
 
-export const ARROWS_PER_ROUND = 5;
+export type ArcheryShotInput = {
+  aimX: number;
+  aimY: number;
+  power: number;
+};
+
+export type ArcheryShot = ArcheryShotInput & {
+  seat: Seat;
+  wind: number;
+  impactX: number;
+  impactY: number;
+  dist: number;
+  points: number;
+  timestamp: number;
+};
+
+export const ARCHERY_CONFIG = {
+  arrowsPerRound: 5,
+  rounds: 3,
+  gravity: 9.8,
+  targetDistance: 72,
+  targetHeight: 5.5,
+  targetRadius: 4.2,
+  minSpeed: 34,
+  maxSpeed: 56,
+  minPitchDeg: 7,
+  maxPitchDeg: 17,
+  maxYawDeg: 3.2,
+  windAcceleration: 0.18,
+  windMin: -5,
+  windMax: 5,
+  simulationStep: 1 / 120,
+} as const;
+
+export const ARROWS_PER_ROUND = ARCHERY_CONFIG.arrowsPerRound;
+export const ARCHERY_ROUNDS = ARCHERY_CONFIG.rounds;
+
+const ARCHERY_WINDS = [2.4, -1.8, 3.1] as const;
+
+export function archeryWind(round: number): number {
+  return ARCHERY_WINDS[Math.max(0, Math.min(ARCHERY_WINDS.length - 1, round - 1))] ?? 0;
+}
+
 export const archeryInitial = (): ArcheryState => ({
   scores: [0, 0],
   arrows: [0, 0],
+  shots: [[], []],
   turn: 0,
   round: 1,
+  winds: Array.from({ length: ARCHERY_ROUNDS }, (_, i) => archeryWind(i + 1)),
   last: null,
   suddenDeath: false,
   sd: [null, null],
@@ -106,42 +152,86 @@ export function archeryPoints(dist: number): number {
   return Math.max(0, 11 - Math.ceil(dist * 10));
 }
 
-export function archeryShoot(s: ArcheryState, seat: Seat, dist: number): ArcheryState {
+/** Resolve raw controls into a deterministic target-plane impact. */
+export function archeryResolveShot(input: ArcheryShotInput, wind: number) {
+  const aimX = Math.max(-1, Math.min(1, input.aimX));
+  const aimY = Math.max(-1, Math.min(1, input.aimY));
+  const power = Math.max(0.12, Math.min(1, input.power));
+  const speed = ARCHERY_CONFIG.minSpeed + (ARCHERY_CONFIG.maxSpeed - ARCHERY_CONFIG.minSpeed) * power;
+  const pitch = (ARCHERY_CONFIG.minPitchDeg + (ARCHERY_CONFIG.maxPitchDeg - ARCHERY_CONFIG.minPitchDeg) * ((aimY + 1) / 2)) * Math.PI / 180;
+  const yaw = aimX * ARCHERY_CONFIG.maxYawDeg * Math.PI / 180;
+  const forward = speed * Math.cos(pitch) * Math.cos(yaw);
+  const lateral = speed * Math.cos(pitch) * Math.sin(yaw);
+  const vertical = speed * Math.sin(pitch);
+  const flightTime = ARCHERY_CONFIG.targetDistance / Math.max(1, forward);
+  const windAcceleration = wind * ARCHERY_CONFIG.windAcceleration;
+  const impactX = lateral * flightTime + 0.5 * windAcceleration * flightTime * flightTime;
+  const impactY = vertical * flightTime - 0.5 * ARCHERY_CONFIG.gravity * flightTime * flightTime - ARCHERY_CONFIG.targetHeight;
+  const dist = Math.hypot(impactX, impactY) / ARCHERY_CONFIG.targetRadius;
+  return { aimX, aimY, power, impactX, impactY, dist, flightTime, speed, pitch, yaw };
+}
+
+export function archeryShoot(s: ArcheryState, seat: Seat, input: ArcheryShotInput, timestamp = Date.now()): ArcheryState {
   if (s.winner != null || s.turn !== seat) return s;
-  const pts = archeryPoints(dist);
+  if (!Number.isFinite(input.aimX) || !Number.isFinite(input.aimY) || !Number.isFinite(input.power)) return s;
+  if (input.aimX < -1 || input.aimX > 1 || input.aimY < -1 || input.aimY > 1 || input.power < 0.12 || input.power > 1) return s;
+  const wind = s.winds?.[Math.max(0, s.round - 1)] ?? archeryWind(s.round);
+  const result = archeryResolveShot(input, wind);
+  const pts = archeryPoints(result.dist);
+  const shot: ArcheryShot = {
+    seat,
+    aimX: result.aimX,
+    aimY: result.aimY,
+    power: result.power,
+    wind,
+    impactX: result.impactX,
+    impactY: result.impactY,
+    dist: result.dist,
+    points: pts,
+    timestamp,
+  };
+  const shots: [ArcheryShot[], ArcheryShot[]] = [s.shots?.[0]?.slice() ?? [], s.shots?.[1]?.slice() ?? []];
+  shots[seat].push(shot);
   if (s.suddenDeath) {
     const sd: [number | null, number | null] = [s.sd[0], s.sd[1]];
-    sd[seat] = dist;
+    sd[seat] = result.dist;
     const both = sd[0] != null && sd[1] != null;
+    const first = sd[0];
+    const second = sd[1];
+    const suddenWinner = both && first != null && second != null
+      ? Math.abs(first - second) < 0.0001 ? "draw" : first < second ? 0 : 1
+      : null;
     return {
       ...s,
+      shots,
       sd,
-      last: { seat, points: pts, dist },
+      last: shot,
       turn: otherSeat(seat),
-      winner: both ? (sd[0]! === sd[1]! ? "draw" : sd[0]! < sd[1]! ? 0 : 1) : null,
+      winner: suddenWinner,
     };
   }
   const scores: [number, number] = [s.scores[0], s.scores[1]];
   const arrows: [number, number] = [s.arrows[0], s.arrows[1]];
   scores[seat] += pts;
   arrows[seat] += 1;
-  const total = ARROWS_PER_ROUND * 3;
+  const total = ARROWS_PER_ROUND * ARCHERY_ROUNDS;
   const done = arrows[0] >= total && arrows[1] >= total;
-  const round = Math.min(3, Math.floor(Math.min(arrows[0], arrows[1]) / ARROWS_PER_ROUND) + 1);
+  const round = Math.min(ARCHERY_ROUNDS, Math.floor(Math.min(arrows[0], arrows[1]) / ARROWS_PER_ROUND) + 1);
   if (done) {
     const tie = scores[0] === scores[1];
     return {
       ...s,
       scores,
       arrows,
+      shots,
       round,
-      last: { seat, points: pts, dist },
+      last: shot,
       turn: otherSeat(seat),
       suddenDeath: tie,
       winner: tie ? null : scores[0] > scores[1] ? 0 : 1,
     };
   }
-  return { ...s, scores, arrows, round, last: { seat, points: pts, dist }, turn: otherSeat(seat) };
+  return { ...s, scores, arrows, shots, round, last: shot, turn: otherSeat(seat) };
 }
 
 /* ------------------------------ Cup Pong -------------------------------- */
