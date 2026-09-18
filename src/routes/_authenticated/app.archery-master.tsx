@@ -127,7 +127,6 @@ function Archery() {
       powerRef.current = nextPower;
       swayRef.current = nextSway;
       setPower(nextPower);
-      setSway(nextSway);
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
@@ -144,7 +143,6 @@ function Archery() {
     const points = archeryPoints(resolved.dist);
     const shooter = s.turn;
     setPower(0);
-    setSway(0);
     powerRef.current = 0;
     swayRef.current = 0;
     sfxArcheryRelease();
@@ -152,7 +150,7 @@ function Archery() {
     let z = 0;
     let lateral = 0;
     let height = 0;
-    let vz = resolved.speed * Math.cos(resolved.pitch) * Math.cos(resolved.yaw);
+    const vz = resolved.speed * Math.cos(resolved.pitch) * Math.cos(resolved.yaw);
     let vx = resolved.speed * Math.cos(resolved.pitch) * Math.sin(resolved.yaw);
     let vy = resolved.speed * Math.sin(resolved.pitch);
     let previous = performance.now();
@@ -177,6 +175,7 @@ function Archery() {
       }
       setFlight(null);
       setResult({ points, id: Date.now() });
+      window.setTimeout(() => setResult(null), 900);
       sfxArcheryImpact(points);
       duo.push(archeryShoot(s, shooter, shotInput));
     };
@@ -186,7 +185,6 @@ function Archery() {
   const cancelDraw = () => {
     setDrawing(false);
     setPower(0);
-    setSway(0);
     powerRef.current = 0;
     swayRef.current = 0;
     if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
@@ -198,7 +196,7 @@ function Archery() {
     setSfxEnabled(next);
   };
 
-  const crosshair = { x: TARGET.x + aim.x * 170 + (drawing ? sway : 0), y: TARGET.y - aim.y * 120 };
+  const crosshair = { x: TARGET.x + aim.x * 170 + (drawing ? swayRef.current : 0), y: TARGET.y - aim.y * 120 };
   const scoreText = s.winner != null
     ? s.winner === "draw" ? "Dead heat" : s.winner === seat ? "You win" : "Opponent wins"
     : s.suddenDeath ? "Sudden death" : `Round ${s.round}/${ARCHERY_ROUNDS} · Arrow ${(s.arrows[s.turn] % ARROWS_PER_ROUND) + 1}/${ARROWS_PER_ROUND}`;
