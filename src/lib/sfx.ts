@@ -248,3 +248,37 @@ export function sfxArcheryResult(won: boolean) {
       ]);
 }
 
+// Mini Golf — putter, course contact, hazards, cup, and match result.
+export function sfxGolfPutt(power: number) {
+  play([
+    { freq: 190 + power * 90, glideTo: 110, start: 0, dur: 0.08, gain: 0.065, type: "triangle" },
+    { freq: 1180, glideTo: 720, start: 0.01, dur: 0.045, gain: 0.03, type: "sine" },
+  ]);
+}
+
+export function sfxGolfCollision(bumper = false) {
+  play([{ freq: bumper ? 620 : 260, glideTo: bumper ? 920 : 150, start: 0, dur: 0.075, gain: 0.045, type: bumper ? "triangle" : "sine" }]);
+}
+
+export function sfxGolfSand() {
+  play([{ freq: 150, glideTo: 82, start: 0, dur: 0.2, gain: 0.025, type: "sawtooth" }]);
+}
+
+export function sfxGolfSplash() {
+  play([
+    { freq: 380, glideTo: 95, start: 0, dur: 0.28, gain: 0.055, type: "sine" },
+    { freq: 760, glideTo: 180, start: 0.04, dur: 0.2, gain: 0.025, type: "triangle" },
+  ]);
+}
+
+export function sfxGolfCup() {
+  play([
+    { freq: 430, glideTo: 180, start: 0, dur: 0.13, gain: 0.06, type: "sine" },
+    { freq: 880, start: 0.1, dur: 0.16, gain: 0.045, type: "triangle" },
+  ]);
+}
+
+export function sfxGolfResult(won: boolean) {
+  sfxArcheryResult(won);
+}
+
