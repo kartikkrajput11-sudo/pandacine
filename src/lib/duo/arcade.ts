@@ -377,8 +377,8 @@ export type GolfHole = {
 };
 
 export const GOLF_CONFIG = {
-  width: 360,
-  height: 520,
+  width: 320,
+  height: 460,
   ballRadius: 6,
   cupRadius: 12,
   maxStrokes: 6,
@@ -759,7 +759,7 @@ export function golfPutt(s: GolfState, seat: Seat, input: GolfPuttInput, timesta
   const other = otherSeat(seat);
   const otherDone = holed[other] || strokes[other] >= GOLF_MAX_STROKES;
   const nextTurn = otherDone ? seat : other;
-  const shots = [...s.shots, shot].slice(-40);
+  const shots = [...(s.shots ?? []), shot].slice(-40);
 
   const p0Done = holed[0] || strokes[0] >= GOLF_MAX_STROKES;
   const p1Done = holed[1] || strokes[1] >= GOLF_MAX_STROKES;
