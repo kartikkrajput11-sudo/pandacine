@@ -144,7 +144,7 @@ export function QuickActions() {
           </Link>
         )}
       </div>
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-1">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1 sm:-mx-6 sm:px-6">
         {actions.map(({ label, Icon, tint, onRun }) => {
           const isBusy = busy === label;
           return (
