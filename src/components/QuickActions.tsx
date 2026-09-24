@@ -1,12 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Heart, Mail, BookHeart, Film, Gamepad2, MessageCircle } from "lucide-react";
+import { Heart, Mail, BookHeart, Film, Gamepad2, Music, Gift, Calendar } from "lucide-react";
 import type { ComponentType } from "react";
 import { useProfile } from "@/hooks/useProfile";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { sfxKiss, sfxReaction, sfxSend } from "@/lib/sfx";
 
 type Action = {
   label: string;
@@ -67,7 +65,6 @@ export function QuickActions() {
         withBusy("Hug", async () => {
           if (!partnerId || !me) return;
           await sendGesture(partnerId, me.id, "kiss", "🫂");
-          sfxReaction();
           toast("Hug sent 🫂");
           if ("vibrate" in navigator) navigator.vibrate?.(30);
         }),
@@ -81,7 +78,6 @@ export function QuickActions() {
         withBusy("Kiss", async () => {
           if (!partnerId || !me) return;
           await sendGesture(partnerId, me.id, "kiss", "💋");
-          sfxKiss();
           toast("Kiss sent 💋");
           if ("vibrate" in navigator) navigator.vibrate?.(30);
         }),
@@ -95,15 +91,14 @@ export function QuickActions() {
         withBusy("Nudge", async () => {
           if (!partnerId || !me) return;
           await sendGesture(partnerId, me.id, "nudge", "👋");
-          sfxSend();
           toast("Nudge sent 👋");
           if ("vibrate" in navigator) navigator.vibrate?.([40, 30, 40]);
         }),
       ),
     },
     {
-      label: "Chat",
-      Icon: MessageCircle,
+      label: "Letter",
+      Icon: Mail,
       tint: "var(--lavender)",
       onRun: requirePartner(async () => {
         if (!partnerId) return;
@@ -128,6 +123,38 @@ export function QuickActions() {
       tint: "var(--petal)",
       onRun: () => navigate({ to: "/app/play" }),
     },
+    {
+      label: "Song",
+      Icon: Music,
+      tint: "var(--lavender)",
+      onRun: () => navigate({ to: "/app/wishlist" }),
+    },
+    {
+      label: "Surprise",
+      Icon: Gift,
+      tint: "var(--petal)",
+      onRun: requirePartner(
+        withBusy("Surprise", async () => {
+          if (!partnerId || !me) return;
+          const surprises = [
+            "You're my favourite notification 🐼",
+            "Thinking of you right now 💭💜",
+            "Small reminder: I adore you.",
+            "This is your daily softness delivery 🌸",
+            "You + me = the best kind of chaos ✨",
+          ];
+          const pick = surprises[Math.floor(Math.random() * surprises.length)];
+          await sendGesture(partnerId, me.id, "whisper", pick);
+          toast("Surprise sent 🎁");
+        }),
+      ),
+    },
+    {
+      label: "Date",
+      Icon: Calendar,
+      tint: "var(--lavender)",
+      onRun: () => navigate({ to: "/app/anniversary" }),
+    },
   ];
 
   return (
@@ -144,17 +171,16 @@ export function QuickActions() {
           </Link>
         )}
       </div>
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-1 sm:-mx-6 sm:px-6">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-5 px-5 pb-1">
         {actions.map(({ label, Icon, tint, onRun }) => {
           const isBusy = busy === label;
           return (
-            <Button
+            <button
               key={label}
               type="button"
-              variant="ghost"
               disabled={isBusy}
               onClick={() => { void onRun(); }}
-              className="group h-auto shrink-0 flex-col gap-1.5 p-0 active:scale-95 disabled:opacity-60"
+              className="group shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform disabled:opacity-60"
             >
               <div
                 className="size-14 rounded-2xl glass flex items-center justify-center transition-all group-hover:-translate-y-0.5"
@@ -165,7 +191,7 @@ export function QuickActions() {
                 <Icon className={`size-5 ${isBusy ? "animate-pulse" : ""}`} style={{ color: tint }} />
               </div>
               <span className="text-[10px] tracking-wider text-candle-muted">{label}</span>
-            </Button>
+            </button>
           );
         })}
       </div>
