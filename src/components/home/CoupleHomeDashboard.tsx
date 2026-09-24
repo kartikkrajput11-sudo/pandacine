@@ -79,7 +79,7 @@ export function CoupleHomeDashboard() {
   const firstName = profile?.display_name?.split(" ")[0] ?? "Friend";
 
   return (
-    <div className="relative px-4 pb-10 pt-7 sm:px-6 sm:pt-10">
+    <div className="relative overflow-x-clip px-4 pb-10 pt-7 sm:px-6 sm:pt-10">
       <Petals count={3} />
       <header className="relative z-20 mb-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
