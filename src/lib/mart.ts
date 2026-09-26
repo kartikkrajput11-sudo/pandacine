@@ -1,7 +1,7 @@
 /** PandaMart — client-safe catalogue helpers, cart maths and receipt types. */
 
 import { PET_FOODS, type PetFood } from "@/lib/pet-foods";
-import { PUPPY_FOODS } from "@/lib/puppy-foods";
+import { PUPPY_FOODS, type PuppyFood } from "@/lib/puppy-foods";
 
 export type CartLine = {
   kind: "food" | "puppy_food" | "boutique";
@@ -29,7 +29,7 @@ export const MART_DEPARTMENTS: MartDepartment[] = [
   { key: "Boutique", label: "Boutique", tagline: "Outfits, props & effects", emoji: "👑" },
 ];
 
-export function foodsByAisle(aisle: string): PetFood[] {
+export function foodsByAisle(aisle: string): (PetFood | PuppyFood)[] {
   return [...PET_FOODS, ...PUPPY_FOODS].filter((f) => f.aisle === aisle);
 }
 
