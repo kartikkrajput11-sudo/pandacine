@@ -1,4 +1,4 @@
-- [ ] Add a separately adoptable, persistent puppy with care and play states.
-- [ ] Add puppy foods to the supermarket and deliver them to a puppy pantry.
-- [ ] Build the puppy's own environment and interaction screen without replacing the panda.
+- [x] Add a separately adoptable, persistent puppy with care and play states.
+- [x] Add puppy foods to the supermarket and deliver them to a puppy pantry.
+- [x] Build the puppy's own environment and interaction screen without replacing the panda.
 - [ ] Verify purchase, feeding, play, and phone layout.

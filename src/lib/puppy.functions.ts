@@ -33,7 +33,7 @@ export const getPuppy = createServerFn({ method: "POST" })
       if (updateError) throw updateError;
       puppy = updated;
     }
-    return { puppy: puppy ? { ...puppy, fullness: puppy.alive ? fullnessNow(puppy.fullness, puppy.last_fed_at) : 0 } as Puppy : null, cost: PUPPY_COST };
+    return { puppy: puppy as Puppy | null, cost: PUPPY_COST };
   });
 
 export const adoptPuppy = createServerFn({ method: "POST" })
