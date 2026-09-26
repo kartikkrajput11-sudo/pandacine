@@ -1,10 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { FOOD_BY_KEY } from "@/lib/pet-foods";
+import { PUPPY_FOOD_BY_KEY } from "@/lib/puppy-foods";
 import { receiptNo, uniqueLedgerRef } from "@/lib/pet-purchases.server";
 
 export type CheckoutInput = {
-  items: { kind: "food" | "boutique"; key: string; qty: number }[];
+  items: { kind: "food" | "puppy_food" | "boutique"; key: string; qty: number }[];
   split: boolean;
   note?: string;
 };
@@ -43,9 +44,11 @@ export const martCheckout = createServerFn({ method: "POST" })
       .select("pantry,unlocked,alive")
       .eq("user_id", petOwnerId)
       .maybeSingle();
+    const { data: puppy, error: puppyError } = await supabaseAdmin.from("pet_puppies").select("pantry,unlocked,alive").eq("user_id", userId).maybeSingle();
+    if (puppyError) throw puppyError;
 
     const lines: {
-      kind: "food" | "boutique";
+      kind: "food" | "puppy_food" | "boutique";
       key: string;
       name: string;
       emoji: string;
@@ -61,7 +64,12 @@ export const martCheckout = createServerFn({ method: "POST" })
         if (!f) continue;
         if (!(pet as any)?.unlocked) throw new Error("Adopt your panda before buying food");
         lines.push({ kind: "food", key: f.key, name: f.name, emoji: f.emoji, price: f.price, qty });
-      } else {
+      } else if (item.kind === "puppy_food") {
+        const f = PUPPY_FOOD_BY_KEY[item.key];
+        if (!f) continue;
+        if (!puppy?.unlocked || !puppy.alive) throw new Error("Adopt a puppy before buying puppy food");
+        lines.push({ kind: "puppy_food", key: f.key, name: f.name, emoji: f.emoji, price: f.price, qty });
+      } else if (item.kind === "boutique") {
         const s = shop.get(item.key);
         if (!s || s.active === false) continue;
         if (owned.has(item.key)) {
@@ -115,6 +123,13 @@ export const martCheckout = createServerFn({ method: "POST" })
           .from("pet_pandas" as any)
           .update({ pantry, updated_at: new Date().toISOString() })
           .eq("user_id", petOwnerId);
+        if (error) throw error;
+      }
+      const puppyFoods = lines.filter((l) => l.kind === "puppy_food");
+      if (puppyFoods.length) {
+        const pantry = { ...((puppy?.pantry ?? {}) as Record<string, number>) };
+        for (const f of puppyFoods) pantry[f.key] = (pantry[f.key] ?? 0) + f.qty;
+        const { error } = await supabaseAdmin.from("pet_puppies").update({ pantry, updated_at: new Date().toISOString() }).eq("user_id", userId);
         if (error) throw error;
       }
       const boutique = lines.filter((l) => l.kind === "boutique");

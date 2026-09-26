@@ -47,12 +47,13 @@ export function useMartCheckout() {
   const qc = useQueryClient();
   const checkout = useServerFn(martCheckout);
   return useMutation({
-    mutationFn: (input: { items: { kind: "food" | "boutique"; key: string; qty: number }[]; split: boolean; note?: string }) =>
+    mutationFn: (input: { items: { kind: "food" | "puppy_food" | "boutique"; key: string; qty: number }[]; split: boolean; note?: string }) =>
       checkout({ data: input }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mart"] });
       qc.invalidateQueries({ queryKey: ["luvies"] });
       qc.invalidateQueries({ queryKey: ["pet"] });
+      qc.invalidateQueries({ queryKey: ["puppy"] });
       qc.invalidateQueries({ queryKey: ["panda-shop"] });
       qc.invalidateQueries({ queryKey: ["profile", "me"] });
     },

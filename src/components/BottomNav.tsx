@@ -15,7 +15,7 @@ const items: Item[] = [
   { to: "/app", label: "Home", Icon: Home, exact: true },
   { to: "/app/chat", label: "Chat", Icon: MessageCircle },
   { to: "/app/movies", label: "Watch", Icon: Film, search: { q: "" } },
-  { to: "/app/pet", label: "Panda", Icon: PawPrint, primary: true },
+  { to: "/app/pet", label: "Pets", Icon: PawPrint, primary: true },
   { to: "/app/play", label: "Play", Icon: Gamepad2 },
   { to: "/app/me", label: "Me", Icon: User },
 ];

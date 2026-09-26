@@ -11,6 +11,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useCart, useMartCheckout, useMartOrders, useSplitResponse } from "@/hooks/useMart";
 import { MART_DEPARTMENTS, cartCount, cartTotal, foodsByAisle, type CartLine, type MartOrder } from "@/lib/mart";
 import { cn } from "@/lib/utils";
+import { PUPPY_FOOD_BY_KEY } from "@/lib/puppy-foods";
 
 export const Route = createFileRoute("/_authenticated/app/mart")({
   head: () => ({
@@ -191,7 +192,7 @@ function MartRoute() {
                     note: `+${f.fullness} fullness · +${f.affection} affection`,
                     price: f.price,
                     disabled: false,
-                    add: () => cart.add({ kind: "food" as const, key: f.key, name: f.name, emoji: f.emoji, price: f.price }),
+                    add: () => cart.add({ kind: PUPPY_FOOD_BY_KEY[f.key] ? "puppy_food" as const : "food" as const, key: f.key, name: f.name, emoji: f.emoji, price: f.price }),
                   }));
             if (!products.length) return null;
             return (
@@ -228,7 +229,7 @@ function MartRoute() {
             exit={{ y: 20, opacity: 0 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
             onClick={() => setView("checkout")}
-            className="fixed inset-x-0 bottom-20 z-40 mx-auto flex w-[min(92%,26rem)] items-center gap-3 rounded-full bg-card/95 px-5 py-3 text-left shadow-[0_14px_44px_-14px_hsl(var(--foreground)/0.45),0_0_0_1px_hsl(var(--foreground)/0.06)] backdrop-blur-xl"
+            className="fixed inset-x-0 bottom-20 z-40 mx-auto flex w-[min(92%,26rem)] items-center gap-3 rounded-full bg-card/95 px-5 py-3 text-left shadow-[0_14px_44px_-14px_color-mix(in_srgb,var(--foreground)_45%,transparent),0_0_0_1px_color-mix(in_srgb,var(--foreground)_6%,transparent)] backdrop-blur-xl"
           >
             <span className="text-[11px] uppercase tracking-[0.26em] text-muted-foreground">
               {count} {count === 1 ? "item" : "items"}
@@ -310,7 +311,7 @@ function CartRow({
           {line.price} × {line.qty}
         </p>
       </div>
-      {line.kind === "food" && (
+      {line.kind !== "boutique" && (
         <div className="flex items-center gap-1 text-muted-foreground">
           <button onClick={() => onQty(line.key, line.qty - 1)} aria-label="Less" className="grid size-6 place-items-center rounded-full hover:text-foreground">
             <Minus className="size-3" />

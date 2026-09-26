@@ -2030,6 +2030,57 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_puppies: {
+        Row: {
+          affection: number
+          alive: boolean
+          born_at: string
+          died_at: string | null
+          fullness: number
+          interactions: number
+          last_fed_at: string
+          last_visit: string | null
+          name: string
+          pantry: Json
+          streak: number
+          unlocked: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          affection?: number
+          alive?: boolean
+          born_at?: string
+          died_at?: string | null
+          fullness?: number
+          interactions?: number
+          last_fed_at?: string
+          last_visit?: string | null
+          name?: string
+          pantry?: Json
+          streak?: number
+          unlocked?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          affection?: number
+          alive?: boolean
+          born_at?: string
+          died_at?: string | null
+          fullness?: number
+          interactions?: number
+          last_fed_at?: string
+          last_visit?: string | null
+          name?: string
+          pantry?: Json
+          streak?: number
+          unlocked?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       poll_votes: {
         Row: {
           created_at: string
