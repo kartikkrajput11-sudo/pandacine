@@ -39,6 +39,7 @@ import { Route as AuthenticatedAppShopRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAppSeaBattleRouteImport } from './routes/_authenticated/app.sea-battle'
 import { Route as AuthenticatedAppScribbleRouteImport } from './routes/_authenticated/app.scribble'
 import { Route as AuthenticatedAppPuzzleRouteImport } from './routes/_authenticated/app.puzzle'
+import { Route as AuthenticatedAppPuppyRouteImport } from './routes/_authenticated/app.puppy'
 import { Route as AuthenticatedAppPoolRouteImport } from './routes/_authenticated/app.pool'
 import { Route as AuthenticatedAppPlayRouteImport } from './routes/_authenticated/app.play'
 import { Route as AuthenticatedAppPetRouteImport } from './routes/_authenticated/app.pet'
@@ -253,6 +254,11 @@ const AuthenticatedAppScribbleRoute =
 const AuthenticatedAppPuzzleRoute = AuthenticatedAppPuzzleRouteImport.update({
   id: '/puzzle',
   path: '/puzzle',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPuppyRoute = AuthenticatedAppPuppyRouteImport.update({
+  id: '/puppy',
+  path: '/puppy',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
 const AuthenticatedAppPoolRoute = AuthenticatedAppPoolRouteImport.update({
@@ -635,6 +641,7 @@ export interface FileRoutesByFullPath {
   '/app/pet': typeof AuthenticatedAppPetRoute
   '/app/play': typeof AuthenticatedAppPlayRoute
   '/app/pool': typeof AuthenticatedAppPoolRoute
+  '/app/puppy': typeof AuthenticatedAppPuppyRoute
   '/app/puzzle': typeof AuthenticatedAppPuzzleRoute
   '/app/scribble': typeof AuthenticatedAppScribbleRoute
   '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
@@ -723,6 +730,7 @@ export interface FileRoutesByTo {
   '/app/pet': typeof AuthenticatedAppPetRoute
   '/app/play': typeof AuthenticatedAppPlayRoute
   '/app/pool': typeof AuthenticatedAppPoolRoute
+  '/app/puppy': typeof AuthenticatedAppPuppyRoute
   '/app/puzzle': typeof AuthenticatedAppPuzzleRoute
   '/app/scribble': typeof AuthenticatedAppScribbleRoute
   '/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
@@ -814,6 +822,7 @@ export interface FileRoutesById {
   '/_authenticated/app/pet': typeof AuthenticatedAppPetRoute
   '/_authenticated/app/play': typeof AuthenticatedAppPlayRoute
   '/_authenticated/app/pool': typeof AuthenticatedAppPoolRoute
+  '/_authenticated/app/puppy': typeof AuthenticatedAppPuppyRoute
   '/_authenticated/app/puzzle': typeof AuthenticatedAppPuzzleRoute
   '/_authenticated/app/scribble': typeof AuthenticatedAppScribbleRoute
   '/_authenticated/app/sea-battle': typeof AuthenticatedAppSeaBattleRoute
@@ -906,6 +915,7 @@ export interface FileRouteTypes {
     | '/app/pet'
     | '/app/play'
     | '/app/pool'
+    | '/app/puppy'
     | '/app/puzzle'
     | '/app/scribble'
     | '/app/sea-battle'
@@ -994,6 +1004,7 @@ export interface FileRouteTypes {
     | '/app/pet'
     | '/app/play'
     | '/app/pool'
+    | '/app/puppy'
     | '/app/puzzle'
     | '/app/scribble'
     | '/app/sea-battle'
@@ -1084,6 +1095,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/pet'
     | '/_authenticated/app/play'
     | '/_authenticated/app/pool'
+    | '/_authenticated/app/puppy'
     | '/_authenticated/app/puzzle'
     | '/_authenticated/app/scribble'
     | '/_authenticated/app/sea-battle'
@@ -1359,6 +1371,13 @@ declare module '@tanstack/react-router' {
       path: '/puzzle'
       fullPath: '/app/puzzle'
       preLoaderRoute: typeof AuthenticatedAppPuzzleRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/puppy': {
+      id: '/_authenticated/app/puppy'
+      path: '/puppy'
+      fullPath: '/app/puppy'
+      preLoaderRoute: typeof AuthenticatedAppPuppyRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/pool': {
@@ -1871,6 +1890,7 @@ interface AuthenticatedAppRouteChildren {
   AuthenticatedAppPetRoute: typeof AuthenticatedAppPetRoute
   AuthenticatedAppPlayRoute: typeof AuthenticatedAppPlayRoute
   AuthenticatedAppPoolRoute: typeof AuthenticatedAppPoolRoute
+  AuthenticatedAppPuppyRoute: typeof AuthenticatedAppPuppyRoute
   AuthenticatedAppPuzzleRoute: typeof AuthenticatedAppPuzzleRoute
   AuthenticatedAppScribbleRoute: typeof AuthenticatedAppScribbleRoute
   AuthenticatedAppSeaBattleRoute: typeof AuthenticatedAppSeaBattleRoute
@@ -1935,6 +1955,7 @@ const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppPetRoute: AuthenticatedAppPetRoute,
   AuthenticatedAppPlayRoute: AuthenticatedAppPlayRoute,
   AuthenticatedAppPoolRoute: AuthenticatedAppPoolRoute,
+  AuthenticatedAppPuppyRoute: AuthenticatedAppPuppyRoute,
   AuthenticatedAppPuzzleRoute: AuthenticatedAppPuzzleRoute,
   AuthenticatedAppScribbleRoute: AuthenticatedAppScribbleRoute,
   AuthenticatedAppSeaBattleRoute: AuthenticatedAppSeaBattleRoute,
