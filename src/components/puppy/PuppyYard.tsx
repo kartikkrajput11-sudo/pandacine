@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { AnimatePresence, motion } from "framer-motion";
 import yard from "@/assets/puppy-backyard.jpg";
 import puppyAsset from "@/assets/puppy-dog-embedded.glb.asset.json";
+import { Button } from "@/components/ui/button";
 
 export type PuppyMood = "happy" | "excited" | "curious" | "sleepy" | "hungry" | "sad";
 
@@ -87,7 +88,8 @@ export function PuppyYard({ name, mood, playing, onPat }: { name: string; mood: 
       <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-md border border-border bg-background/85 px-3 py-2 text-sm font-semibold text-foreground backdrop-blur">
         {mood === "excited" ? "🐾 Zoomies!" : mood === "curious" ? "👀 Curious" : mood === "sleepy" ? "💤 Sleepy" : mood === "hungry" ? "🥣 Hungry" : mood === "sad" ? "💧 Misses you" : "💛 Happy"}
       </div>
-      <button
+      <Button
+        variant="ghost"
         type="button"
         aria-label={`Pet or turn ${name}`}
         className="absolute bottom-[9%] left-[18%] z-20 h-[70%] w-[64%] cursor-grab touch-none rounded-md focus-visible:outline-2 focus-visible:outline-primary active:cursor-grabbing"
