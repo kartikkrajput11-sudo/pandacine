@@ -62,7 +62,7 @@ function PuppyPage() {
     setBusy(true);
     try {
       await feed({ data: { key } });
-      puppySound("eat"); setPlaying("paw"); setMoodOverride("happy");
+      puppySound("eat"); setPlaying("eat"); setMoodOverride("happy");
       await qc.invalidateQueries({ queryKey: ["puppy"] });
       toast.success(`${puppy?.name ?? "Puppy"} loved it!`);
     } catch (e) { toast.error(e instanceof Error ? e.message : "Couldn't feed your puppy"); }
