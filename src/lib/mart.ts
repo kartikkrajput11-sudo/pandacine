@@ -1,9 +1,10 @@
 /** PandaMart — client-safe catalogue helpers, cart maths and receipt types. */
 
 import { PET_FOODS, type PetFood } from "@/lib/pet-foods";
+import { PUPPY_FOODS } from "@/lib/puppy-foods";
 
 export type CartLine = {
-  kind: "food" | "boutique";
+  kind: "food" | "puppy_food" | "boutique";
   key: string;
   name: string;
   emoji: string;
@@ -23,11 +24,13 @@ export const MART_DEPARTMENTS: MartDepartment[] = [
   { key: "Fresh produce", label: "Fresh produce", tagline: "Crisp, loud, satisfying", emoji: "🥕" },
   { key: "Bakery", label: "Bakery", tagline: "Warm from the oven", emoji: "🥐" },
   { key: "Treats", label: "Treats", tagline: "Cinema-night indulgence", emoji: "🍿" },
+  { key: "Puppy meals", label: "Puppy meals", tagline: "Made for little paws", emoji: "🥣" },
+  { key: "Puppy treats", label: "Puppy treats", tagline: "For very good dogs", emoji: "🦴" },
   { key: "Boutique", label: "Boutique", tagline: "Outfits, props & effects", emoji: "👑" },
 ];
 
 export function foodsByAisle(aisle: string): PetFood[] {
-  return PET_FOODS.filter((f) => f.aisle === aisle);
+  return [...PET_FOODS, ...PUPPY_FOODS].filter((f) => f.aisle === aisle);
 }
 
 export function cartTotal(lines: CartLine[]): number {

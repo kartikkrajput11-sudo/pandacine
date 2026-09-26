@@ -11,6 +11,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useCart, useMartCheckout, useMartOrders, useSplitResponse } from "@/hooks/useMart";
 import { MART_DEPARTMENTS, cartCount, cartTotal, foodsByAisle, type CartLine, type MartOrder } from "@/lib/mart";
 import { cn } from "@/lib/utils";
+import { PUPPY_FOOD_BY_KEY } from "@/lib/puppy-foods";
 
 export const Route = createFileRoute("/_authenticated/app/mart")({
   head: () => ({
@@ -191,7 +192,7 @@ function MartRoute() {
                     note: `+${f.fullness} fullness · +${f.affection} affection`,
                     price: f.price,
                     disabled: false,
-                    add: () => cart.add({ kind: "food" as const, key: f.key, name: f.name, emoji: f.emoji, price: f.price }),
+                     add: () => cart.add({ kind: PUPPY_FOOD_BY_KEY[f.key] ? "puppy_food" as const : "food" as const, key: f.key, name: f.name, emoji: f.emoji, price: f.price }),
                   }));
             if (!products.length) return null;
             return (
@@ -310,7 +311,7 @@ function CartRow({
           {line.price} × {line.qty}
         </p>
       </div>
-      {line.kind === "food" && (
+       {line.kind !== "boutique" && (
         <div className="flex items-center gap-1 text-muted-foreground">
           <button onClick={() => onQty(line.key, line.qty - 1)} aria-label="Less" className="grid size-6 place-items-center rounded-full hover:text-foreground">
             <Minus className="size-3" />
