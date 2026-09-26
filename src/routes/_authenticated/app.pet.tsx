@@ -51,10 +51,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/app/pet")({
   head: () => ({
     meta: [
-      { title: "Your Panda — PANDACINE" },
-      { name: "description", content: "Adopt, feed, dress and play with the panda you and your partner share." },
-      { property: "og:title", content: "Your Panda — PANDACINE" },
-      { property: "og:description", content: "Adopt, feed, dress and play with the panda you and your partner share." },
+      { title: "Your Pets — PANDACINE" },
+      { name: "description", content: "Care for your panda and visit your puppy's backyard." },
+      { property: "og:title", content: "Your Pets — PANDACINE" },
+      { property: "og:description", content: "Care for your panda and visit your puppy's backyard." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -371,6 +371,12 @@ function PetRoute() {
           <span className="text-sm tabular-nums">{coins.toLocaleString()}</span>
         </Link>
       </header>
+
+      <Link to="/app/puppy" className="mt-5 flex items-center gap-3 border-y border-border px-2 py-3 text-foreground transition hover:bg-surface">
+        <span className="text-2xl">🐶</span>
+        <span className="min-w-0 flex-1"><span className="block font-display text-lg">Puppy backyard</span><span className="text-xs text-muted-foreground">Adopt, feed and play with your puppy</span></span>
+        <ChevronRight className="size-4 text-primary" />
+      </Link>
 
       {lifecycle === "NO_PANDA_YET" && (
         <AdoptCard

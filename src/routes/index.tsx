@@ -24,6 +24,8 @@ export const Route = createFileRoute("/")({
           "Your premium space to watch movies, play games, chat, call, celebrate milestones, and cherish every moment together.",
       },
       { property: "og:title", content: "PANDACINE — Connect Together" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Your premium space to watch movies, play games, chat, call, celebrate milestones, and cherish every moment together.",
