@@ -63,7 +63,8 @@ export const renamePuppy = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const name = data.name.trim().slice(0, 20);
     if (name.length < 2) throw new Error("Name needs at least 2 characters");
-    const { error } = await context.supabase.from("pet_puppies").update({ name, updated_at: new Date().toISOString() }).eq("user_id", context.userId).eq("unlocked", true);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("pet_puppies").update({ name, updated_at: new Date().toISOString() }).eq("user_id", context.userId).eq("unlocked", true);
     if (error) throw error;
     return { name };
   });
