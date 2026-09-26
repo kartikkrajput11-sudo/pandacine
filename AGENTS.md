@@ -1,0 +1,2 @@
+- Keep puppy data in `pet_puppies`, separate from panda data, so either pet can be adopted and cared for without overwriting the other.
+- Validate puppy adoption, food purchases, and feeding in authenticated server functions, because balances and pantry contents must not be trusted from the browser.
