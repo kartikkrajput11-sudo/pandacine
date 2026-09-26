@@ -77,12 +77,15 @@ function PuppyPage() {
         <span className="text-sm text-primary"><LuviesAmount value={wallet?.balance ?? 0} /></span>
       </header>
       {isLoading ? <div className="py-24 text-center text-muted-foreground">Opening the backyard…</div> : error ? <div className="py-24 text-center text-destructive">The backyard couldn't load. Please try again.</div> : !puppy?.unlocked ? (
-        <section className="mx-auto max-w-2xl space-y-6">
-          <PuppyYard name={name} mood="curious" playing={null} onPat={() => puppySound("bark")} />
-          <div className="space-y-4 text-center"><p className="font-display text-2xl">A new friend is waiting.</p><label className="block text-sm text-muted-foreground" htmlFor="puppy-name">Name your puppy</label><input id="puppy-name" value={name} maxLength={20} onChange={(e) => setName(e.target.value)} className="mx-auto block w-full max-w-xs rounded-md border border-border bg-surface px-4 py-3 text-center text-foreground" />
-            <Button variant="petal" size="lg" disabled={busy || (wallet?.balance ?? 0) < (data?.cost ?? 250)} onClick={async () => { setBusy(true); try { await adopt({ data: { name } }); puppySound("bark"); await Promise.all([qc.invalidateQueries({ queryKey: ["puppy"] }), qc.invalidateQueries({ queryKey: ["luvies"] })]); toast.success("Your puppy is home!"); } catch (e) { toast.error(e instanceof Error ? e.message : "Adoption failed"); } finally { setBusy(false); } }}>Adopt puppy · {data?.cost ?? 250} Luvies</Button>
-            {(wallet?.balance ?? 0) < (data?.cost ?? 250) && <p className="text-sm text-muted-foreground">You need more Luvies to adopt.</p>}
-          </div>
+        <section className="mx-auto mt-16 max-w-sm space-y-5 text-center">
+          <p className="text-5xl" aria-hidden="true">🐶</p>
+          <h2 className="font-display text-4xl italic leading-none">Adopt your puppy</h2>
+          <p className="text-sm text-muted-foreground">Bring your puppy home to unlock the backyard, play together, and care for them.</p>
+          <label className="block text-sm text-muted-foreground" htmlFor="puppy-name">Name your puppy</label>
+          <input id="puppy-name" value={name} maxLength={20} onChange={(e) => setName(e.target.value)} className="mx-auto block w-full max-w-xs rounded-md border border-border bg-surface px-4 py-3 text-center text-foreground" />
+          <p className="flex items-center justify-center gap-2 text-xs text-muted-foreground">Adoption fee <LuviesAmount value={data?.cost ?? 250} size="sm" /></p>
+          <Button variant="petal" size="lg" disabled={busy || !wallet || wallet.balance < (data?.cost ?? 250)} onClick={async () => { setBusy(true); try { await adopt({ data: { name } }); puppySound("bark"); await Promise.all([qc.invalidateQueries({ queryKey: ["puppy"] }), qc.invalidateQueries({ queryKey: ["luvies"] })]); toast.success("Your puppy is home!"); } catch (e) { toast.error(e instanceof Error ? e.message : "Adoption failed"); } finally { setBusy(false); } }}>{wallet && wallet.balance < (data?.cost ?? 250) ? "Not enough Luvies" : busy ? "Bringing puppy home…" : "Bring them home"}</Button>
+          {wallet && wallet.balance < (data?.cost ?? 250) && <p className="text-sm text-muted-foreground">You need more Luvies to adopt. <Link to="/app/wallet" className="text-primary underline">View your wallet</Link></p>}
         </section>
       ) : deceased ? (
         <section className="mx-auto max-w-lg space-y-5 py-16 text-center"><div className="text-6xl">🐾</div><h2 className="font-display text-3xl">Remembering {puppy.name}</h2><p className="text-muted-foreground">Your puppy's time in the backyard has come to an end. Thank you for all the love and play.</p><Link to="/app/pet" className="inline-block text-primary underline">Back to pets</Link></section>
