@@ -5,7 +5,7 @@ import { SkeletonUtils } from "three-stdlib";
 import * as THREE from "three";
 import { AnimatePresence, motion } from "framer-motion";
 import yard from "@/assets/puppy-backyard.jpg";
-import puppyAsset from "@/assets/puppy-dog.glb.asset.json";
+import puppyAsset from "@/assets/puppy-dog-embedded.glb.asset.json";
 
 export type PuppyMood = "happy" | "excited" | "curious" | "sleepy" | "hungry" | "sad";
 
