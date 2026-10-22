@@ -9,125 +9,104 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as ShowcaseRouteImport } from './routes/showcase'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as FeaturesRouteImport } from './routes/features'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
-import { Route as ApiLivekitTokenRouteImport } from './routes/api/livekit-token'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ShowcaseRouteImport } from './routes/showcase'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
+import { Route as ApiLivekitTokenRouteImport } from './routes/api/livekit-token'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as ApiPublicPushDispatchRouteImport } from './routes/api/public/push-dispatch'
-import { Route as AuthenticatedAppWishlistRouteImport } from './routes/_authenticated/app.wishlist'
-import { Route as AuthenticatedAppWildCards2RouteImport } from './routes/_authenticated/app.wild-cards-2'
-import { Route as AuthenticatedAppWidgetRouteImport } from './routes/_authenticated/app.widget'
-import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app.watchlist'
-import { Route as AuthenticatedAppWatchRouteImport } from './routes/_authenticated/app.watch'
-import { Route as AuthenticatedAppWalletRouteImport } from './routes/_authenticated/app.wallet'
-import { Route as AuthenticatedAppUnoRouteImport } from './routes/_authenticated/app.uno'
-import { Route as AuthenticatedAppTriviaRouteImport } from './routes/_authenticated/app.trivia'
-import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenticated/app.timeline'
-import { Route as AuthenticatedAppTankShotRouteImport } from './routes/_authenticated/app.tank-shot'
-import { Route as AuthenticatedAppTamannaRouteImport } from './routes/_authenticated/app.tamanna'
-import { Route as AuthenticatedAppShopRouteImport } from './routes/_authenticated/app.shop'
-import { Route as AuthenticatedAppSeaBattleRouteImport } from './routes/_authenticated/app.sea-battle'
-import { Route as AuthenticatedAppScribbleRouteImport } from './routes/_authenticated/app.scribble'
-import { Route as AuthenticatedAppPuzzleRouteImport } from './routes/_authenticated/app.puzzle'
-import { Route as AuthenticatedAppPuppyRouteImport } from './routes/_authenticated/app.puppy'
-import { Route as AuthenticatedAppPoolRouteImport } from './routes/_authenticated/app.pool'
-import { Route as AuthenticatedAppPlayRouteImport } from './routes/_authenticated/app.play'
-import { Route as AuthenticatedAppPetRouteImport } from './routes/_authenticated/app.pet'
-import { Route as AuthenticatedAppPartnerRouteImport } from './routes/_authenticated/app.partner'
-import { Route as AuthenticatedAppPandaShopRouteImport } from './routes/_authenticated/app.panda-shop'
-import { Route as AuthenticatedAppPaintRouteImport } from './routes/_authenticated/app.paint'
-import { Route as AuthenticatedAppMoviesRouteImport } from './routes/_authenticated/app.movies'
-import { Route as AuthenticatedAppMoodRouteImport } from './routes/_authenticated/app.mood'
-import { Route as AuthenticatedAppMiniGolfRouteImport } from './routes/_authenticated/app.mini-golf'
-import { Route as AuthenticatedAppMemoryChallengeRouteImport } from './routes/_authenticated/app.memory-challenge'
-import { Route as AuthenticatedAppMemoriesRouteImport } from './routes/_authenticated/app.memories'
-import { Route as AuthenticatedAppMeRouteImport } from './routes/_authenticated/app.me'
-import { Route as AuthenticatedAppMartRouteImport } from './routes/_authenticated/app.mart'
-import { Route as AuthenticatedAppLudoRouteImport } from './routes/_authenticated/app.ludo'
-import { Route as AuthenticatedAppLoveQuizRouteImport } from './routes/_authenticated/app.love-quiz'
-import { Route as AuthenticatedAppKnowmeRouteImport } from './routes/_authenticated/app.knowme'
-import { Route as AuthenticatedAppJournalRouteImport } from './routes/_authenticated/app.journal'
-import { Route as AuthenticatedAppInviteRouteImport } from './routes/_authenticated/app.invite'
-import { Route as AuthenticatedAppHideseekRouteImport } from './routes/_authenticated/app.hideseek'
-import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated/app.help'
-import { Route as AuthenticatedAppFriendsRouteImport } from './routes/_authenticated/app.friends'
-import { Route as AuthenticatedAppFourInARowRouteImport } from './routes/_authenticated/app.four-in-a-row'
-import { Route as AuthenticatedAppDarts101RouteImport } from './routes/_authenticated/app.darts-101'
-import { Route as AuthenticatedAppDailyChallengeRouteImport } from './routes/_authenticated/app.daily-challenge'
-import { Route as AuthenticatedAppCupPongRouteImport } from './routes/_authenticated/app.cup-pong'
-import { Route as AuthenticatedAppConciergeRouteImport } from './routes/_authenticated/app.concierge'
-import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticated/app.chess'
-import { Route as AuthenticatedAppCheckersRouteImport } from './routes/_authenticated/app.checkers'
-import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated/app.calls'
-import { Route as AuthenticatedAppCalendarRouteImport } from './routes/_authenticated/app.calendar'
-import { Route as AuthenticatedAppBucketRouteImport } from './routes/_authenticated/app.bucket'
-import { Route as AuthenticatedAppBasketballArcadeRouteImport } from './routes/_authenticated/app.basketball-arcade'
-import { Route as AuthenticatedAppArenaRouteImport } from './routes/_authenticated/app.arena'
-import { Route as AuthenticatedAppArcheryMasterRouteImport } from './routes/_authenticated/app.archery-master'
 import { Route as AuthenticatedAppAnniversaryRouteImport } from './routes/_authenticated/app.anniversary'
-import { Route as AuthenticatedAppMoviesIndexRouteImport } from './routes/_authenticated/app.movies.index'
-import { Route as AuthenticatedAppLettersIndexRouteImport } from './routes/_authenticated/app.letters.index'
-import { Route as AuthenticatedAppChatIndexRouteImport } from './routes/_authenticated/app.chat.index'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
-import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as AuthenticatedAppUserUserIdRouteImport } from './routes/_authenticated/app.user.$userId'
-import { Route as AuthenticatedAppMoviesListRouteImport } from './routes/_authenticated/app.movies.list'
-import { Route as AuthenticatedAppMoviesIdRouteImport } from './routes/_authenticated/app.movies.$id'
-import { Route as AuthenticatedAppLettersIdRouteImport } from './routes/_authenticated/app.letters.$id'
-import { Route as AuthenticatedAppGroupMatchMatchIdRouteImport } from './routes/_authenticated/app.group-match.$matchId'
-import { Route as AuthenticatedAppGamesGameRouteImport } from './routes/_authenticated/app.games.$game'
-import { Route as AuthenticatedAppChatPeerIdRouteImport } from './routes/_authenticated/app.chat.$peerId'
+import { Route as AuthenticatedAppArcheryMasterRouteImport } from './routes/_authenticated/app.archery-master'
+import { Route as AuthenticatedAppArenaRouteImport } from './routes/_authenticated/app.arena'
+import { Route as AuthenticatedAppBasketballArcadeRouteImport } from './routes/_authenticated/app.basketball-arcade'
+import { Route as AuthenticatedAppBucketRouteImport } from './routes/_authenticated/app.bucket'
+import { Route as AuthenticatedAppCalendarRouteImport } from './routes/_authenticated/app.calendar'
+import { Route as AuthenticatedAppCallsRouteImport } from './routes/_authenticated/app.calls'
+import { Route as AuthenticatedAppCheckersRouteImport } from './routes/_authenticated/app.checkers'
+import { Route as AuthenticatedAppChessRouteImport } from './routes/_authenticated/app.chess'
+import { Route as AuthenticatedAppConciergeRouteImport } from './routes/_authenticated/app.concierge'
+import { Route as AuthenticatedAppCupPongRouteImport } from './routes/_authenticated/app.cup-pong'
+import { Route as AuthenticatedAppDailyChallengeRouteImport } from './routes/_authenticated/app.daily-challenge'
+import { Route as AuthenticatedAppDarts101RouteImport } from './routes/_authenticated/app.darts-101'
+import { Route as AuthenticatedAppFourInARowRouteImport } from './routes/_authenticated/app.four-in-a-row'
+import { Route as AuthenticatedAppFriendsRouteImport } from './routes/_authenticated/app.friends'
+import { Route as AuthenticatedAppHelpRouteImport } from './routes/_authenticated/app.help'
+import { Route as AuthenticatedAppHideseekRouteImport } from './routes/_authenticated/app.hideseek'
+import { Route as AuthenticatedAppInviteRouteImport } from './routes/_authenticated/app.invite'
+import { Route as AuthenticatedAppJournalRouteImport } from './routes/_authenticated/app.journal'
+import { Route as AuthenticatedAppKnowmeRouteImport } from './routes/_authenticated/app.knowme'
+import { Route as AuthenticatedAppLoveQuizRouteImport } from './routes/_authenticated/app.love-quiz'
+import { Route as AuthenticatedAppLudoRouteImport } from './routes/_authenticated/app.ludo'
+import { Route as AuthenticatedAppMartRouteImport } from './routes/_authenticated/app.mart'
+import { Route as AuthenticatedAppMeRouteImport } from './routes/_authenticated/app.me'
+import { Route as AuthenticatedAppMemoriesRouteImport } from './routes/_authenticated/app.memories'
+import { Route as AuthenticatedAppMemoryChallengeRouteImport } from './routes/_authenticated/app.memory-challenge'
+import { Route as AuthenticatedAppMiniGolfRouteImport } from './routes/_authenticated/app.mini-golf'
+import { Route as AuthenticatedAppMoodRouteImport } from './routes/_authenticated/app.mood'
+import { Route as AuthenticatedAppMoviesRouteImport } from './routes/_authenticated/app.movies'
+import { Route as AuthenticatedAppPaintRouteImport } from './routes/_authenticated/app.paint'
+import { Route as AuthenticatedAppPandaShopRouteImport } from './routes/_authenticated/app.panda-shop'
+import { Route as AuthenticatedAppPartnerRouteImport } from './routes/_authenticated/app.partner'
+import { Route as AuthenticatedAppPetRouteImport } from './routes/_authenticated/app.pet'
+import { Route as AuthenticatedAppPlayRouteImport } from './routes/_authenticated/app.play'
+import { Route as AuthenticatedAppPoolRouteImport } from './routes/_authenticated/app.pool'
+import { Route as AuthenticatedAppPuppyRouteImport } from './routes/_authenticated/app.puppy'
+import { Route as AuthenticatedAppPuzzleRouteImport } from './routes/_authenticated/app.puzzle'
+import { Route as AuthenticatedAppScribbleRouteImport } from './routes/_authenticated/app.scribble'
+import { Route as AuthenticatedAppSeaBattleRouteImport } from './routes/_authenticated/app.sea-battle'
+import { Route as AuthenticatedAppShopRouteImport } from './routes/_authenticated/app.shop'
+import { Route as AuthenticatedAppTamannaRouteImport } from './routes/_authenticated/app.tamanna'
+import { Route as AuthenticatedAppTankShotRouteImport } from './routes/_authenticated/app.tank-shot'
+import { Route as AuthenticatedAppTimelineRouteImport } from './routes/_authenticated/app.timeline'
+import { Route as AuthenticatedAppTriviaRouteImport } from './routes/_authenticated/app.trivia'
+import { Route as AuthenticatedAppUnoRouteImport } from './routes/_authenticated/app.uno'
+import { Route as AuthenticatedAppWalletRouteImport } from './routes/_authenticated/app.wallet'
+import { Route as AuthenticatedAppWatchRouteImport } from './routes/_authenticated/app.watch'
+import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app.watchlist'
+import { Route as AuthenticatedAppWidgetRouteImport } from './routes/_authenticated/app.widget'
+import { Route as AuthenticatedAppWildCards2RouteImport } from './routes/_authenticated/app.wild-cards-2'
+import { Route as AuthenticatedAppWishlistRouteImport } from './routes/_authenticated/app.wishlist'
+import { Route as ApiPublicPushDispatchRouteImport } from './routes/api/public/push-dispatch'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as AuthenticatedAppCallPeerIdRouteImport } from './routes/_authenticated/app.call.$peerId'
-import { Route as AuthenticatedAppMoviesIdWatchRouteImport } from './routes/_authenticated/app.movies.$id.watch'
-import { Route as AuthenticatedAppMoviesIdPartyRouteImport } from './routes/_authenticated/app.movies.$id.party'
-import { Route as AuthenticatedAppChatGroupGroupIdRouteImport } from './routes/_authenticated/app.chat.group.$groupId'
+import { Route as AuthenticatedAppChatIndexRouteImport } from './routes/_authenticated/app.chat.index'
+import { Route as AuthenticatedAppChatPeerIdRouteImport } from './routes/_authenticated/app.chat.$peerId'
+import { Route as AuthenticatedAppGamesGameRouteImport } from './routes/_authenticated/app.games.$game'
+import { Route as AuthenticatedAppGroupMatchMatchIdRouteImport } from './routes/_authenticated/app.group-match.$matchId'
+import { Route as AuthenticatedAppLettersIndexRouteImport } from './routes/_authenticated/app.letters.index'
+import { Route as AuthenticatedAppLettersIdRouteImport } from './routes/_authenticated/app.letters.$id'
+import { Route as AuthenticatedAppMoviesIndexRouteImport } from './routes/_authenticated/app.movies.index'
+import { Route as AuthenticatedAppMoviesIdRouteImport } from './routes/_authenticated/app.movies.$id'
+import { Route as AuthenticatedAppMoviesListRouteImport } from './routes/_authenticated/app.movies.list'
+import { Route as AuthenticatedAppUserUserIdRouteImport } from './routes/_authenticated/app.user.$userId'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as AuthenticatedAppCallGroupGroupIdRouteImport } from './routes/_authenticated/app.call.group.$groupId'
+import { Route as AuthenticatedAppChatGroupGroupIdRouteImport } from './routes/_authenticated/app.chat.group.$groupId'
+import { Route as AuthenticatedAppMoviesIdPartyRouteImport } from './routes/_authenticated/app.movies.$id.party'
+import { Route as AuthenticatedAppMoviesIdWatchRouteImport } from './routes/_authenticated/app.movies.$id.watch'
 import { Route as AuthenticatedAppChatGroupGroupIdIndexRouteImport } from './routes/_authenticated/app.chat.group.$groupId.index'
-import { Route as AuthenticatedAppChatGroupGroupIdSettingsRouteImport } from './routes/_authenticated/app.chat.group.$groupId.settings'
 import { Route as AuthenticatedAppChatGroupGroupIdInfoRouteImport } from './routes/_authenticated/app.chat.group.$groupId.info'
+import { Route as AuthenticatedAppChatGroupGroupIdSettingsRouteImport } from './routes/_authenticated/app.chat.group.$groupId.settings'
 import { Route as AuthenticatedAppMoviesIdEpisodeSeasonEpisodeRouteImport } from './routes/_authenticated/app.movies.$id.episode.$season.$episode'
 
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShowcaseRoute = ShowcaseRouteImport.update({
-  id: '/showcase',
-  path: '/showcase',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FeaturesRoute = FeaturesRouteImport.update({
-  id: '/features',
-  path: '/features',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -135,23 +114,34 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const FeaturesRoute = FeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiLivekitTokenRoute = ApiLivekitTokenRouteImport.update({
-  id: '/api/livekit-token',
-  path: '/api/livekit-token',
+const ShowcaseRoute = ShowcaseRouteImport.update({
+  id: '/showcase',
+  path: '/showcase',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
@@ -159,273 +149,36 @@ const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
   path: '/app',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiLivekitTokenRoute = ApiLivekitTokenRouteImport.update({
+  id: '/api/livekit-token',
+  path: '/api/livekit-token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPushDispatchRoute = ApiPublicPushDispatchRouteImport.update({
-  id: '/api/public/push-dispatch',
-  path: '/api/public/push-dispatch',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedAppWishlistRoute =
-  AuthenticatedAppWishlistRouteImport.update({
-    id: '/wishlist',
-    path: '/wishlist',
+const AuthenticatedAppAnniversaryRoute =
+  AuthenticatedAppAnniversaryRouteImport.update({
+    id: '/anniversary',
+    path: '/anniversary',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppWildCards2Route =
-  AuthenticatedAppWildCards2RouteImport.update({
-    id: '/wild-cards-2',
-    path: '/wild-cards-2',
+const AuthenticatedAppArcheryMasterRoute =
+  AuthenticatedAppArcheryMasterRouteImport.update({
+    id: '/archery-master',
+    path: '/archery-master',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppWidgetRoute = AuthenticatedAppWidgetRouteImport.update({
-  id: '/widget',
-  path: '/widget',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppWatchlistRoute =
-  AuthenticatedAppWatchlistRouteImport.update({
-    id: '/watchlist',
-    path: '/watchlist',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppWatchRoute = AuthenticatedAppWatchRouteImport.update({
-  id: '/watch',
-  path: '/watch',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppWalletRoute = AuthenticatedAppWalletRouteImport.update({
-  id: '/wallet',
-  path: '/wallet',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppUnoRoute = AuthenticatedAppUnoRouteImport.update({
-  id: '/uno',
-  path: '/uno',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppTriviaRoute = AuthenticatedAppTriviaRouteImport.update({
-  id: '/trivia',
-  path: '/trivia',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppTimelineRoute =
-  AuthenticatedAppTimelineRouteImport.update({
-    id: '/timeline',
-    path: '/timeline',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppTankShotRoute =
-  AuthenticatedAppTankShotRouteImport.update({
-    id: '/tank-shot',
-    path: '/tank-shot',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppTamannaRoute = AuthenticatedAppTamannaRouteImport.update({
-  id: '/tamanna',
-  path: '/tamanna',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppShopRoute = AuthenticatedAppShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppSeaBattleRoute =
-  AuthenticatedAppSeaBattleRouteImport.update({
-    id: '/sea-battle',
-    path: '/sea-battle',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppScribbleRoute =
-  AuthenticatedAppScribbleRouteImport.update({
-    id: '/scribble',
-    path: '/scribble',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppPuzzleRoute = AuthenticatedAppPuzzleRouteImport.update({
-  id: '/puzzle',
-  path: '/puzzle',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppPuppyRoute = AuthenticatedAppPuppyRouteImport.update({
-  id: '/puppy',
-  path: '/puppy',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppPoolRoute = AuthenticatedAppPoolRouteImport.update({
-  id: '/pool',
-  path: '/pool',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppPlayRoute = AuthenticatedAppPlayRouteImport.update({
-  id: '/play',
-  path: '/play',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppPetRoute = AuthenticatedAppPetRouteImport.update({
-  id: '/pet',
-  path: '/pet',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppPartnerRoute = AuthenticatedAppPartnerRouteImport.update({
-  id: '/partner',
-  path: '/partner',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppPandaShopRoute =
-  AuthenticatedAppPandaShopRouteImport.update({
-    id: '/panda-shop',
-    path: '/panda-shop',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppPaintRoute = AuthenticatedAppPaintRouteImport.update({
-  id: '/paint',
-  path: '/paint',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppMoviesRoute = AuthenticatedAppMoviesRouteImport.update({
-  id: '/movies',
-  path: '/movies',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppMoodRoute = AuthenticatedAppMoodRouteImport.update({
-  id: '/mood',
-  path: '/mood',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppMiniGolfRoute =
-  AuthenticatedAppMiniGolfRouteImport.update({
-    id: '/mini-golf',
-    path: '/mini-golf',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppMemoryChallengeRoute =
-  AuthenticatedAppMemoryChallengeRouteImport.update({
-    id: '/memory-challenge',
-    path: '/memory-challenge',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppMemoriesRoute =
-  AuthenticatedAppMemoriesRouteImport.update({
-    id: '/memories',
-    path: '/memories',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppMeRoute = AuthenticatedAppMeRouteImport.update({
-  id: '/me',
-  path: '/me',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppMartRoute = AuthenticatedAppMartRouteImport.update({
-  id: '/mart',
-  path: '/mart',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppLudoRoute = AuthenticatedAppLudoRouteImport.update({
-  id: '/ludo',
-  path: '/ludo',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppLoveQuizRoute =
-  AuthenticatedAppLoveQuizRouteImport.update({
-    id: '/love-quiz',
-    path: '/love-quiz',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppKnowmeRoute = AuthenticatedAppKnowmeRouteImport.update({
-  id: '/knowme',
-  path: '/knowme',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppJournalRoute = AuthenticatedAppJournalRouteImport.update({
-  id: '/journal',
-  path: '/journal',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppInviteRoute = AuthenticatedAppInviteRouteImport.update({
-  id: '/invite',
-  path: '/invite',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppHideseekRoute =
-  AuthenticatedAppHideseekRouteImport.update({
-    id: '/hideseek',
-    path: '/hideseek',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppHelpRoute = AuthenticatedAppHelpRouteImport.update({
-  id: '/help',
-  path: '/help',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppFriendsRoute = AuthenticatedAppFriendsRouteImport.update({
-  id: '/friends',
-  path: '/friends',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppFourInARowRoute =
-  AuthenticatedAppFourInARowRouteImport.update({
-    id: '/four-in-a-row',
-    path: '/four-in-a-row',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppDarts101Route =
-  AuthenticatedAppDarts101RouteImport.update({
-    id: '/darts-101',
-    path: '/darts-101',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppDailyChallengeRoute =
-  AuthenticatedAppDailyChallengeRouteImport.update({
-    id: '/daily-challenge',
-    path: '/daily-challenge',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppCupPongRoute = AuthenticatedAppCupPongRouteImport.update({
-  id: '/cup-pong',
-  path: '/cup-pong',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppConciergeRoute =
-  AuthenticatedAppConciergeRouteImport.update({
-    id: '/concierge',
-    path: '/concierge',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppChessRoute = AuthenticatedAppChessRouteImport.update({
-  id: '/chess',
-  path: '/chess',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppCheckersRoute =
-  AuthenticatedAppCheckersRouteImport.update({
-    id: '/checkers',
-    path: '/checkers',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppCallsRoute = AuthenticatedAppCallsRouteImport.update({
-  id: '/calls',
-  path: '/calls',
-  getParentRoute: () => AuthenticatedAppRoute,
-} as any)
-const AuthenticatedAppCalendarRoute =
-  AuthenticatedAppCalendarRouteImport.update({
-    id: '/calendar',
-    path: '/calendar',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppBucketRoute = AuthenticatedAppBucketRouteImport.update({
-  id: '/bucket',
-  path: '/bucket',
+const AuthenticatedAppArenaRoute = AuthenticatedAppArenaRouteImport.update({
+  id: '/arena',
+  path: '/arena',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
 const AuthenticatedAppBasketballArcadeRoute =
@@ -434,33 +187,274 @@ const AuthenticatedAppBasketballArcadeRoute =
     path: '/basketball-arcade',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppArenaRoute = AuthenticatedAppArenaRouteImport.update({
-  id: '/arena',
-  path: '/arena',
+const AuthenticatedAppBucketRoute = AuthenticatedAppBucketRouteImport.update({
+  id: '/bucket',
+  path: '/bucket',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
-const AuthenticatedAppArcheryMasterRoute =
-  AuthenticatedAppArcheryMasterRouteImport.update({
-    id: '/archery-master',
-    path: '/archery-master',
+const AuthenticatedAppCalendarRoute =
+  AuthenticatedAppCalendarRouteImport.update({
+    id: '/calendar',
+    path: '/calendar',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppAnniversaryRoute =
-  AuthenticatedAppAnniversaryRouteImport.update({
-    id: '/anniversary',
-    path: '/anniversary',
+const AuthenticatedAppCallsRoute = AuthenticatedAppCallsRouteImport.update({
+  id: '/calls',
+  path: '/calls',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppCheckersRoute =
+  AuthenticatedAppCheckersRouteImport.update({
+    id: '/checkers',
+    path: '/checkers',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppMoviesIndexRoute =
-  AuthenticatedAppMoviesIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedAppMoviesRoute,
+const AuthenticatedAppChessRoute = AuthenticatedAppChessRouteImport.update({
+  id: '/chess',
+  path: '/chess',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppConciergeRoute =
+  AuthenticatedAppConciergeRouteImport.update({
+    id: '/concierge',
+    path: '/concierge',
+    getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppLettersIndexRoute =
-  AuthenticatedAppLettersIndexRouteImport.update({
-    id: '/letters/',
-    path: '/letters/',
+const AuthenticatedAppCupPongRoute = AuthenticatedAppCupPongRouteImport.update({
+  id: '/cup-pong',
+  path: '/cup-pong',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppDailyChallengeRoute =
+  AuthenticatedAppDailyChallengeRouteImport.update({
+    id: '/daily-challenge',
+    path: '/daily-challenge',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppDarts101Route =
+  AuthenticatedAppDarts101RouteImport.update({
+    id: '/darts-101',
+    path: '/darts-101',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppFourInARowRoute =
+  AuthenticatedAppFourInARowRouteImport.update({
+    id: '/four-in-a-row',
+    path: '/four-in-a-row',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppFriendsRoute = AuthenticatedAppFriendsRouteImport.update({
+  id: '/friends',
+  path: '/friends',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppHelpRoute = AuthenticatedAppHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppHideseekRoute =
+  AuthenticatedAppHideseekRouteImport.update({
+    id: '/hideseek',
+    path: '/hideseek',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppInviteRoute = AuthenticatedAppInviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppJournalRoute = AuthenticatedAppJournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppKnowmeRoute = AuthenticatedAppKnowmeRouteImport.update({
+  id: '/knowme',
+  path: '/knowme',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppLoveQuizRoute =
+  AuthenticatedAppLoveQuizRouteImport.update({
+    id: '/love-quiz',
+    path: '/love-quiz',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppLudoRoute = AuthenticatedAppLudoRouteImport.update({
+  id: '/ludo',
+  path: '/ludo',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppMartRoute = AuthenticatedAppMartRouteImport.update({
+  id: '/mart',
+  path: '/mart',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppMeRoute = AuthenticatedAppMeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppMemoriesRoute =
+  AuthenticatedAppMemoriesRouteImport.update({
+    id: '/memories',
+    path: '/memories',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppMemoryChallengeRoute =
+  AuthenticatedAppMemoryChallengeRouteImport.update({
+    id: '/memory-challenge',
+    path: '/memory-challenge',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppMiniGolfRoute =
+  AuthenticatedAppMiniGolfRouteImport.update({
+    id: '/mini-golf',
+    path: '/mini-golf',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppMoodRoute = AuthenticatedAppMoodRouteImport.update({
+  id: '/mood',
+  path: '/mood',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppMoviesRoute = AuthenticatedAppMoviesRouteImport.update({
+  id: '/movies',
+  path: '/movies',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPaintRoute = AuthenticatedAppPaintRouteImport.update({
+  id: '/paint',
+  path: '/paint',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPandaShopRoute =
+  AuthenticatedAppPandaShopRouteImport.update({
+    id: '/panda-shop',
+    path: '/panda-shop',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppPartnerRoute = AuthenticatedAppPartnerRouteImport.update({
+  id: '/partner',
+  path: '/partner',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPetRoute = AuthenticatedAppPetRouteImport.update({
+  id: '/pet',
+  path: '/pet',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPlayRoute = AuthenticatedAppPlayRouteImport.update({
+  id: '/play',
+  path: '/play',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPoolRoute = AuthenticatedAppPoolRouteImport.update({
+  id: '/pool',
+  path: '/pool',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPuppyRoute = AuthenticatedAppPuppyRouteImport.update({
+  id: '/puppy',
+  path: '/puppy',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppPuzzleRoute = AuthenticatedAppPuzzleRouteImport.update({
+  id: '/puzzle',
+  path: '/puzzle',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppScribbleRoute =
+  AuthenticatedAppScribbleRouteImport.update({
+    id: '/scribble',
+    path: '/scribble',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppSeaBattleRoute =
+  AuthenticatedAppSeaBattleRouteImport.update({
+    id: '/sea-battle',
+    path: '/sea-battle',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppShopRoute = AuthenticatedAppShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppTamannaRoute = AuthenticatedAppTamannaRouteImport.update({
+  id: '/tamanna',
+  path: '/tamanna',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppTankShotRoute =
+  AuthenticatedAppTankShotRouteImport.update({
+    id: '/tank-shot',
+    path: '/tank-shot',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppTimelineRoute =
+  AuthenticatedAppTimelineRouteImport.update({
+    id: '/timeline',
+    path: '/timeline',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppTriviaRoute = AuthenticatedAppTriviaRouteImport.update({
+  id: '/trivia',
+  path: '/trivia',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppUnoRoute = AuthenticatedAppUnoRouteImport.update({
+  id: '/uno',
+  path: '/uno',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppWalletRoute = AuthenticatedAppWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppWatchRoute = AuthenticatedAppWatchRouteImport.update({
+  id: '/watch',
+  path: '/watch',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppWatchlistRoute =
+  AuthenticatedAppWatchlistRouteImport.update({
+    id: '/watchlist',
+    path: '/watchlist',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppWidgetRoute = AuthenticatedAppWidgetRouteImport.update({
+  id: '/widget',
+  path: '/widget',
+  getParentRoute: () => AuthenticatedAppRoute,
+} as any)
+const AuthenticatedAppWildCards2Route =
+  AuthenticatedAppWildCards2RouteImport.update({
+    id: '/wild-cards-2',
+    path: '/wild-cards-2',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppWishlistRoute =
+  AuthenticatedAppWishlistRouteImport.update({
+    id: '/wishlist',
+    path: '/wishlist',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const ApiPublicPushDispatchRoute = ApiPublicPushDispatchRouteImport.update({
+  id: '/api/public/push-dispatch',
+  path: '/api/public/push-dispatch',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAppCallPeerIdRoute =
+  AuthenticatedAppCallPeerIdRouteImport.update({
+    id: '/call/$peerId',
+    path: '/call/$peerId',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppChatIndexRoute =
@@ -469,62 +463,10 @@ const AuthenticatedAppChatIndexRoute =
     path: '/chat/',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailTransactionalPreviewRoute =
-  LovableEmailTransactionalPreviewRouteImport.update({
-    id: '/lovable/email/transactional/preview',
-    path: '/lovable/email/transactional/preview',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
-  id: '/lovable/email/auth/webhook',
-  path: '/lovable/email/auth/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
-  id: '/lovable/email/auth/preview',
-  path: '/lovable/email/auth/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedAppUserUserIdRoute =
-  AuthenticatedAppUserUserIdRouteImport.update({
-    id: '/user/$userId',
-    path: '/user/$userId',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppMoviesListRoute =
-  AuthenticatedAppMoviesListRouteImport.update({
-    id: '/list',
-    path: '/list',
-    getParentRoute: () => AuthenticatedAppMoviesRoute,
-  } as any)
-const AuthenticatedAppMoviesIdRoute =
-  AuthenticatedAppMoviesIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
-    getParentRoute: () => AuthenticatedAppMoviesRoute,
-  } as any)
-const AuthenticatedAppLettersIdRoute =
-  AuthenticatedAppLettersIdRouteImport.update({
-    id: '/letters/$id',
-    path: '/letters/$id',
-    getParentRoute: () => AuthenticatedAppRoute,
-  } as any)
-const AuthenticatedAppGroupMatchMatchIdRoute =
-  AuthenticatedAppGroupMatchMatchIdRouteImport.update({
-    id: '/group-match/$matchId',
-    path: '/group-match/$matchId',
+const AuthenticatedAppChatPeerIdRoute =
+  AuthenticatedAppChatPeerIdRouteImport.update({
+    id: '/chat/$peerId',
+    path: '/chat/$peerId',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
 const AuthenticatedAppGamesGameRoute =
@@ -533,35 +475,75 @@ const AuthenticatedAppGamesGameRoute =
     path: '/games/$game',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppChatPeerIdRoute =
-  AuthenticatedAppChatPeerIdRouteImport.update({
-    id: '/chat/$peerId',
-    path: '/chat/$peerId',
+const AuthenticatedAppGroupMatchMatchIdRoute =
+  AuthenticatedAppGroupMatchMatchIdRouteImport.update({
+    id: '/group-match/$matchId',
+    path: '/group-match/$matchId',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppCallPeerIdRoute =
-  AuthenticatedAppCallPeerIdRouteImport.update({
-    id: '/call/$peerId',
-    path: '/call/$peerId',
+const AuthenticatedAppLettersIndexRoute =
+  AuthenticatedAppLettersIndexRouteImport.update({
+    id: '/letters/',
+    path: '/letters/',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
-const AuthenticatedAppMoviesIdWatchRoute =
-  AuthenticatedAppMoviesIdWatchRouteImport.update({
-    id: '/watch',
-    path: '/watch',
-    getParentRoute: () => AuthenticatedAppMoviesIdRoute,
-  } as any)
-const AuthenticatedAppMoviesIdPartyRoute =
-  AuthenticatedAppMoviesIdPartyRouteImport.update({
-    id: '/party',
-    path: '/party',
-    getParentRoute: () => AuthenticatedAppMoviesIdRoute,
-  } as any)
-const AuthenticatedAppChatGroupGroupIdRoute =
-  AuthenticatedAppChatGroupGroupIdRouteImport.update({
-    id: '/chat/group/$groupId',
-    path: '/chat/group/$groupId',
+const AuthenticatedAppLettersIdRoute =
+  AuthenticatedAppLettersIdRouteImport.update({
+    id: '/letters/$id',
+    path: '/letters/$id',
     getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppMoviesIndexRoute =
+  AuthenticatedAppMoviesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAppMoviesRoute,
+  } as any)
+const AuthenticatedAppMoviesIdRoute =
+  AuthenticatedAppMoviesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAppMoviesRoute,
+  } as any)
+const AuthenticatedAppMoviesListRoute =
+  AuthenticatedAppMoviesListRouteImport.update({
+    id: '/list',
+    path: '/list',
+    getParentRoute: () => AuthenticatedAppMoviesRoute,
+  } as any)
+const AuthenticatedAppUserUserIdRoute =
+  AuthenticatedAppUserUserIdRouteImport.update({
+    id: '/user/$userId',
+    path: '/user/$userId',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const AuthenticatedAppCallGroupGroupIdRoute =
   AuthenticatedAppCallGroupGroupIdRouteImport.update({
@@ -569,22 +551,40 @@ const AuthenticatedAppCallGroupGroupIdRoute =
     path: '/call/group/$groupId',
     getParentRoute: () => AuthenticatedAppRoute,
   } as any)
+const AuthenticatedAppChatGroupGroupIdRoute =
+  AuthenticatedAppChatGroupGroupIdRouteImport.update({
+    id: '/chat/group/$groupId',
+    path: '/chat/group/$groupId',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
+const AuthenticatedAppMoviesIdPartyRoute =
+  AuthenticatedAppMoviesIdPartyRouteImport.update({
+    id: '/party',
+    path: '/party',
+    getParentRoute: () => AuthenticatedAppMoviesIdRoute,
+  } as any)
+const AuthenticatedAppMoviesIdWatchRoute =
+  AuthenticatedAppMoviesIdWatchRouteImport.update({
+    id: '/watch',
+    path: '/watch',
+    getParentRoute: () => AuthenticatedAppMoviesIdRoute,
+  } as any)
 const AuthenticatedAppChatGroupGroupIdIndexRoute =
   AuthenticatedAppChatGroupGroupIdIndexRouteImport.update({
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAppChatGroupGroupIdRoute,
   } as any)
-const AuthenticatedAppChatGroupGroupIdSettingsRoute =
-  AuthenticatedAppChatGroupGroupIdSettingsRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => AuthenticatedAppChatGroupGroupIdRoute,
-  } as any)
 const AuthenticatedAppChatGroupGroupIdInfoRoute =
   AuthenticatedAppChatGroupGroupIdInfoRouteImport.update({
     id: '/info',
     path: '/info',
+    getParentRoute: () => AuthenticatedAppChatGroupGroupIdRoute,
+  } as any)
+const AuthenticatedAppChatGroupGroupIdSettingsRoute =
+  AuthenticatedAppChatGroupGroupIdSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
     getParentRoute: () => AuthenticatedAppChatGroupGroupIdRoute,
   } as any)
 const AuthenticatedAppMoviesIdEpisodeSeasonEpisodeRoute =
@@ -1163,53 +1163,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/showcase': {
-      id: '/showcase'
-      path: '/showcase'
-      fullPath: '/showcase'
-      preLoaderRoute: typeof ShowcaseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/features': {
-      id: '/features'
-      path: '/features'
-      fullPath: '/features'
-      preLoaderRoute: typeof FeaturesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -1219,25 +1177,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/livekit-token': {
-      id: '/api/livekit-token'
-      path: '/api/livekit-token'
-      fullPath: '/api/livekit-token'
-      preLoaderRoute: typeof ApiLivekitTokenRouteImport
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/showcase': {
+      id: '/showcase'
+      path: '/showcase'
+      fullPath: '/showcase'
+      preLoaderRoute: typeof ShowcaseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app': {
@@ -1247,375 +1233,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/livekit-token': {
+      id: '/api/livekit-token'
+      path: '/api/livekit-token'
+      fullPath: '/api/livekit-token'
+      preLoaderRoute: typeof ApiLivekitTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app/': {
       id: '/_authenticated/app/'
       path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/push-dispatch': {
-      id: '/api/public/push-dispatch'
-      path: '/api/public/push-dispatch'
-      fullPath: '/api/public/push-dispatch'
-      preLoaderRoute: typeof ApiPublicPushDispatchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/app/wishlist': {
-      id: '/_authenticated/app/wishlist'
-      path: '/wishlist'
-      fullPath: '/app/wishlist'
-      preLoaderRoute: typeof AuthenticatedAppWishlistRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/wild-cards-2': {
-      id: '/_authenticated/app/wild-cards-2'
-      path: '/wild-cards-2'
-      fullPath: '/app/wild-cards-2'
-      preLoaderRoute: typeof AuthenticatedAppWildCards2RouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/widget': {
-      id: '/_authenticated/app/widget'
-      path: '/widget'
-      fullPath: '/app/widget'
-      preLoaderRoute: typeof AuthenticatedAppWidgetRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/watchlist': {
-      id: '/_authenticated/app/watchlist'
-      path: '/watchlist'
-      fullPath: '/app/watchlist'
-      preLoaderRoute: typeof AuthenticatedAppWatchlistRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/watch': {
-      id: '/_authenticated/app/watch'
-      path: '/watch'
-      fullPath: '/app/watch'
-      preLoaderRoute: typeof AuthenticatedAppWatchRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/wallet': {
-      id: '/_authenticated/app/wallet'
-      path: '/wallet'
-      fullPath: '/app/wallet'
-      preLoaderRoute: typeof AuthenticatedAppWalletRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/uno': {
-      id: '/_authenticated/app/uno'
-      path: '/uno'
-      fullPath: '/app/uno'
-      preLoaderRoute: typeof AuthenticatedAppUnoRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/trivia': {
-      id: '/_authenticated/app/trivia'
-      path: '/trivia'
-      fullPath: '/app/trivia'
-      preLoaderRoute: typeof AuthenticatedAppTriviaRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/timeline': {
-      id: '/_authenticated/app/timeline'
-      path: '/timeline'
-      fullPath: '/app/timeline'
-      preLoaderRoute: typeof AuthenticatedAppTimelineRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/tank-shot': {
-      id: '/_authenticated/app/tank-shot'
-      path: '/tank-shot'
-      fullPath: '/app/tank-shot'
-      preLoaderRoute: typeof AuthenticatedAppTankShotRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/tamanna': {
-      id: '/_authenticated/app/tamanna'
-      path: '/tamanna'
-      fullPath: '/app/tamanna'
-      preLoaderRoute: typeof AuthenticatedAppTamannaRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/shop': {
-      id: '/_authenticated/app/shop'
-      path: '/shop'
-      fullPath: '/app/shop'
-      preLoaderRoute: typeof AuthenticatedAppShopRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/sea-battle': {
-      id: '/_authenticated/app/sea-battle'
-      path: '/sea-battle'
-      fullPath: '/app/sea-battle'
-      preLoaderRoute: typeof AuthenticatedAppSeaBattleRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/scribble': {
-      id: '/_authenticated/app/scribble'
-      path: '/scribble'
-      fullPath: '/app/scribble'
-      preLoaderRoute: typeof AuthenticatedAppScribbleRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/puzzle': {
-      id: '/_authenticated/app/puzzle'
-      path: '/puzzle'
-      fullPath: '/app/puzzle'
-      preLoaderRoute: typeof AuthenticatedAppPuzzleRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/puppy': {
-      id: '/_authenticated/app/puppy'
-      path: '/puppy'
-      fullPath: '/app/puppy'
-      preLoaderRoute: typeof AuthenticatedAppPuppyRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/pool': {
-      id: '/_authenticated/app/pool'
-      path: '/pool'
-      fullPath: '/app/pool'
-      preLoaderRoute: typeof AuthenticatedAppPoolRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/play': {
-      id: '/_authenticated/app/play'
-      path: '/play'
-      fullPath: '/app/play'
-      preLoaderRoute: typeof AuthenticatedAppPlayRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/pet': {
-      id: '/_authenticated/app/pet'
-      path: '/pet'
-      fullPath: '/app/pet'
-      preLoaderRoute: typeof AuthenticatedAppPetRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/partner': {
-      id: '/_authenticated/app/partner'
-      path: '/partner'
-      fullPath: '/app/partner'
-      preLoaderRoute: typeof AuthenticatedAppPartnerRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/panda-shop': {
-      id: '/_authenticated/app/panda-shop'
-      path: '/panda-shop'
-      fullPath: '/app/panda-shop'
-      preLoaderRoute: typeof AuthenticatedAppPandaShopRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/paint': {
-      id: '/_authenticated/app/paint'
-      path: '/paint'
-      fullPath: '/app/paint'
-      preLoaderRoute: typeof AuthenticatedAppPaintRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/movies': {
-      id: '/_authenticated/app/movies'
-      path: '/movies'
-      fullPath: '/app/movies'
-      preLoaderRoute: typeof AuthenticatedAppMoviesRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/mood': {
-      id: '/_authenticated/app/mood'
-      path: '/mood'
-      fullPath: '/app/mood'
-      preLoaderRoute: typeof AuthenticatedAppMoodRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/mini-golf': {
-      id: '/_authenticated/app/mini-golf'
-      path: '/mini-golf'
-      fullPath: '/app/mini-golf'
-      preLoaderRoute: typeof AuthenticatedAppMiniGolfRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/memory-challenge': {
-      id: '/_authenticated/app/memory-challenge'
-      path: '/memory-challenge'
-      fullPath: '/app/memory-challenge'
-      preLoaderRoute: typeof AuthenticatedAppMemoryChallengeRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/memories': {
-      id: '/_authenticated/app/memories'
-      path: '/memories'
-      fullPath: '/app/memories'
-      preLoaderRoute: typeof AuthenticatedAppMemoriesRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/me': {
-      id: '/_authenticated/app/me'
-      path: '/me'
-      fullPath: '/app/me'
-      preLoaderRoute: typeof AuthenticatedAppMeRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/mart': {
-      id: '/_authenticated/app/mart'
-      path: '/mart'
-      fullPath: '/app/mart'
-      preLoaderRoute: typeof AuthenticatedAppMartRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/ludo': {
-      id: '/_authenticated/app/ludo'
-      path: '/ludo'
-      fullPath: '/app/ludo'
-      preLoaderRoute: typeof AuthenticatedAppLudoRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/love-quiz': {
-      id: '/_authenticated/app/love-quiz'
-      path: '/love-quiz'
-      fullPath: '/app/love-quiz'
-      preLoaderRoute: typeof AuthenticatedAppLoveQuizRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/knowme': {
-      id: '/_authenticated/app/knowme'
-      path: '/knowme'
-      fullPath: '/app/knowme'
-      preLoaderRoute: typeof AuthenticatedAppKnowmeRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/journal': {
-      id: '/_authenticated/app/journal'
-      path: '/journal'
-      fullPath: '/app/journal'
-      preLoaderRoute: typeof AuthenticatedAppJournalRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/invite': {
-      id: '/_authenticated/app/invite'
-      path: '/invite'
-      fullPath: '/app/invite'
-      preLoaderRoute: typeof AuthenticatedAppInviteRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/hideseek': {
-      id: '/_authenticated/app/hideseek'
-      path: '/hideseek'
-      fullPath: '/app/hideseek'
-      preLoaderRoute: typeof AuthenticatedAppHideseekRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/help': {
-      id: '/_authenticated/app/help'
-      path: '/help'
-      fullPath: '/app/help'
-      preLoaderRoute: typeof AuthenticatedAppHelpRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/friends': {
-      id: '/_authenticated/app/friends'
-      path: '/friends'
-      fullPath: '/app/friends'
-      preLoaderRoute: typeof AuthenticatedAppFriendsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/four-in-a-row': {
-      id: '/_authenticated/app/four-in-a-row'
-      path: '/four-in-a-row'
-      fullPath: '/app/four-in-a-row'
-      preLoaderRoute: typeof AuthenticatedAppFourInARowRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/darts-101': {
-      id: '/_authenticated/app/darts-101'
-      path: '/darts-101'
-      fullPath: '/app/darts-101'
-      preLoaderRoute: typeof AuthenticatedAppDarts101RouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/daily-challenge': {
-      id: '/_authenticated/app/daily-challenge'
-      path: '/daily-challenge'
-      fullPath: '/app/daily-challenge'
-      preLoaderRoute: typeof AuthenticatedAppDailyChallengeRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/cup-pong': {
-      id: '/_authenticated/app/cup-pong'
-      path: '/cup-pong'
-      fullPath: '/app/cup-pong'
-      preLoaderRoute: typeof AuthenticatedAppCupPongRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/concierge': {
-      id: '/_authenticated/app/concierge'
-      path: '/concierge'
-      fullPath: '/app/concierge'
-      preLoaderRoute: typeof AuthenticatedAppConciergeRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/chess': {
-      id: '/_authenticated/app/chess'
-      path: '/chess'
-      fullPath: '/app/chess'
-      preLoaderRoute: typeof AuthenticatedAppChessRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/checkers': {
-      id: '/_authenticated/app/checkers'
-      path: '/checkers'
-      fullPath: '/app/checkers'
-      preLoaderRoute: typeof AuthenticatedAppCheckersRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/calls': {
-      id: '/_authenticated/app/calls'
-      path: '/calls'
-      fullPath: '/app/calls'
-      preLoaderRoute: typeof AuthenticatedAppCallsRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/calendar': {
-      id: '/_authenticated/app/calendar'
-      path: '/calendar'
-      fullPath: '/app/calendar'
-      preLoaderRoute: typeof AuthenticatedAppCalendarRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/bucket': {
-      id: '/_authenticated/app/bucket'
-      path: '/bucket'
-      fullPath: '/app/bucket'
-      preLoaderRoute: typeof AuthenticatedAppBucketRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/basketball-arcade': {
-      id: '/_authenticated/app/basketball-arcade'
-      path: '/basketball-arcade'
-      fullPath: '/app/basketball-arcade'
-      preLoaderRoute: typeof AuthenticatedAppBasketballArcadeRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/arena': {
-      id: '/_authenticated/app/arena'
-      path: '/arena'
-      fullPath: '/app/arena'
-      preLoaderRoute: typeof AuthenticatedAppArenaRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/archery-master': {
-      id: '/_authenticated/app/archery-master'
-      path: '/archery-master'
-      fullPath: '/app/archery-master'
-      preLoaderRoute: typeof AuthenticatedAppArcheryMasterRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/anniversary': {
@@ -1625,18 +1261,375 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppAnniversaryRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/movies/': {
-      id: '/_authenticated/app/movies/'
-      path: '/'
-      fullPath: '/app/movies/'
-      preLoaderRoute: typeof AuthenticatedAppMoviesIndexRouteImport
-      parentRoute: typeof AuthenticatedAppMoviesRoute
+    '/_authenticated/app/archery-master': {
+      id: '/_authenticated/app/archery-master'
+      path: '/archery-master'
+      fullPath: '/app/archery-master'
+      preLoaderRoute: typeof AuthenticatedAppArcheryMasterRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/letters/': {
-      id: '/_authenticated/app/letters/'
-      path: '/letters'
-      fullPath: '/app/letters/'
-      preLoaderRoute: typeof AuthenticatedAppLettersIndexRouteImport
+    '/_authenticated/app/arena': {
+      id: '/_authenticated/app/arena'
+      path: '/arena'
+      fullPath: '/app/arena'
+      preLoaderRoute: typeof AuthenticatedAppArenaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/basketball-arcade': {
+      id: '/_authenticated/app/basketball-arcade'
+      path: '/basketball-arcade'
+      fullPath: '/app/basketball-arcade'
+      preLoaderRoute: typeof AuthenticatedAppBasketballArcadeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/bucket': {
+      id: '/_authenticated/app/bucket'
+      path: '/bucket'
+      fullPath: '/app/bucket'
+      preLoaderRoute: typeof AuthenticatedAppBucketRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/calendar': {
+      id: '/_authenticated/app/calendar'
+      path: '/calendar'
+      fullPath: '/app/calendar'
+      preLoaderRoute: typeof AuthenticatedAppCalendarRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/calls': {
+      id: '/_authenticated/app/calls'
+      path: '/calls'
+      fullPath: '/app/calls'
+      preLoaderRoute: typeof AuthenticatedAppCallsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/checkers': {
+      id: '/_authenticated/app/checkers'
+      path: '/checkers'
+      fullPath: '/app/checkers'
+      preLoaderRoute: typeof AuthenticatedAppCheckersRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/chess': {
+      id: '/_authenticated/app/chess'
+      path: '/chess'
+      fullPath: '/app/chess'
+      preLoaderRoute: typeof AuthenticatedAppChessRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/concierge': {
+      id: '/_authenticated/app/concierge'
+      path: '/concierge'
+      fullPath: '/app/concierge'
+      preLoaderRoute: typeof AuthenticatedAppConciergeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/cup-pong': {
+      id: '/_authenticated/app/cup-pong'
+      path: '/cup-pong'
+      fullPath: '/app/cup-pong'
+      preLoaderRoute: typeof AuthenticatedAppCupPongRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/daily-challenge': {
+      id: '/_authenticated/app/daily-challenge'
+      path: '/daily-challenge'
+      fullPath: '/app/daily-challenge'
+      preLoaderRoute: typeof AuthenticatedAppDailyChallengeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/darts-101': {
+      id: '/_authenticated/app/darts-101'
+      path: '/darts-101'
+      fullPath: '/app/darts-101'
+      preLoaderRoute: typeof AuthenticatedAppDarts101RouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/four-in-a-row': {
+      id: '/_authenticated/app/four-in-a-row'
+      path: '/four-in-a-row'
+      fullPath: '/app/four-in-a-row'
+      preLoaderRoute: typeof AuthenticatedAppFourInARowRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/friends': {
+      id: '/_authenticated/app/friends'
+      path: '/friends'
+      fullPath: '/app/friends'
+      preLoaderRoute: typeof AuthenticatedAppFriendsRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/help': {
+      id: '/_authenticated/app/help'
+      path: '/help'
+      fullPath: '/app/help'
+      preLoaderRoute: typeof AuthenticatedAppHelpRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/hideseek': {
+      id: '/_authenticated/app/hideseek'
+      path: '/hideseek'
+      fullPath: '/app/hideseek'
+      preLoaderRoute: typeof AuthenticatedAppHideseekRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/invite': {
+      id: '/_authenticated/app/invite'
+      path: '/invite'
+      fullPath: '/app/invite'
+      preLoaderRoute: typeof AuthenticatedAppInviteRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/journal': {
+      id: '/_authenticated/app/journal'
+      path: '/journal'
+      fullPath: '/app/journal'
+      preLoaderRoute: typeof AuthenticatedAppJournalRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/knowme': {
+      id: '/_authenticated/app/knowme'
+      path: '/knowme'
+      fullPath: '/app/knowme'
+      preLoaderRoute: typeof AuthenticatedAppKnowmeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/love-quiz': {
+      id: '/_authenticated/app/love-quiz'
+      path: '/love-quiz'
+      fullPath: '/app/love-quiz'
+      preLoaderRoute: typeof AuthenticatedAppLoveQuizRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/ludo': {
+      id: '/_authenticated/app/ludo'
+      path: '/ludo'
+      fullPath: '/app/ludo'
+      preLoaderRoute: typeof AuthenticatedAppLudoRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/mart': {
+      id: '/_authenticated/app/mart'
+      path: '/mart'
+      fullPath: '/app/mart'
+      preLoaderRoute: typeof AuthenticatedAppMartRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/me': {
+      id: '/_authenticated/app/me'
+      path: '/me'
+      fullPath: '/app/me'
+      preLoaderRoute: typeof AuthenticatedAppMeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/memories': {
+      id: '/_authenticated/app/memories'
+      path: '/memories'
+      fullPath: '/app/memories'
+      preLoaderRoute: typeof AuthenticatedAppMemoriesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/memory-challenge': {
+      id: '/_authenticated/app/memory-challenge'
+      path: '/memory-challenge'
+      fullPath: '/app/memory-challenge'
+      preLoaderRoute: typeof AuthenticatedAppMemoryChallengeRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/mini-golf': {
+      id: '/_authenticated/app/mini-golf'
+      path: '/mini-golf'
+      fullPath: '/app/mini-golf'
+      preLoaderRoute: typeof AuthenticatedAppMiniGolfRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/mood': {
+      id: '/_authenticated/app/mood'
+      path: '/mood'
+      fullPath: '/app/mood'
+      preLoaderRoute: typeof AuthenticatedAppMoodRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/movies': {
+      id: '/_authenticated/app/movies'
+      path: '/movies'
+      fullPath: '/app/movies'
+      preLoaderRoute: typeof AuthenticatedAppMoviesRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/paint': {
+      id: '/_authenticated/app/paint'
+      path: '/paint'
+      fullPath: '/app/paint'
+      preLoaderRoute: typeof AuthenticatedAppPaintRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/panda-shop': {
+      id: '/_authenticated/app/panda-shop'
+      path: '/panda-shop'
+      fullPath: '/app/panda-shop'
+      preLoaderRoute: typeof AuthenticatedAppPandaShopRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/partner': {
+      id: '/_authenticated/app/partner'
+      path: '/partner'
+      fullPath: '/app/partner'
+      preLoaderRoute: typeof AuthenticatedAppPartnerRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/pet': {
+      id: '/_authenticated/app/pet'
+      path: '/pet'
+      fullPath: '/app/pet'
+      preLoaderRoute: typeof AuthenticatedAppPetRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/play': {
+      id: '/_authenticated/app/play'
+      path: '/play'
+      fullPath: '/app/play'
+      preLoaderRoute: typeof AuthenticatedAppPlayRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/pool': {
+      id: '/_authenticated/app/pool'
+      path: '/pool'
+      fullPath: '/app/pool'
+      preLoaderRoute: typeof AuthenticatedAppPoolRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/puppy': {
+      id: '/_authenticated/app/puppy'
+      path: '/puppy'
+      fullPath: '/app/puppy'
+      preLoaderRoute: typeof AuthenticatedAppPuppyRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/puzzle': {
+      id: '/_authenticated/app/puzzle'
+      path: '/puzzle'
+      fullPath: '/app/puzzle'
+      preLoaderRoute: typeof AuthenticatedAppPuzzleRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/scribble': {
+      id: '/_authenticated/app/scribble'
+      path: '/scribble'
+      fullPath: '/app/scribble'
+      preLoaderRoute: typeof AuthenticatedAppScribbleRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/sea-battle': {
+      id: '/_authenticated/app/sea-battle'
+      path: '/sea-battle'
+      fullPath: '/app/sea-battle'
+      preLoaderRoute: typeof AuthenticatedAppSeaBattleRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/shop': {
+      id: '/_authenticated/app/shop'
+      path: '/shop'
+      fullPath: '/app/shop'
+      preLoaderRoute: typeof AuthenticatedAppShopRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/tamanna': {
+      id: '/_authenticated/app/tamanna'
+      path: '/tamanna'
+      fullPath: '/app/tamanna'
+      preLoaderRoute: typeof AuthenticatedAppTamannaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/tank-shot': {
+      id: '/_authenticated/app/tank-shot'
+      path: '/tank-shot'
+      fullPath: '/app/tank-shot'
+      preLoaderRoute: typeof AuthenticatedAppTankShotRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/timeline': {
+      id: '/_authenticated/app/timeline'
+      path: '/timeline'
+      fullPath: '/app/timeline'
+      preLoaderRoute: typeof AuthenticatedAppTimelineRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/trivia': {
+      id: '/_authenticated/app/trivia'
+      path: '/trivia'
+      fullPath: '/app/trivia'
+      preLoaderRoute: typeof AuthenticatedAppTriviaRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/uno': {
+      id: '/_authenticated/app/uno'
+      path: '/uno'
+      fullPath: '/app/uno'
+      preLoaderRoute: typeof AuthenticatedAppUnoRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/wallet': {
+      id: '/_authenticated/app/wallet'
+      path: '/wallet'
+      fullPath: '/app/wallet'
+      preLoaderRoute: typeof AuthenticatedAppWalletRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/watch': {
+      id: '/_authenticated/app/watch'
+      path: '/watch'
+      fullPath: '/app/watch'
+      preLoaderRoute: typeof AuthenticatedAppWatchRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/watchlist': {
+      id: '/_authenticated/app/watchlist'
+      path: '/watchlist'
+      fullPath: '/app/watchlist'
+      preLoaderRoute: typeof AuthenticatedAppWatchlistRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/widget': {
+      id: '/_authenticated/app/widget'
+      path: '/widget'
+      fullPath: '/app/widget'
+      preLoaderRoute: typeof AuthenticatedAppWidgetRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/wild-cards-2': {
+      id: '/_authenticated/app/wild-cards-2'
+      path: '/wild-cards-2'
+      fullPath: '/app/wild-cards-2'
+      preLoaderRoute: typeof AuthenticatedAppWildCards2RouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/wishlist': {
+      id: '/_authenticated/app/wishlist'
+      path: '/wishlist'
+      fullPath: '/app/wishlist'
+      preLoaderRoute: typeof AuthenticatedAppWishlistRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/api/public/push-dispatch': {
+      id: '/api/public/push-dispatch'
+      path: '/api/public/push-dispatch'
+      fullPath: '/api/public/push-dispatch'
+      preLoaderRoute: typeof ApiPublicPushDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/app/call/$peerId': {
+      id: '/_authenticated/app/call/$peerId'
+      path: '/call/$peerId'
+      fullPath: '/app/call/$peerId'
+      preLoaderRoute: typeof AuthenticatedAppCallPeerIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/chat/': {
@@ -1646,74 +1639,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppChatIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/transactional/preview': {
-      id: '/lovable/email/transactional/preview'
-      path: '/lovable/email/transactional/preview'
-      fullPath: '/lovable/email/transactional/preview'
-      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/webhook': {
-      id: '/lovable/email/auth/webhook'
-      path: '/lovable/email/auth/webhook'
-      fullPath: '/lovable/email/auth/webhook'
-      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/preview': {
-      id: '/lovable/email/auth/preview'
-      path: '/lovable/email/auth/preview'
-      fullPath: '/lovable/email/auth/preview'
-      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/app/user/$userId': {
-      id: '/_authenticated/app/user/$userId'
-      path: '/user/$userId'
-      fullPath: '/app/user/$userId'
-      preLoaderRoute: typeof AuthenticatedAppUserUserIdRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/movies/list': {
-      id: '/_authenticated/app/movies/list'
-      path: '/list'
-      fullPath: '/app/movies/list'
-      preLoaderRoute: typeof AuthenticatedAppMoviesListRouteImport
-      parentRoute: typeof AuthenticatedAppMoviesRoute
-    }
-    '/_authenticated/app/movies/$id': {
-      id: '/_authenticated/app/movies/$id'
-      path: '/$id'
-      fullPath: '/app/movies/$id'
-      preLoaderRoute: typeof AuthenticatedAppMoviesIdRouteImport
-      parentRoute: typeof AuthenticatedAppMoviesRoute
-    }
-    '/_authenticated/app/letters/$id': {
-      id: '/_authenticated/app/letters/$id'
-      path: '/letters/$id'
-      fullPath: '/app/letters/$id'
-      preLoaderRoute: typeof AuthenticatedAppLettersIdRouteImport
-      parentRoute: typeof AuthenticatedAppRoute
-    }
-    '/_authenticated/app/group-match/$matchId': {
-      id: '/_authenticated/app/group-match/$matchId'
-      path: '/group-match/$matchId'
-      fullPath: '/app/group-match/$matchId'
-      preLoaderRoute: typeof AuthenticatedAppGroupMatchMatchIdRouteImport
+    '/_authenticated/app/chat/$peerId': {
+      id: '/_authenticated/app/chat/$peerId'
+      path: '/chat/$peerId'
+      fullPath: '/app/chat/$peerId'
+      preLoaderRoute: typeof AuthenticatedAppChatPeerIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
     '/_authenticated/app/games/$game': {
@@ -1723,40 +1653,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppGamesGameRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/chat/$peerId': {
-      id: '/_authenticated/app/chat/$peerId'
-      path: '/chat/$peerId'
-      fullPath: '/app/chat/$peerId'
-      preLoaderRoute: typeof AuthenticatedAppChatPeerIdRouteImport
+    '/_authenticated/app/group-match/$matchId': {
+      id: '/_authenticated/app/group-match/$matchId'
+      path: '/group-match/$matchId'
+      fullPath: '/app/group-match/$matchId'
+      preLoaderRoute: typeof AuthenticatedAppGroupMatchMatchIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/call/$peerId': {
-      id: '/_authenticated/app/call/$peerId'
-      path: '/call/$peerId'
-      fullPath: '/app/call/$peerId'
-      preLoaderRoute: typeof AuthenticatedAppCallPeerIdRouteImport
+    '/_authenticated/app/letters/': {
+      id: '/_authenticated/app/letters/'
+      path: '/letters'
+      fullPath: '/app/letters/'
+      preLoaderRoute: typeof AuthenticatedAppLettersIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
-    '/_authenticated/app/movies/$id/watch': {
-      id: '/_authenticated/app/movies/$id/watch'
-      path: '/watch'
-      fullPath: '/app/movies/$id/watch'
-      preLoaderRoute: typeof AuthenticatedAppMoviesIdWatchRouteImport
-      parentRoute: typeof AuthenticatedAppMoviesIdRoute
-    }
-    '/_authenticated/app/movies/$id/party': {
-      id: '/_authenticated/app/movies/$id/party'
-      path: '/party'
-      fullPath: '/app/movies/$id/party'
-      preLoaderRoute: typeof AuthenticatedAppMoviesIdPartyRouteImport
-      parentRoute: typeof AuthenticatedAppMoviesIdRoute
-    }
-    '/_authenticated/app/chat/group/$groupId': {
-      id: '/_authenticated/app/chat/group/$groupId'
-      path: '/chat/group/$groupId'
-      fullPath: '/app/chat/group/$groupId'
-      preLoaderRoute: typeof AuthenticatedAppChatGroupGroupIdRouteImport
+    '/_authenticated/app/letters/$id': {
+      id: '/_authenticated/app/letters/$id'
+      path: '/letters/$id'
+      fullPath: '/app/letters/$id'
+      preLoaderRoute: typeof AuthenticatedAppLettersIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/movies/': {
+      id: '/_authenticated/app/movies/'
+      path: '/'
+      fullPath: '/app/movies/'
+      preLoaderRoute: typeof AuthenticatedAppMoviesIndexRouteImport
+      parentRoute: typeof AuthenticatedAppMoviesRoute
+    }
+    '/_authenticated/app/movies/$id': {
+      id: '/_authenticated/app/movies/$id'
+      path: '/$id'
+      fullPath: '/app/movies/$id'
+      preLoaderRoute: typeof AuthenticatedAppMoviesIdRouteImport
+      parentRoute: typeof AuthenticatedAppMoviesRoute
+    }
+    '/_authenticated/app/movies/list': {
+      id: '/_authenticated/app/movies/list'
+      path: '/list'
+      fullPath: '/app/movies/list'
+      preLoaderRoute: typeof AuthenticatedAppMoviesListRouteImport
+      parentRoute: typeof AuthenticatedAppMoviesRoute
+    }
+    '/_authenticated/app/user/$userId': {
+      id: '/_authenticated/app/user/$userId'
+      path: '/user/$userId'
+      fullPath: '/app/user/$userId'
+      preLoaderRoute: typeof AuthenticatedAppUserUserIdRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app/call/group/$groupId': {
       id: '/_authenticated/app/call/group/$groupId'
@@ -1765,6 +1744,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppCallGroupGroupIdRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/chat/group/$groupId': {
+      id: '/_authenticated/app/chat/group/$groupId'
+      path: '/chat/group/$groupId'
+      fullPath: '/app/chat/group/$groupId'
+      preLoaderRoute: typeof AuthenticatedAppChatGroupGroupIdRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
+    '/_authenticated/app/movies/$id/party': {
+      id: '/_authenticated/app/movies/$id/party'
+      path: '/party'
+      fullPath: '/app/movies/$id/party'
+      preLoaderRoute: typeof AuthenticatedAppMoviesIdPartyRouteImport
+      parentRoute: typeof AuthenticatedAppMoviesIdRoute
+    }
+    '/_authenticated/app/movies/$id/watch': {
+      id: '/_authenticated/app/movies/$id/watch'
+      path: '/watch'
+      fullPath: '/app/movies/$id/watch'
+      preLoaderRoute: typeof AuthenticatedAppMoviesIdWatchRouteImport
+      parentRoute: typeof AuthenticatedAppMoviesIdRoute
+    }
     '/_authenticated/app/chat/group/$groupId/': {
       id: '/_authenticated/app/chat/group/$groupId/'
       path: '/'
@@ -1772,18 +1772,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppChatGroupGroupIdIndexRouteImport
       parentRoute: typeof AuthenticatedAppChatGroupGroupIdRoute
     }
-    '/_authenticated/app/chat/group/$groupId/settings': {
-      id: '/_authenticated/app/chat/group/$groupId/settings'
-      path: '/settings'
-      fullPath: '/app/chat/group/$groupId/settings'
-      preLoaderRoute: typeof AuthenticatedAppChatGroupGroupIdSettingsRouteImport
-      parentRoute: typeof AuthenticatedAppChatGroupGroupIdRoute
-    }
     '/_authenticated/app/chat/group/$groupId/info': {
       id: '/_authenticated/app/chat/group/$groupId/info'
       path: '/info'
       fullPath: '/app/chat/group/$groupId/info'
       preLoaderRoute: typeof AuthenticatedAppChatGroupGroupIdInfoRouteImport
+      parentRoute: typeof AuthenticatedAppChatGroupGroupIdRoute
+    }
+    '/_authenticated/app/chat/group/$groupId/settings': {
+      id: '/_authenticated/app/chat/group/$groupId/settings'
+      path: '/settings'
+      fullPath: '/app/chat/group/$groupId/settings'
+      preLoaderRoute: typeof AuthenticatedAppChatGroupGroupIdSettingsRouteImport
       parentRoute: typeof AuthenticatedAppChatGroupGroupIdRoute
     }
     '/_authenticated/app/movies/$id/episode/$season/$episode': {
