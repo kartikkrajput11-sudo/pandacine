@@ -89,11 +89,11 @@ export function PuppyYard({ name, mood, playing, onPat }: { name: string; mood: 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background/15 to-transparent" />
       {mounted && <div className="pointer-events-none absolute inset-0 z-10" aria-hidden="true"><PuppyScene mood={mood} playing={playing} turn={turn} onReady={() => setReady(true)} /></div>}
       {!ready && <div role="status" className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"><span className="flex items-center gap-2 rounded-md border border-border bg-background/75 px-4 py-3 text-sm text-foreground backdrop-blur-xl"><LoaderCircle className="size-4 motion-safe:animate-spin" /> {name} is coming out…</span></div>}
-      <div className="pointer-events-none absolute left-4 top-4 z-20 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-md border border-border bg-background/70 px-4 py-3 text-foreground backdrop-blur-xl">
+      <div className="pointer-events-none absolute left-4 top-4 z-20 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-md glass-strong px-4 py-3 text-foreground backdrop-blur-xl">
         <PawPrint className="size-5 shrink-0 text-primary" />
         <div className="min-w-0"><p className="text-[10px] uppercase text-muted-foreground">Your companion</p><p className="truncate font-display text-xl">{name}</p></div>
       </div>
-      <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex items-center gap-2 rounded-md border border-border bg-background/70 px-3 py-2 text-xs font-semibold text-foreground backdrop-blur-xl">
+      <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex items-center gap-2 rounded-md glass-strong px-3 py-2 text-xs font-semibold text-foreground backdrop-blur-xl">
         <Heart className="size-3.5 text-primary" />
         {mood === "excited" ? "🐾 Zoomies!" : mood === "curious" ? "👀 Curious" : mood === "sleepy" ? "💤 Sleepy" : mood === "hungry" ? "🥣 Hungry" : mood === "sad" ? "💧 Misses you" : "💛 Happy"}
       </div>
