@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import yard from "@/assets/puppy-backyard.jpg";
 import puppyAsset from "@/assets/puppy-dog-embedded.glb.asset.json";
 import { Button } from "@/components/ui/button";
+import { Heart, LoaderCircle, PawPrint } from "lucide-react";
 
 export type PuppyMood = "happy" | "excited" | "curious" | "sleepy" | "hungry" | "sad";
 
@@ -15,7 +16,7 @@ const actionClip: Record<string, string> = {
   belly: "dance", pat: "gesture-positive", nap: "idle", eat: "eat",
 };
 
-function PuppyModel({ mood, playing, turn }: { mood: PuppyMood; playing: string | null; turn: number }) {
+function PuppyModel({ mood, playing, turn, onReady }: { mood: PuppyMood; playing: string | null; turn: number; onReady: () => void }) {
   const { scene, animations } = useGLTF(puppyAsset.url);
   const dog = useMemo(() => {
     const clone = SkeletonUtils.clone(scene);
@@ -36,6 +37,7 @@ function PuppyModel({ mood, playing, turn }: { mood: PuppyMood; playing: string 
   }, [scene]);
   const body = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, body);
+  useEffect(() => { onReady(); }, [onReady]);
   const clip = playing ? actionClip[playing] ?? "idle" : mood === "sleepy" ? "idle" : mood === "excited" ? "dance" : "idle";
 
   useEffect(() => {
@@ -59,7 +61,7 @@ function PuppyModel({ mood, playing, turn }: { mood: PuppyMood; playing: string 
   return <group ref={body} position={[0, 0, 0]}><primitive object={dog} /></group>;
 }
 
-function PuppyScene({ mood, playing, turn }: { mood: PuppyMood; playing: string | null; turn: number }) {
+function PuppyScene({ mood, playing, turn, onReady }: { mood: PuppyMood; playing: string | null; turn: number; onReady: () => void }) {
   return (
     <Canvas shadows dpr={[1, 1.7]} gl={{ alpha: true, antialias: true }} camera={{ position: [0, 1.8, 4.6], fov: 37 }} onCreated={({ camera }) => camera.lookAt(0, 0.8, 0)} style={{ background: "transparent" }}>
       <ambientLight intensity={0.85} />
@@ -69,7 +71,7 @@ function PuppyScene({ mood, playing, turn }: { mood: PuppyMood; playing: string 
         <planeGeometry args={[4, 4]} />
         <shadowMaterial transparent opacity={0.28} />
       </mesh>
-      <Suspense fallback={null}><PuppyModel mood={mood} playing={playing} turn={turn} /></Suspense>
+      <Suspense fallback={null}><PuppyModel mood={mood} playing={playing} turn={turn} onReady={onReady} /></Suspense>
     </Canvas>
   );
 }
@@ -77,22 +79,30 @@ function PuppyScene({ mood, playing, turn }: { mood: PuppyMood; playing: string 
 export function PuppyYard({ name, mood, playing, onPat }: { name: string; mood: PuppyMood; playing: string | null; onPat: () => void }) {
   const [mounted, setMounted] = useState(false);
   const [turn, setTurn] = useState(0);
+  const [ready, setReady] = useState(false);
   const start = useRef<{ x: number; turn: number; moved: boolean } | null>(null);
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <div className="relative isolate h-[390px] w-full overflow-hidden rounded-lg border border-border sm:h-[470px]" aria-label={`${name} in the backyard`}>
+    <div className="relative isolate h-[420px] w-full overflow-hidden rounded-lg border border-border sm:h-[540px]" aria-label={`${name} in the backyard`}>
       <img src={yard} alt="Sunlit puppy backyard with a doghouse" width={1280} height={1024} className="absolute inset-0 size-full object-cover" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background/15 to-transparent" />
-      {mounted && <div className="pointer-events-none absolute inset-0 z-10" aria-hidden="true"><PuppyScene mood={mood} playing={playing} turn={turn} /></div>}
-      <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-md border border-border bg-background/85 px-3 py-2 text-sm font-semibold text-foreground backdrop-blur">
+      {mounted && <div className="pointer-events-none absolute inset-0 z-10" aria-hidden="true"><PuppyScene mood={mood} playing={playing} turn={turn} onReady={() => setReady(true)} /></div>}
+      {!ready && <div role="status" className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center"><span className="flex items-center gap-2 rounded-md border border-border bg-background/75 px-4 py-3 text-sm text-foreground backdrop-blur-xl"><LoaderCircle className="size-4 motion-safe:animate-spin" /> {name} is coming out…</span></div>}
+      <div className="pointer-events-none absolute left-4 top-4 z-20 flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-md glass-strong px-4 py-3 text-foreground backdrop-blur-xl">
+        <PawPrint className="size-5 shrink-0 text-primary" />
+        <div className="min-w-0"><p className="text-[10px] uppercase text-muted-foreground">Your companion</p><p className="truncate font-display text-xl">{name}</p></div>
+      </div>
+      <div className="pointer-events-none absolute bottom-4 left-4 z-20 flex items-center gap-2 rounded-md glass-strong px-3 py-2 text-xs font-semibold text-foreground backdrop-blur-xl">
+        <Heart className="size-3.5 text-primary" />
         {mood === "excited" ? "🐾 Zoomies!" : mood === "curious" ? "👀 Curious" : mood === "sleepy" ? "💤 Sleepy" : mood === "hungry" ? "🥣 Hungry" : mood === "sad" ? "💧 Misses you" : "💛 Happy"}
       </div>
       <Button
         variant="ghost"
         type="button"
+        disabled={!ready}
         aria-label={`Pet or turn ${name}`}
-        className="absolute bottom-[9%] left-[18%] z-20 h-[70%] w-[64%] cursor-grab touch-none rounded-md focus-visible:outline-2 focus-visible:outline-primary active:cursor-grabbing"
+        className="absolute bottom-[15%] left-[18%] z-20 h-[65%] w-[64%] cursor-grab touch-none rounded-md hover:bg-transparent focus-visible:outline-2 focus-visible:outline-primary active:cursor-grabbing"
         onPointerDown={(event) => { start.current = { x: event.clientX, turn, moved: false }; event.currentTarget.setPointerCapture(event.pointerId); }}
         onPointerMove={(event) => {
           if (!start.current) return;

@@ -3,3 +3,5 @@
 - [x] Build the puppy's own environment and interaction screen without replacing the panda.
 - [x] Verify purchase, feeding, play, and phone layout.
 - [x] Replace the flat puppy art with a textured, animated 3D dog in the backyard and verify desktop/mobile rendering.
+- [x] Polish the puppy screen with elegant glass styling; page validation passes.
+- [ ] Verify the live 3D reveal and play controls: blocked because the requesting account's puppy is deceased; do not revive it or bypass paid adoption for testing.
