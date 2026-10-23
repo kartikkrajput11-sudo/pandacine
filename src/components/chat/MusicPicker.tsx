@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Search, Play, Pause, X, Music2, Loader2, Check } from "lucide-react";
 import { searchSongs, type SongPick } from "@/lib/music.functions";
+import { MusicTrimmer } from "./MusicTrimmer";
 
 export function MusicPicker({
   open,
@@ -21,6 +22,7 @@ export function MusicPicker({
   const [err, setErr] = useState<string | null>(null);
   const [playing, setPlaying] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [trimming, setTrimming] = useState<SongPick | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -43,6 +45,7 @@ export function MusicPicker({
     if (!open) {
       audioRef.current?.pause();
       setPlaying(null);
+      setTrimming(null);
     }
   }, [open]);
 
@@ -75,6 +78,9 @@ export function MusicPicker({
             <X className="size-4" />
           </button>
         </div>
+        {trimming ? (
+          <MusicTrimmer song={trimming} onBack={() => setTrimming(null)} onDone={(t) => { setTrimming(null); onPick(t); }} />
+        ) : (<>
         <div className="px-4 pb-2">
           <div className="flex items-center gap-2 rounded-full ring-1 ring-candle/10 bg-candle/[0.04] px-3">
             <Search className="size-4 text-candle-muted" />
@@ -110,7 +116,7 @@ export function MusicPicker({
                 <p className="text-xs text-candle-muted truncate">{s.artist}</p>
               </div>
               <button
-                onClick={() => { audioRef.current?.pause(); setPlaying(null); onPick(s); }}
+                onClick={() => { audioRef.current?.pause(); setPlaying(null); setTrimming(s); }}
                 className="size-9 rounded-full bg-petal text-velvet grid place-items-center shrink-0"
                 aria-label={`Choose ${s.title}`}
               >
@@ -119,6 +125,7 @@ export function MusicPicker({
             </div>
           ))}
         </div>
+        </>)}
       </div>
     </div>
   );
