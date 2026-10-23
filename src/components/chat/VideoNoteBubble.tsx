@@ -53,7 +53,7 @@ export function VideoNoteBubble({ path, durationMs, song }: { path: string; dura
               playsInline
               muted
               preload="metadata"
-              className="size-full object-cover -scale-x-100"
+              className="size-full object-cover"
               onPlay={() => setPlaying(true)}
               onPause={() => setPlaying(false)}
               onEnded={() => { setPlaying(false); setProgress(0); aRef.current?.pause(); }}
