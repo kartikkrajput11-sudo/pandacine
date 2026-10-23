@@ -8,6 +8,8 @@ import { saveMediaToGallery } from "@/lib/save-media";
 import { VoicePlayer } from "./VoicePlayer";
 import { SignedImage } from "./SignedImage";
 import { SignedVideo } from "./SignedVideo";
+import { VideoNoteBubble } from "./VideoNoteBubble";
+import { MusicCard } from "./MusicCard";
 import { ViewOnceMedia } from "./ViewOnceMedia";
 import { WatchInviteCard } from "./WatchInviteCard";
 import { GameInviteCard } from "./GameInviteCard";
@@ -380,6 +382,8 @@ function ChatBubbleImpl({
                  replyTo.type === "gif" ? "🎞️ GIF" :
                  replyTo.type === "image" ? "📷 Photo" :
                  replyTo.type === "video" ? "🎬 Video" :
+                 replyTo.type === "video_note" ? "⭕ Video note" :
+                 replyTo.type === "music" ? "🎵 Song" :
                  replyTo.type === "file" ? `📎 ${replyTo.content}` :
                  replyTo.type === "game_invite" ? `🎮 ${replyTo.content}` :
                  replyTo.type === "movie_wheel" ? "🎡 Movie wheel" :
@@ -666,6 +670,12 @@ function ChatBubbleImpl({
 
 
 
+          {m.type === "video_note" && m.media_url && (
+            <VideoNoteBubble path={m.media_url} durationMs={(m.media_meta as any)?.duration_ms} song={(m.media_meta as any)?.song ?? null} />
+          )}
+          {m.type === "music" && (m.media_meta as any)?.song && (
+            <MusicCard song={(m.media_meta as any).song} />
+          )}
           {m.type === "voice" && m.media_url && (
             <VoicePlayer path={m.media_url} durationMs={(m.media_meta as any)?.duration_ms} />
           )}

@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Plus, X, Image as ImageIcon, Paperclip, Smile, Send, Film,
-  Video as VideoIcon, Gamepad2, Heart, HeartHandshake, Handshake, Hand, Zap, EyeOff, Eye, Disc3, Sparkles, Pointer, CalendarClock, Angry, Feather, Laugh, ChevronRight,
+  Video as VideoIcon, Gamepad2, Heart, HeartHandshake, Handshake, Hand, Zap, EyeOff, Eye, Disc3, Sparkles, Pointer, CalendarClock, Angry, Feather, Laugh, ChevronRight, CircleDot, Music2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { type MessageRow } from "@/lib/chat";
 import { startUpload } from "@/lib/upload-manager";
 import { VoiceRecorder } from "./VoiceRecorder";
+import { VideoNoteRecorder } from "./VideoNoteRecorder";
+import { MusicPicker } from "./MusicPicker";
+import type { SongPick } from "@/lib/music.functions";
 import { WatchInvitePicker } from "./WatchInvitePicker";
 import { EmojiPicker } from "./EmojiPicker";
 import { GameInvitePicker, type GamePick } from "./GameInvitePicker";
@@ -410,6 +413,37 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
     }), "file");
   }
 
+  const [noteOpen, setNoteOpen] = useState(false);
+  const [musicOpen, setMusicOpen] = useState(false);
+
+  async function handleVideoNoteSend(path: string, durationMs: number, song: SongPick | null) {
+    await onSend({
+      type: "video_note",
+      content: song ? `🎵 Video note · ${song.title}` : "Video note",
+      media_url: path,
+      media_meta: { duration_ms: durationMs, song },
+      reply_to_id: replyTo?.id ?? null,
+      disappear_seconds: disappearSecs,
+    });
+    onClearReply();
+  }
+
+  async function sendSong(song: SongPick) {
+    setMusicOpen(false);
+    try {
+      await onSend({
+        type: "music",
+        content: `🎵 ${song.title} — ${song.artist}`,
+        media_meta: { song },
+        reply_to_id: replyTo?.id ?? null,
+        disappear_seconds: disappearSecs,
+      });
+      onClearReply();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed to share song");
+    }
+  }
+
   async function handleVoiceSend(path: string, durationMs: number) {
     try {
       await onSend({
@@ -502,7 +536,9 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
             </div>
 
             {openGroup === "media" && (
-              <div className="mt-2 grid grid-cols-5 gap-2 animate-fade-in">
+              <div className="mt-2 grid grid-cols-4 gap-2 animate-fade-in">
+                <GroupChoice icon={<CircleDot className="size-4 text-petal" />} label="Video note" hint="Round clip" onClick={() => { setNoteOpen(true); setOpenGroup(null); setMenuOpen(false); }} />
+                <GroupChoice icon={<Music2 className="size-4 text-petal" />} label="Music" hint="Share a song" onClick={() => { setMusicOpen(true); setOpenGroup(null); setMenuOpen(false); }} />
                 <GroupChoice icon={<Camera className="size-4 text-petal" />} label="Camera" hint="Live capture" onClick={() => { setCameraOpen(true); setOpenGroup(null); setMenuOpen(false); }} />
                 <GroupChoice icon={<ImageIcon className="size-4" />} label="Photo" hint="From gallery" onClick={() => { imgRef.current?.click(); setOpenGroup(null); }} />
                 <GroupChoice icon={<VideoIcon className="size-4" />} label="Video" hint="Up to 60 MB" onClick={() => { vidRef.current?.click(); setOpenGroup(null); }} />
@@ -613,6 +649,8 @@ export function ChatComposer({ meId, partnerName, replyTo, onClearReply, onTypin
 
       <WatchInvitePicker open={watchPickerOpen} onClose={() => setWatchPickerOpen(false)} onPick={sendWatchInvite} />
       <GameInvitePicker open={gamePickerOpen} onClose={() => setGamePickerOpen(false)} onPick={sendGameInvite} />
+      <VideoNoteRecorder open={noteOpen} userId={meId} onClose={() => setNoteOpen(false)} onSend={handleVideoNoteSend} />
+      <MusicPicker open={musicOpen} onClose={() => setMusicOpen(false)} onPick={sendSong} />
       <MovieWheelPicker open={wheelOpen} onClose={() => setWheelOpen(false)} onSend={sendMovieWheel} />
       <PandaStickerPicker open={pandaOpen} onClose={() => setPandaOpen(false)} onPick={sendPandaSticker} onOpenAi={() => setAiOpen(true)} />
       <GifPicker
