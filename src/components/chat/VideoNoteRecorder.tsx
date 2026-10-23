@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { uploadChatMedia } from "@/lib/chat";
 import { MusicPicker } from "./MusicPicker";
 import type { SongPick } from "@/lib/music.functions";
-import { clipOf, loopClip } from "@/lib/music-clip";
 
 const MAX_MS = 60_000;
 
@@ -91,8 +90,8 @@ export function VideoNoteRecorder({
     if (!song) return;
     if (!songAudio.current) songAudio.current = new Audio();
     const a = songAudio.current;
-    if (a.src !== song.preview_url) { a.src = song.preview_url; loopClip(a, song); }
-    if (fromStart) a.currentTime = clipOf(song).start;
+    if (a.src !== song.preview_url) a.src = song.preview_url;
+    if (fromStart) a.currentTime = 0;
     a.volume = 0.45;
     a.play().catch(() => {});
   }

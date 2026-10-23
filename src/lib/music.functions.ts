@@ -9,10 +9,6 @@ export type SongPick = {
   artwork: string | null;
   preview_url: string;
   link: string | null;
-  /** Chosen clip start within the preview, in seconds. */
-  start?: number;
-  /** Chosen clip length, in seconds. */
-  length?: number;
 };
 
 /** Searches songs with 30-second previews (Apple Music public catalog). */
