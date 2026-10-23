@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Play, Music2, Loader2 } from "lucide-react";
 import { signMedia } from "@/lib/chat";
 import type { SongPick } from "@/lib/music.functions";
+import { clipOf, loopClip } from "@/lib/music-clip";
 
 export function VideoNoteBubble({ path, durationMs, song }: { path: string; durationMs?: number; song?: SongPick | null }) {
   const [url, setUrl] = useState<string | null>(null);
@@ -25,8 +26,9 @@ export function VideoNoteBubble({ path, durationMs, song }: { path: string; dura
       v.muted = false;
       v.play().catch(() => {});
       if (song) {
-        if (!aRef.current) { aRef.current = new Audio(song.preview_url); aRef.current.volume = 0.45; }
-        aRef.current.currentTime = v.currentTime;
+        if (!aRef.current) { aRef.current = new Audio(song.preview_url); aRef.current.volume = 0.45; loopClip(aRef.current, song); }
+        const c = clipOf(song);
+        aRef.current.currentTime = c.start + (v.currentTime % c.length);
         aRef.current.play().catch(() => {});
       }
     } else {
