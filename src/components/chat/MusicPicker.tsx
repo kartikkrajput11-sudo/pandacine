@@ -121,7 +121,7 @@ export function MusicPicker({
         try {
           const direct = await searchSongsDirect(q);
           setSongs(direct);
-          setErr(direct.length === 0 && q.trim() ? null : null);
+          setErr(null);
         } catch {
           setSongs([]);
           setErr("Music search is unavailable right now.");
