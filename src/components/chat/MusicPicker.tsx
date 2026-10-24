@@ -59,6 +59,25 @@ function rememberSearch(q: string) {
   saveJson(RECENT_SEARCHES_KEY, next);
 }
 
+/** Browser-side fallback: the song catalog allows cross-origin requests. */
+async function searchSongsDirect(q: string): Promise<SongPick[]> {
+  const term = q.trim() || "top hits love";
+  const url = `https://itunes.apple.com/search?entity=song&limit=25&term=${encodeURIComponent(term)}`;
+  const res = await fetch(url, { headers: { accept: "application/json" } });
+  if (!res.ok) throw new Error(`catalog ${res.status}`);
+  const j = (await res.json()) as { results?: any[] };
+  return (j.results ?? [])
+    .filter((r) => r.previewUrl)
+    .map((r) => ({
+      id: Number(r.trackId),
+      title: String(r.trackName ?? "Untitled"),
+      artist: String(r.artistName ?? ""),
+      artwork: r.artworkUrl100 ? String(r.artworkUrl100).replace("100x100", "300x300") : null,
+      preview_url: String(r.previewUrl),
+      link: r.trackViewUrl ?? null,
+    }));
+}
+
 export function MusicPicker({
   open,
   onClose,
