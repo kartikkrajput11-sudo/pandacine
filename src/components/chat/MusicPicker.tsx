@@ -94,10 +94,19 @@ export function MusicPicker({
       setLoading(true);
       try {
         const r = await search({ data: { q } });
+        if (r.error && r.songs.length === 0) throw new Error(r.error);
         setSongs(r.songs);
-        setErr(r.error ?? null);
+        setErr(null);
       } catch {
-        setErr("Music search is unavailable right now.");
+        // Server search unavailable (e.g. static preview) — ask the catalog directly.
+        try {
+          const direct = await searchSongsDirect(q);
+          setSongs(direct);
+          setErr(direct.length === 0 && q.trim() ? null : null);
+        } catch {
+          setSongs([]);
+          setErr("Music search is unavailable right now.");
+        }
       } finally {
         setLoading(false);
       }
