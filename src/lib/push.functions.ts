@@ -176,7 +176,7 @@ export const notifyPush = createServerFn({ method: "POST" })
       sent: await deliver(ids, {
         title: `${c.kind === "video" ? "📹 Video" : "📞 Voice"} call`,
         body: `${name} is calling you…`,
-        url: c.group_id ? `/app/call/group/${c.group_id}?call=${data.id}` : `/app/call/${me}?call=${data.id}`,
+        url: "/app/calls",
         tag: `call-${data.id}`,
       }),
     };
