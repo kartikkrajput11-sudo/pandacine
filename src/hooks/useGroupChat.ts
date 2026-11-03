@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { MessageRow } from "@/lib/chat";
 import { sfxSend, sfxReceive, sfxReaction } from "@/lib/sfx";
 import { markGroupReadNow, setGroupLastRead } from "@/lib/groupRead";
+import { pingPush } from "@/lib/push-client";
 
 export type GroupMessage = MessageRow & {
   deleted_at: string | null;
@@ -150,7 +151,7 @@ export function useGroupChat(groupId: string | null, meId: string | null) {
       reply_to_id?: string | null;
     }) => {
       if (!meId || !groupId) throw new Error("Not ready");
-      const { error } = await supabase.from("messages").insert({
+      const { data: inserted, error } = await supabase.from("messages").insert({
         sender_id: meId,
         group_id: groupId,
         receiver_id: null,
@@ -159,8 +160,9 @@ export function useGroupChat(groupId: string | null, meId: string | null) {
         media_url: input.media_url ?? null,
         media_meta: (input.media_meta ?? null) as never,
         reply_to_id: input.reply_to_id ?? null,
-      });
+      }).select("id").single();
       if (error) throw error;
+      pingPush("message", inserted?.id);
       sfxSend();
     },
     [meId, groupId],

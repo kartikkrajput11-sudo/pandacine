@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { chatChannelKey, expirySeconds, type MessageRow } from "@/lib/chat";
 import { sfxSend, sfxReceive, sfxReaction } from "@/lib/sfx";
+import { pingPush } from "@/lib/push-client";
 
 type TypingState = { isTyping: boolean; at: number };
 
@@ -260,6 +261,7 @@ export function useChat(meId: string | null, partnerId: string | null) {
         throw error;
       }
       if (data) {
+        pingPush("message", (data as MessageRow).id);
         setMessages((prev) => mergeMessages(prev.filter((m) => m.id !== draft.id), [data as MessageRow]));
       }
     },
