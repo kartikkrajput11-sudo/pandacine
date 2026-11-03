@@ -11,6 +11,7 @@ import { uploadChatMedia, signMedia } from "@/lib/chat";
 import { LETTER_PAPERS, LETTER_FONTS, LETTER_DECORATIONS, fontOf, paperOf, type LetterStyle } from "@/lib/letter-style";
 import { LetterDecorations } from "@/components/letters/LetterDecorations";
 import { Search } from "lucide-react";
+import { pingPush } from "@/lib/push-client";
 
 export const Route = createFileRoute("/_authenticated/app/letters/")({
   component: LettersRoute,
@@ -383,7 +384,7 @@ function Composer({
       return;
     }
     setSaving(true);
-    const { error } = await (supabase as any).from("love_letters").insert({
+    const { data: sealed, error } = await (supabase as any).from("love_letters").insert({
       sender_id: me,
       recipient_id: partnerId,
       title: title.trim() || "Untitled",
@@ -395,8 +396,9 @@ function Composer({
       voice_url: voicePath,
       unlock_on_anniversary: unlockChoice === "anniversary",
       style: { paper, font, decoration },
-    });
+    }).select("id").single();
     setSaving(false);
+    if (!error) pingPush("letter", sealed?.id);
     if (error) {
       toast.error(error.message);
       return;

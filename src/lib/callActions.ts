@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { getDeviceId } from "@/lib/device";
+import { pingPush } from "@/lib/push-client";
 
 export type CallRow = {
   id: string;
@@ -19,12 +20,14 @@ export type CallRow = {
 export async function startDirectCall(peerId: string, kind: "voice" | "video"): Promise<CallRow> {
   const { data, error } = await supabase.rpc("call_start_direct", { _peer: peerId, _kind: kind });
   if (error) throw error;
+  pingPush("call", (data as unknown as CallRow)?.id);
   return data as unknown as CallRow;
 }
 
 export async function startGroupCall(groupId: string, kind: "voice" | "video"): Promise<CallRow> {
   const { data, error } = await supabase.rpc("call_start_group", { _group_id: groupId, _kind: kind });
   if (error) throw error;
+  pingPush("call", (data as unknown as CallRow)?.id);
   return data as unknown as CallRow;
 }
 
