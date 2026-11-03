@@ -1,3 +1,4 @@
+import { PushToggle } from "@/components/PushToggle";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
@@ -462,6 +463,7 @@ function Me() {
               <ThemeSection />
             </SettingsPanelRow>
             <SoundToggle />
+            <PushToggle />
           </SettingsGroup>
 
           <SettingsGroup title="Privacy" hint="Only affects what your panda sees">
